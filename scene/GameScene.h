@@ -61,7 +61,7 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 
 	//ワールドトランスフォーム
-	WorldTransform worldTransform_;
+	WorldTransform worldTransform_[9][9];
 
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
@@ -76,32 +76,7 @@ private: // メンバ変数
 	Vector3 syuten;
 	Vector4 color;
 
-	Vector3 vertex[8] =
-	{
-		{0.0f,0.0f,0.0f},
-		{5.0f,0.0f,0.0f},
-		{5.0f,0.0f,5.0f},
-		{0.0f,0.0f,5.0f},
-		{0.0f,5.0f,5.0f},
-		{0.0f,5.0f,0.0f},
-		{5.0f,5.0f,0.0f},
-		{5.0f,5.0f,5.0f}
-	};
+	
 
-	int eqgeList[12][2] =
-	{
-		{0,1},
-		{1,2},
-		{2,3},
-		{3,4},
-		{4,5},
-		{5,6},
-		{6,7},
-		{7,4},
-		{0,3},
-		{0,5},
-		{1,6},
-		{2,7}
-	};
 
 };
