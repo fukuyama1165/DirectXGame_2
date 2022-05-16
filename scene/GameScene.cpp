@@ -53,15 +53,10 @@ void GameScene::Initialize() {
 	//ワールドトランスフォームの初期化
 	for (int i = 0; i < 9; i++)
 	{
-		for (int j = 0; j < 9; j++)
-		{
-			for (int n = 0; n < 9; n++)
-			{
 
 				//ワールドトランスフォームの位置変更
-				worldTransform_[i][j][n].translation_ = {(float)j * 4 - 15 ,(float)i * 4 - 15 ,(float)n*4};
-				worldTransform_[i][j][n].scale_ = {1.5f,1.5f,1.5f};
-				worldTransform_[i][j][n].Initialize();
+				worldTransform_[i].translation_ = {(float)i * 5  ,(float)i * 5 ,0.0f};
+				worldTransform_[i].Initialize();
 
 
 
@@ -69,9 +64,9 @@ void GameScene::Initialize() {
 				Matrix4 matScale;
 
 				//スケーリング倍率を行列に設定
-				matScale.m[0][0] = worldTransform_[i][j][n].scale_.x;
-				matScale.m[1][1] = worldTransform_[i][j][n].scale_.y;
-				matScale.m[2][2] = worldTransform_[i][j][n].scale_.z;
+				matScale.m[0][0] = worldTransform_[i].scale_.x;
+				matScale.m[1][1] = worldTransform_[i].scale_.y;
+				matScale.m[2][2] = worldTransform_[i].scale_.z;
 				matScale.m[3][3] = 1;
 
 				//X軸回転行列を宣言
@@ -79,31 +74,31 @@ void GameScene::Initialize() {
 
 				//回転角を行列に設定(ラジアン)
 				matRotateX.m[0][0] = 1;
-				matRotateX.m[1][1] = cos(worldTransform_[i][j][n].rotation_.x);
-				matRotateX.m[1][2] = sin(worldTransform_[i][j][n].rotation_.x);
-				matRotateX.m[2][1] = -sin(worldTransform_[i][j][n].rotation_.x);
-				matRotateX.m[2][2] = cos(worldTransform_[i][j][n].rotation_.x);
+				matRotateX.m[1][1] = cos(worldTransform_[i].rotation_.x);
+				matRotateX.m[1][2] = sin(worldTransform_[i].rotation_.x);
+				matRotateX.m[2][1] = -sin(worldTransform_[i].rotation_.x);
+				matRotateX.m[2][2] = cos(worldTransform_[i].rotation_.x);
 				matRotateX.m[3][3] = 1;
 
 				//Y軸回転行列を宣言
 				Matrix4 matRotateY;
 
 				//回転角を行列に設定(ラジアン)
-				matRotateY.m[0][0] = cos(worldTransform_[i][j][n].rotation_.y);
-				matRotateY.m[0][2] = -sin(worldTransform_[i][j][n].rotation_.y);
+				matRotateY.m[0][0] = cos(worldTransform_[i].rotation_.y);
+				matRotateY.m[0][2] = -sin(worldTransform_[i].rotation_.y);
 				matRotateY.m[1][1] = 1;
-				matRotateY.m[2][0] = sin(worldTransform_[i][j][n].rotation_.y);
-				matRotateY.m[2][2] = cos(worldTransform_[i][j][n].rotation_.y);
+				matRotateY.m[2][0] = sin(worldTransform_[i].rotation_.y);
+				matRotateY.m[2][2] = cos(worldTransform_[i].rotation_.y);
 				matRotateY.m[3][3] = 1;
 
 				//Z軸回転行列を宣言
 				Matrix4 matRotateZ;
 
 				//回転角を行列に設定(ラジアン)
-				matRotateZ.m[0][0] = cos(worldTransform_[i][j][n].rotation_.z);
-				matRotateZ.m[0][1] = sin(worldTransform_[i][j][n].rotation_.z);
-				matRotateZ.m[1][0] = -sin(worldTransform_[i][j][n].rotation_.z);
-				matRotateZ.m[1][1] = cos(worldTransform_[i][j][n].rotation_.z);
+				matRotateZ.m[0][0] = cos(worldTransform_[i].rotation_.z);
+				matRotateZ.m[0][1] = sin(worldTransform_[i].rotation_.z);
+				matRotateZ.m[1][0] = -sin(worldTransform_[i].rotation_.z);
+				matRotateZ.m[1][1] = cos(worldTransform_[i].rotation_.z);
 				matRotateZ.m[2][2] = 1;
 				matRotateZ.m[3][3] = 1;
 
@@ -122,12 +117,12 @@ void GameScene::Initialize() {
 				Matrix4 matMove = MathUtility::Matrix4Identity();
 
 				//行列に移動量を代入
-				matMove.m[3][0] = worldTransform_[i][j][n].translation_.x;
-				matMove.m[3][1] = worldTransform_[i][j][n].translation_.y;
-				matMove.m[3][2] = worldTransform_[i][j][n].translation_.z;
+				matMove.m[3][0] = worldTransform_[i].translation_.x;
+				matMove.m[3][1] = worldTransform_[i].translation_.y;
+				matMove.m[3][2] = worldTransform_[i].translation_.z;
 
 				//単位行列を代入
-				worldTransform_[i][j][n].matWorld_ = MathUtility::Matrix4Identity();
+				worldTransform_[i].matWorld_ = MathUtility::Matrix4Identity();
 
 				//*ができなかったので合成
 
@@ -136,13 +131,12 @@ void GameScene::Initialize() {
 				matScale *= matrotate;
 
 				//掛け算をして代入
-				worldTransform_[i][j][n].matWorld_ *= matScale;
+				worldTransform_[i].matWorld_ *= matScale;
 
 				//行列の転送
-				worldTransform_[i][j][n].TransferMatrix();
+				worldTransform_[i].TransferMatrix();
 
-			}
-		}
+		
 	}
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -155,6 +149,20 @@ void GameScene::Initialize() {
 void GameScene::Update() 
 {
 	//debugCamera_->Update();
+
+	move+=0.04;
+		//ワールドトランスフォームの位置変更
+	for (int i = 0; i < 9; i++)
+	{
+		worldTransform_[i].translation_ = { (float)cos(move - i * 3.5) * 9 , (float)sin(move - i * 3.5) * 9 ,0.0f };
+	}
+
+		for (int i = 0; i < 9; i++)
+		{
+			afin(worldTransform_[i]);
+		}
+	
+
 }
 
 void GameScene::Draw() {
@@ -188,14 +196,7 @@ void GameScene::Draw() {
 
 	for (int i = 0; i < 9; i++)
 	{
-		for (int j = 0; j < 9; j++)
-		{
-			for (int n = 0; n < 9; n++)
-			{
-				model_->Draw(worldTransform_[i][j][n], viewProjection_, textureHandle_);
-			}
-			
-		}
+				model_->Draw(worldTransform_[i], viewProjection_, textureHandle_);
 	}
 	
 	///
@@ -221,4 +222,83 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::afin(WorldTransform Transform)
+{
+	//スケーリング行列を宣言
+	Matrix4 matScale;
+
+	//スケーリング倍率を行列に設定
+	matScale.m[0][0] = Transform.scale_.x;
+	matScale.m[1][1] = Transform.scale_.y;
+	matScale.m[2][2] = Transform.scale_.z;
+	matScale.m[3][3] = 1;
+
+	//X軸回転行列を宣言
+	Matrix4 matRotateX;
+
+	//回転角を行列に設定(ラジアン)
+	matRotateX.m[0][0] = 1;
+	matRotateX.m[1][1] = cos(Transform.rotation_.x);
+	matRotateX.m[1][2] = sin(Transform.rotation_.x);
+	matRotateX.m[2][1] = -sin(Transform.rotation_.x);
+	matRotateX.m[2][2] = cos(Transform.rotation_.x);
+	matRotateX.m[3][3] = 1;
+
+	//Y軸回転行列を宣言
+	Matrix4 matRotateY;
+
+	//回転角を行列に設定(ラジアン)
+	matRotateY.m[0][0] = cos(Transform.rotation_.y);
+	matRotateY.m[0][2] = -sin(Transform.rotation_.y);
+	matRotateY.m[1][1] = 1;
+	matRotateY.m[2][0] = sin(Transform.rotation_.y);
+	matRotateY.m[2][2] = cos(Transform.rotation_.y);
+	matRotateY.m[3][3] = 1;
+
+	//Z軸回転行列を宣言
+	Matrix4 matRotateZ;
+
+	//回転角を行列に設定(ラジアン)
+	matRotateZ.m[0][0] = cos(Transform.rotation_.z);
+	matRotateZ.m[0][1] = sin(Transform.rotation_.z);
+	matRotateZ.m[1][0] = -sin(Transform.rotation_.z);
+	matRotateZ.m[1][1] = cos(Transform.rotation_.z);
+	matRotateZ.m[2][2] = 1;
+	matRotateZ.m[3][3] = 1;
+
+	//回転軸合成行列を宣言
+	Matrix4 matrotate;
+
+	//計算した角度を計算(順番は回転させるモデルによって変える)
+
+	matRotateX *= matRotateY;
+
+	matRotateZ *= matRotateX;
+
+	matrotate = matRotateZ;
+
+	//移動するための行列を用意
+	Matrix4 matMove = MathUtility::Matrix4Identity();
+
+	//行列に移動量を代入
+	matMove.m[3][0] = Transform.translation_.x;
+	matMove.m[3][1] = Transform.translation_.y;
+	matMove.m[3][2] = Transform.translation_.z;
+
+	//単位行列を代入
+	Transform.matWorld_ = MathUtility::Matrix4Identity();
+
+	//*ができなかったので合成
+
+	matrotate *= matMove;
+
+	matScale *= matrotate;
+
+	//掛け算をして代入
+	Transform.matWorld_ *= matScale;
+
+	//行列の転送
+	Transform.TransferMatrix();
 }

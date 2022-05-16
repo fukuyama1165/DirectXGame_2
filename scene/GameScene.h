@@ -61,7 +61,7 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 
 	//ワールドトランスフォーム
-	WorldTransform worldTransform_[9][9][9];
+	WorldTransform worldTransform_[9];
 
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
@@ -76,7 +76,9 @@ private: // メンバ変数
 	Vector3 syuten;
 	Vector4 color;
 
-	
+	float move = 0;
+
+	void afin(WorldTransform Transform);
 
 
 };
