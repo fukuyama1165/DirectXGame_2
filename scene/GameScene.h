@@ -61,7 +61,7 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 
 	//ワールドトランスフォーム
-	WorldTransform worldTransform_[9];
+	WorldTransform worldTransform_;
 
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
@@ -80,5 +80,12 @@ private: // メンバ変数
 
 	void afin(WorldTransform Transform);
 
+	Matrix4 matScaleGeneration(Vector3 scale);
+	Matrix4 matRotateXGeneration(float rotateX);
+	Matrix4 matRotateYGeneration(float rotateY);
+	Matrix4 matRotateZGeneration(float rotateZ);
+	Matrix4 matRotateGeneration(Vector3 rotate);
+	Matrix4 matMoveGeneration(Vector3 move);
+	void matWorldGeneration(WorldTransform worldTransform);
 
 };
