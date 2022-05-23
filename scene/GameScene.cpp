@@ -39,7 +39,7 @@ void GameScene::Initialize() {
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向補油時が参照するビュープロジェクションを指定する(アドレス渡し)
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&debugCamera_->GetViewProjection());
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	//PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
@@ -137,26 +137,16 @@ void GameScene::Initialize() {
 				//worldTransform_.TransferMatrix();
 
 
-				viewProjection_[0].eye = { -5.0f,-7.0f,6.0f };
-				viewProjection_[0].target = { 0.0f,0.0f,0.0f };
-				viewProjection_[0].up = { 0.0f,1.0f,0.0f };
+				viewProjection_.eye = { -5.0f,-7.0f,6.0f };
+				viewProjection_.target = { 0.0f,0.0f,0.0f };
+				viewProjection_.up = { 0.0f,1.0f,0.0f };
 
-				viewProjection_[1].eye = { -5.0f,-3.0f,10.0f };
-				viewProjection_[1].target = { 0.0f,0.0f,0.0f };
-				viewProjection_[1].up = { 0.0f,1.0f,0.0f };
-
-				viewProjection_[2].eye = { -5.0f, 5.0f,-1.0f };
-				viewProjection_[2].target = { 0.0f,0.0f,0.0f };
-				viewProjection_[2].up = { 0.0f,1.0f,0.0f };
+			
 		
 	//ビュープロジェクションの初期化
-	viewProjection_[0].Initialize();
-	viewProjection_[1].Initialize();
-	viewProjection_[2].Initialize();
-	viewProjection_[3].Initialize();
+	viewProjection_.Initialize();
 
-	
-	viewProjection_[3] = viewProjection_[0];
+
 
 }
 
@@ -164,27 +154,11 @@ void GameScene::Update()
 {
 	//debugCamera_->Update();
 
-	if (input_->TriggerKey(DIK_SPACE))
-	{
-		if (viewCamera==0)
-		{
-			viewProjection_[3] = viewProjection_[1];
-			viewCamera = 1;
-		}
-		else if (viewCamera == 1)
-		{
-			viewProjection_[3] = viewProjection_[2];
-			viewCamera = 2;
-		}
-		else if (viewCamera == 2)
-		{
-			viewProjection_[3] = viewProjection_[0];
-			viewCamera = 0;
-		}
-	}
+	Cameramove+=0.01;
 
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_[3]);
+	viewProjection_.eye = { cosf(Cameramove)*10,0.0f,sinf(Cameramove)*10 };
 
+	viewProjection_.UpdateMatrix();
 
 }
 
@@ -218,7 +192,7 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 
 	
-				model_->Draw(worldTransform_, viewProjection_[3], textureHandle_);
+				model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	
 	///
 
@@ -237,32 +211,12 @@ void GameScene::Draw() {
 	/// </summary>
 
 	debugText_->SetPos(50, 70);
-	debugText_->Printf("Camera1");
+	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
 	debugText_->SetPos(50, 90);
-	debugText_->Printf("eye:(%f,%f,%f)",viewProjection_[0].eye.x, viewProjection_[0].eye.y, viewProjection_[0].eye.z);
+	debugText_->Printf("target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
 	debugText_->SetPos(50, 110);
-	debugText_->Printf("target:(%f,%f,%f)", viewProjection_[0].target.x, viewProjection_[0].target.y, viewProjection_[0].target.z);
-	debugText_->SetPos(50, 130);
-	debugText_->Printf("up:(%f,%f,%f)", viewProjection_[0].up.x, viewProjection_[0].up.y, viewProjection_[0].up.z);
-
-	debugText_->SetPos(50, 170);
-	debugText_->Printf("Camera2");
-	debugText_->SetPos(50, 190);
-	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_[1].eye.x, viewProjection_[1].eye.y, viewProjection_[1].eye.z);
-	debugText_->SetPos(50, 210);
-	debugText_->Printf("target:(%f,%f,%f)", viewProjection_[1].target.x, viewProjection_[1].target.y, viewProjection_[1].target.z);
-	debugText_->SetPos(50, 230);
-	debugText_->Printf("up:(%f,%f,%f)", viewProjection_[1].up.x, viewProjection_[1].up.y, viewProjection_[1].up.z);
-
-	debugText_->SetPos(50, 270);
-	debugText_->Printf("Camera3");
-	debugText_->SetPos(50, 290);
-	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_[2].eye.x, viewProjection_[2].eye.y, viewProjection_[2].eye.z);
-	debugText_->SetPos(50, 310);
-	debugText_->Printf("target:(%f,%f,%f)", viewProjection_[2].target.x, viewProjection_[2].target.y, viewProjection_[2].target.z);
-	debugText_->SetPos(50, 330);
-	debugText_->Printf("up:(%f,%f,%f)", viewProjection_[2].up.x, viewProjection_[2].up.y, viewProjection_[2].up.z);
-
+	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
+	
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
