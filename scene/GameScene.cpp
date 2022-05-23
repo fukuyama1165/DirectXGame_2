@@ -53,9 +53,9 @@ void GameScene::Initialize() {
 	//ワールドトランスフォームの初期化
 
 				//ワールドトランスフォームの位置変更
-				worldTransform_.translation_ = {10.0f  ,10.0f ,10.0f};
-				worldTransform_.scale_ = {5.0f  ,5.0f ,5.0f};
-				worldTransform_.rotation_ = {45*PI/180  ,45 * PI / 180 ,0.0f};
+				worldTransform_.translation_ = {0.0f  ,0.0f ,0.0f};
+				worldTransform_.scale_ = {1.0f  ,1.0f ,1.0f};
+				worldTransform_.rotation_ = {0.0f ,0.0f ,0.0f};
 				worldTransform_.Initialize();
 
 				matWorldGeneration(worldTransform_);
@@ -136,18 +136,55 @@ void GameScene::Initialize() {
 				////行列の転送
 				//worldTransform_.TransferMatrix();
 
+
+				viewProjection_[0].eye = { -5.0f,-7.0f,6.0f };
+				viewProjection_[0].target = { 0.0f,0.0f,0.0f };
+				viewProjection_[0].up = { 0.0f,1.0f,0.0f };
+
+				viewProjection_[1].eye = { -5.0f,-3.0f,10.0f };
+				viewProjection_[1].target = { 0.0f,0.0f,0.0f };
+				viewProjection_[1].up = { 0.0f,1.0f,0.0f };
+
+				viewProjection_[2].eye = { -5.0f, 5.0f,-1.0f };
+				viewProjection_[2].target = { 0.0f,0.0f,0.0f };
+				viewProjection_[2].up = { 0.0f,1.0f,0.0f };
 		
 	//ビュープロジェクションの初期化
-	viewProjection_.Initialize();
+	viewProjection_[0].Initialize();
+	viewProjection_[1].Initialize();
+	viewProjection_[2].Initialize();
+	viewProjection_[3].Initialize();
 
 	
-
+	viewProjection_[3] = viewProjection_[0];
 
 }
 
 void GameScene::Update() 
 {
-	debugCamera_->Update();
+	//debugCamera_->Update();
+
+	if (input_->TriggerKey(DIK_SPACE))
+	{
+		if (viewCamera==0)
+		{
+			viewProjection_[3] = viewProjection_[1];
+			viewCamera = 1;
+		}
+		else if (viewCamera == 1)
+		{
+			viewProjection_[3] = viewProjection_[2];
+			viewCamera = 2;
+		}
+		else if (viewCamera == 2)
+		{
+			viewProjection_[3] = viewProjection_[0];
+			viewCamera = 0;
+		}
+	}
+
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_[3]);
+
 
 }
 
@@ -181,7 +218,7 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 
 	
-				model_->Draw(worldTransform_, debugCamera_->GetViewProjection(), textureHandle_);
+				model_->Draw(worldTransform_, viewProjection_[3], textureHandle_);
 	
 	///
 
@@ -198,6 +235,34 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	debugText_->SetPos(50, 70);
+	debugText_->Printf("Camera1");
+	debugText_->SetPos(50, 90);
+	debugText_->Printf("eye:(%f,%f,%f)",viewProjection_[0].eye.x, viewProjection_[0].eye.y, viewProjection_[0].eye.z);
+	debugText_->SetPos(50, 110);
+	debugText_->Printf("target:(%f,%f,%f)", viewProjection_[0].target.x, viewProjection_[0].target.y, viewProjection_[0].target.z);
+	debugText_->SetPos(50, 130);
+	debugText_->Printf("up:(%f,%f,%f)", viewProjection_[0].up.x, viewProjection_[0].up.y, viewProjection_[0].up.z);
+
+	debugText_->SetPos(50, 170);
+	debugText_->Printf("Camera2");
+	debugText_->SetPos(50, 190);
+	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_[1].eye.x, viewProjection_[1].eye.y, viewProjection_[1].eye.z);
+	debugText_->SetPos(50, 210);
+	debugText_->Printf("target:(%f,%f,%f)", viewProjection_[1].target.x, viewProjection_[1].target.y, viewProjection_[1].target.z);
+	debugText_->SetPos(50, 230);
+	debugText_->Printf("up:(%f,%f,%f)", viewProjection_[1].up.x, viewProjection_[1].up.y, viewProjection_[1].up.z);
+
+	debugText_->SetPos(50, 270);
+	debugText_->Printf("Camera3");
+	debugText_->SetPos(50, 290);
+	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_[2].eye.x, viewProjection_[2].eye.y, viewProjection_[2].eye.z);
+	debugText_->SetPos(50, 310);
+	debugText_->Printf("target:(%f,%f,%f)", viewProjection_[2].target.x, viewProjection_[2].target.y, viewProjection_[2].target.z);
+	debugText_->SetPos(50, 330);
+	debugText_->Printf("up:(%f,%f,%f)", viewProjection_[2].up.x, viewProjection_[2].up.y, viewProjection_[2].up.z);
+
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);

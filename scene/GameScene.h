@@ -64,7 +64,7 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 
 	//ビュープロジェクション
-	ViewProjection viewProjection_;
+	ViewProjection viewProjection_[4];
 
 	//カメラ上方向の角度
 	float viewAngle = 0.0f;
@@ -77,6 +77,8 @@ private: // メンバ変数
 	Vector4 color;
 
 	float move = 0;
+
+	float viewCamera = 0;
 
 	void afin(WorldTransform Transform);
 
