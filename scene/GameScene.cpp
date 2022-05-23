@@ -27,7 +27,7 @@ void GameScene::Initialize() {
 
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
-	
+
 
 
 	//3Dモデルの生成
@@ -68,24 +68,30 @@ void GameScene::Initialize() {
 		worldTransform.translation_ = { Posdist(engine)  ,Posdist(engine) ,Posdist(engine) };
 		worldTransform.scale_ = { 1.0f  ,1.0f ,1.0f };
 		worldTransform.rotation_ = { rotadist(engine)  ,rotadist(engine) ,rotadist(engine) };
-		
+
 
 		matWorldGeneration(worldTransform);
 	}
 
-			
+
+	//カメラ視点座標を設定
 	//viewProjection_.eye = { 0,0,-10 };
+
+	//カメラ注視点座標を設定
 	viewProjection_.target = { 10,0,0 };
-		
+
+	//カメラ上方向ベクトルを設定(右上45度指定)
+	viewProjection_.up = { cosf(PI / 4.0f),sinf(PI / 4.0f),0.0f };
+
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 
-	
-	
+
+
 
 }
 
-void GameScene::Update() 
+void GameScene::Update()
 {
 	debugCamera_->Update();
 
