@@ -13,6 +13,8 @@ GameScene::~GameScene() {
 	delete model_;
 	delete debugCamera_;
 
+	//自キャラの解放
+	delete player_;
 }
 
 
@@ -27,11 +29,18 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	
+	
 
 
 	//3Dモデルの生成
 
 	model_ = Model::Create();
+
+	//自キャラの生成
+	player_ = new Player();
+	//自キャラの初期化
+	player_->Initialize(model_, textureHandle_);
+
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -53,12 +62,6 @@ void GameScene::Initialize() {
 	//ワールドトランスフォームの初期化
 
 				//ワールドトランスフォームの位置変更
-				worldTransform_.translation_ = {0.0f  ,0.0f ,0.0f};
-				worldTransform_.scale_ = {1.0f  ,1.0f ,1.0f};
-				worldTransform_.rotation_ = {0.0f ,0.0f ,0.0f};
-				worldTransform_.Initialize();
-
-				matWorldGeneration(worldTransform_);
 
 				////スケーリング行列を宣言
 				//Matrix4 matScale;
@@ -137,7 +140,7 @@ void GameScene::Initialize() {
 				//worldTransform_.TransferMatrix();
 
 
-				viewProjection_.eye = { -5.0f,-7.0f,6.0f };
+				viewProjection_.eye = { 0.0f,0.0f,-50.0f };
 				viewProjection_.target = { 0.0f,0.0f,0.0f };
 				viewProjection_.up = { 0.0f,1.0f,0.0f };
 
@@ -154,11 +157,34 @@ void GameScene::Update()
 {
 	//debugCamera_->Update();
 
-	Cameramove+=0.01;
+	player_->Update();
 
-	viewProjection_.eye = { cosf(Cameramove)*10,0.0f,sinf(Cameramove)*10 };
+#ifdef _DEBUG
 
-	viewProjection_.UpdateMatrix();
+	//デバックで起動していると使える
+	if (input_->TriggerKey(DIK_P))
+	{
+		IsdebugCameraUse = !IsdebugCameraUse;
+	}
+
+#endif 
+
+	if (IsdebugCameraUse)
+	{
+		debugCamera_->Update();
+		//デバックカメラがONになっているならviewProjectionをデバックカメラに
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+
+		viewProjection_.TransferMatrix();
+	}
+	else
+	{
+		viewProjection_.UpdateMatrix();
+
+		viewProjection_.TransferMatrix();
+	}
+
 
 }
 
@@ -192,8 +218,10 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 
 	
-				model_->Draw(worldTransform_, viewProjection_, textureHandle_);
+				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	
+	player_->Draw(viewProjection_);
+
 	///
 
 	//PrimitiveDrawer::GetInstance()->DrawLine3d(siten, syuten, color);
@@ -210,12 +238,12 @@ void GameScene::Draw() {
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
 
-	debugText_->SetPos(50, 70);
+	/*debugText_->SetPos(50, 70);
 	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
 	debugText_->SetPos(50, 90);
 	debugText_->Printf("target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
 	debugText_->SetPos(50, 110);
-	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);
+	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);*/
 	
 
 	// デバッグテキストの描画
@@ -399,14 +427,14 @@ Matrix4 GameScene::matMoveGeneration(Vector3 move)
 	Matrix4 matMove = MathUtility::Matrix4Identity();
 
 	//行列に移動量を代入
-	matMove.m[3][0] = worldTransform_.translation_.x;
-	matMove.m[3][1] = worldTransform_.translation_.y;
-	matMove.m[3][2] = worldTransform_.translation_.z;
+	matMove.m[3][0] = move.x;
+	matMove.m[3][1] = move.y;
+	matMove.m[3][2] = move.z;
 
 	return matMove;
 }
 
-void GameScene::matWorldGeneration(WorldTransform worldTransform)
+void GameScene::matWorldGeneration(WorldTransform& worldTransform)
 {
 	//スケーリング行列を宣言
 	Matrix4 matScale = matScaleGeneration(worldTransform.scale_);
