@@ -10,6 +10,8 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 #include "DebugCamera.h"
+#include "Player.h"
+
 
 /// <summary>
 /// ゲームシーン
@@ -53,6 +55,10 @@ private: // メンバ変数
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
+	
+	
+	//自キャラ
+	Player* player_ = nullptr;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
@@ -61,7 +67,8 @@ private: // メンバ変数
 	Model* model_ = nullptr;
 
 	//ワールドトランスフォーム
-	WorldTransform worldTransforms_[100];
+	//WorldTransform worldTransform_;
+
 
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
@@ -72,11 +79,15 @@ private: // メンバ変数
 	//デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
+	bool IsdebugCameraUse = false;
+
 	Vector3 siten;
 	Vector3 syuten;
 	Vector4 color;
 
 	float move = 0;
+
+	float Cameramove = 0;
 
 	void afin(WorldTransform Transform);
 
@@ -86,6 +97,6 @@ private: // メンバ変数
 	Matrix4 matRotateZGeneration(float rotateZ);
 	Matrix4 matRotateGeneration(Vector3 rotate);
 	Matrix4 matMoveGeneration(Vector3 move);
-	void matWorldGeneration(WorldTransform worldTransform);
+	void matWorldGeneration(WorldTransform& worldTransform);
 
 };
