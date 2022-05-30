@@ -3,6 +3,7 @@
 #include <cassert>
 #include "AxisIndicator.h"
 #include "PrimitiveDrawer.h"
+#include <random>
 
 const float PI = 3.141592653589;
 
@@ -28,8 +29,6 @@ void GameScene::Initialize() {
 
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
-	
-	
 
 
 	//3Dモデルの生成
@@ -57,87 +56,9 @@ void GameScene::Initialize() {
 	syuten = Vector3(20.0f, 20.0f, 20.0f);
 	color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
-
-
 	//ワールドトランスフォームの初期化
 
 				//ワールドトランスフォームの位置変更
-
-				////スケーリング行列を宣言
-				//Matrix4 matScale;
-
-				////スケーリング倍率を行列に設定
-				//matScale.m[0][0] = worldTransform_.scale_.x;
-				//matScale.m[1][1] = worldTransform_.scale_.y;
-				//matScale.m[2][2] = worldTransform_.scale_.z;
-				//matScale.m[3][3] = 1;
-
-				////X軸回転行列を宣言
-				//Matrix4 matRotateX;
-
-				////回転角を行列に設定(ラジアン)
-				//matRotateX.m[0][0] = 1;
-				//matRotateX.m[1][1] = cos(worldTransform_.rotation_.x);
-				//matRotateX.m[1][2] = sin(worldTransform_.rotation_.x);
-				//matRotateX.m[2][1] = -sin(worldTransform_.rotation_.x);
-				//matRotateX.m[2][2] = cos(worldTransform_.rotation_.x);
-				//matRotateX.m[3][3] = 1;
-
-				////Y軸回転行列を宣言
-				//Matrix4 matRotateY;
-
-				////回転角を行列に設定(ラジアン)
-				//matRotateY.m[0][0] = cos(worldTransform_.rotation_.y);
-				//matRotateY.m[0][2] = -sin(worldTransform_.rotation_.y);
-				//matRotateY.m[1][1] = 1;
-				//matRotateY.m[2][0] = sin(worldTransform_.rotation_.y);
-				//matRotateY.m[2][2] = cos(worldTransform_.rotation_.y);
-				//matRotateY.m[3][3] = 1;
-
-				////Z軸回転行列を宣言
-				//Matrix4 matRotateZ;
-
-				////回転角を行列に設定(ラジアン)
-				//matRotateZ.m[0][0] = cos(worldTransform_.rotation_.z);
-				//matRotateZ.m[0][1] = sin(worldTransform_.rotation_.z);
-				//matRotateZ.m[1][0] = -sin(worldTransform_.rotation_.z);
-				//matRotateZ.m[1][1] = cos(worldTransform_.rotation_.z);
-				//matRotateZ.m[2][2] = 1;
-				//matRotateZ.m[3][3] = 1;
-
-				////回転軸合成行列を宣言
-				//Matrix4 matrotate;
-
-				////計算した角度を計算(順番は回転させるモデルによって変える)
-
-				//matRotateX *= matRotateY;
-
-				//matRotateZ *= matRotateX;
-
-				//matrotate = matRotateZ;
-
-				////移動するための行列を用意
-				//Matrix4 matMove = MathUtility::Matrix4Identity();
-
-				////行列に移動量を代入
-				//matMove.m[3][0] = worldTransform_.translation_.x;
-				//matMove.m[3][1] = worldTransform_.translation_.y;
-				//matMove.m[3][2] = worldTransform_.translation_.z;
-
-				////単位行列を代入
-				//worldTransform_.matWorld_ = MathUtility::Matrix4Identity();
-
-				////*ができなかったので合成
-
-				//matrotate *= matMove;
-
-				//matScale *= matrotate;
-
-				////掛け算をして代入
-				//worldTransform_.matWorld_ *= matScale;
-
-				////行列の転送
-				//worldTransform_.TransferMatrix();
 
 
 				viewProjection_.eye = { 0.0f,0.0f,-50.0f };
@@ -148,10 +69,6 @@ void GameScene::Initialize() {
 		
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
-
-
-
-}
 
 void GameScene::Update() 
 {
@@ -186,6 +103,7 @@ void GameScene::Update()
 	}
 
 
+
 }
 
 void GameScene::Draw() {
@@ -216,11 +134,11 @@ void GameScene::Draw() {
 	/// </summary>
 	/// 
 	/// 	//3Dモデル描画
-
 	
 				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 	
 	player_->Draw(viewProjection_);
+
 
 	///
 

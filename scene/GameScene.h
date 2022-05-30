@@ -69,6 +69,7 @@ private: // メンバ変数
 	//ワールドトランスフォーム
 	//WorldTransform worldTransform_;
 
+
 	//ビュープロジェクション
 	ViewProjection viewProjection_;
 
