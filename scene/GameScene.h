@@ -88,4 +88,7 @@ private: // メンバ変数
 	Matrix4 matMoveGeneration(Vector3 move);
 	void matWorldGeneration(WorldTransform worldTransform);
 
+	float RadianChange(float Angle);
+	float AngleChange(float Radian);
+
 };
