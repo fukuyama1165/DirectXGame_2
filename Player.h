@@ -50,6 +50,16 @@ public:
 	/// </summary>
 	void Attack();
 
+	/// <summary>
+	/// 行列とベクトルの計算(左側が行列計算の先)
+	/// </summary>
+	Vector3 VectorMat(Vector3 vector, Matrix4 mat);
+
+	/// <summary>
+	/// 行列とベクトルの計算(左側が行列計算の先)
+	/// </summary>
+	Vector3 VectorMat(Matrix4 mat, Vector3 vector);
+
 private:
 
 	//ワールド変換データ
