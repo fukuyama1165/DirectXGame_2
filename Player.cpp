@@ -52,7 +52,6 @@ void Player::Update()
 		move = { -MoveSpeed,0,0 };
 	}
 
-
 	//移動限界座標
 	const float kMoveLimitX = 30;
 	const float kMoveLimitY = 15;
@@ -68,6 +67,15 @@ void Player::Update()
 	//座標移動(行列更新もこの関数で)
 	matWorldGeneration(worldTransform_);
 
+	Rotate();
+
+	Attack();
+
+	if (bullet_)
+	{
+		bullet_->Update();
+	}
+
 	debugText_->SetPos(50, 70);
 	debugText_->Printf("pos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 
@@ -77,6 +85,11 @@ void Player::Draw(ViewProjection& viewProjection)
 
 	//3Dモデルを描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+
+	if (bullet_)
+	{
+		bullet_->Draw(viewProjection);
+	}
 
 }
 
@@ -201,4 +214,38 @@ void Player::matWorldGeneration(WorldTransform& worldTransform)
 
 	worldTransform.TransferMatrix();
 
+}
+
+void Player::Rotate()
+{
+	//キャラクターの移動ベクトル
+	Vector3 rotate = { 0,0,0 };
+
+	const float MoveSpeed = 0.1;
+
+	if (input_->PushKey(DIK_RIGHT))
+	{
+		rotate = { 0,MoveSpeed,0 };
+	}
+
+	if (input_->PushKey(DIK_LEFT))
+	{
+		rotate = { 0,-MoveSpeed,0 };
+	}
+
+	worldTransform_.rotation_ += rotate;
+
+	//座標移動(行列更新もこの関数で)
+	matWorldGeneration(worldTransform_);
+}
+
+void Player::Attack()
+{
+	if (input_->TriggerKey(DIK_SPACE))
+	{
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initlize(model_, worldTransform_.translation_);
+
+		bullet_ = newBullet;
+	}
 }

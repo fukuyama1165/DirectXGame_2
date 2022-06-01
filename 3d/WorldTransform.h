@@ -45,4 +45,14 @@ struct WorldTransform {
 	/// 行列を転送する
 	/// </summary>
 	void TransferMatrix();
+
+
+	//移動、回転,大きさ変更をする関数群
+	Matrix4 matScaleGeneration(Vector3 scale);
+	Matrix4 matRotateXGeneration(float rotateX);
+	Matrix4 matRotateYGeneration(float rotateY);
+	Matrix4 matRotateZGeneration(float rotateZ);
+	Matrix4 matRotateGeneration(Vector3 rotate);
+	Matrix4 matMoveGeneration(Vector3 move);
+	void matWorldGeneration(WorldTransform& worldTransform);
 };

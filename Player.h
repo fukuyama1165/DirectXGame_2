@@ -3,6 +3,7 @@
 #include "WorldTransform.h"
 #include "DebugText.h"
 #include "Input.h"
+#include "PlayerBullet.h"
 
 /// <summary>
 /// 自キャラ
@@ -39,6 +40,14 @@ public:
 	Matrix4 matMoveGeneration(Vector3 move);
 	void matWorldGeneration(WorldTransform& worldTransform);
 
+	//回転(arrowキーの左右で変更)
+	void Rotate();
+
+	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void Attack();
+
 private:
 
 	//ワールド変換データ
@@ -53,6 +62,9 @@ private:
 	Input* input_ = nullptr;
 
 	DebugText* debugText_ = nullptr;
+
+	//弾
+	PlayerBullet* bullet_ = nullptr;
 
 };
 
