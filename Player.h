@@ -4,6 +4,8 @@
 #include "DebugText.h"
 #include "Input.h"
 #include "PlayerBullet.h"
+#include <memory>
+#include <list>
 
 /// <summary>
 /// Ž©ƒLƒƒƒ‰
@@ -64,7 +66,7 @@ private:
 	DebugText* debugText_ = nullptr;
 
 	//’e
-	PlayerBullet* bullet_ = nullptr;
+	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 
 };
 
