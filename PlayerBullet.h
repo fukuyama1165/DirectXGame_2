@@ -16,7 +16,8 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="position">初期座標</param>
-	void Initlize(Model* model, const Vector3& position);
+	/// <param name="velocity">速度</param>
+	void Initlize(Model* model, const Vector3& position,const Vector3& velocity);
 
 	/// <summary>
 	/// 更新
@@ -39,6 +40,9 @@ private:
 
 	//3Dモデル(借りてくるやつらしい)
 	Model* model_ = nullptr;
+
+	//速度
+	Vector3	Velocity_;
 
 };
 
