@@ -29,8 +29,7 @@ void GameScene::Initialize() {
 
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
-
-
+	
 	//3Dモデルの生成
 
 	model_ = Model::Create();
@@ -61,14 +60,19 @@ void GameScene::Initialize() {
 				//ワールドトランスフォームの位置変更
 
 
+
+
 				viewProjection_.eye = { 0.0f,0.0f,-50.0f };
 				viewProjection_.target = { 0.0f,0.0f,0.0f };
 				viewProjection_.up = { 0.0f,1.0f,0.0f };
 
-			
-		
+
+
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+
+
+}
 
 void GameScene::Update() 
 {
@@ -136,7 +140,7 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 	
 				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
-	
+
 	player_->Draw(viewProjection_);
 
 
@@ -162,7 +166,7 @@ void GameScene::Draw() {
 	debugText_->Printf("target:(%f,%f,%f)", viewProjection_.target.x, viewProjection_.target.y, viewProjection_.target.z);
 	debugText_->SetPos(50, 110);
 	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);*/
-	
+
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
