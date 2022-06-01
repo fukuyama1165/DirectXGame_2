@@ -27,6 +27,13 @@ Player::~Player()
 
 void Player::Update()
 {
+
+	//デスフラグの立った弾を削除
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)
+		{
+			return bullet->IsDead();
+		});
+
 	//キャラクターの移動ベクトル
 	Vector3 move = { 0,0,0 };
 
@@ -245,9 +252,36 @@ void Player::Attack()
 	{
 		Vector3 position = worldTransform_.translation_;
 
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+
+		velocity = VectorMat(velocity, worldTransform_.matWorld_);
+
 		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initlize(model_, position);
+		newBullet->Initlize(model_, position,velocity);
 
 		bullets_.push_back(std::move(newBullet));
 	}
+}
+
+Vector3 Player::VectorMat(Vector3 vector, Matrix4 mat)
+{
+	Vector3 changeVector = { 0,0,0 };
+
+	changeVector.x = vector.x * mat.m[0][0] + vector.y * mat.m[1][0] + vector.z * mat.m[2][0] + 0.0f * mat.m[3][0];
+	changeVector.y = vector.x * mat.m[0][1] + vector.y * mat.m[1][1] + vector.z * mat.m[2][1] + 0.0f * mat.m[3][1];
+	changeVector.z = vector.x * mat.m[0][2] + vector.y * mat.m[1][2] + vector.z * mat.m[2][2] + 0.0f * mat.m[3][2];
+
+	return changeVector;
+}
+
+Vector3 Player::VectorMat(Matrix4 mat, Vector3 vector)
+{
+	Vector3 changeVector = { 0,0,0 };
+
+	changeVector.x = mat.m[0][0] * vector.x + mat.m[0][1] * vector.y + mat.m[0][2] * vector.z + mat.m[0][3] * 0.0f;
+	changeVector.y = mat.m[1][0] * vector.x + mat.m[1][1] * vector.y + mat.m[1][2] * vector.z + mat.m[1][3] * 0.0f;
+	changeVector.z = mat.m[2][0] * vector.x + mat.m[2][1] * vector.y + mat.m[2][2] * vector.z + mat.m[2][3] * 0.0f;
+
+	return changeVector;
 }

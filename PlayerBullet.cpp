@@ -9,7 +9,7 @@ PlayerBullet::~PlayerBullet()
 {
 }
 
-void PlayerBullet::Initlize(Model* model, const Vector3& position)
+void PlayerBullet::Initlize(Model* model, const Vector3& position, const Vector3& velocity)
 {
 	//ヌルポチェック
 	assert(model);
@@ -23,12 +23,21 @@ void PlayerBullet::Initlize(Model* model, const Vector3& position)
 	//引数で受け取った初期座標をセット
 	worldTransform_.translation_ = position;
 
+	Velocity_ = velocity;
+
 
 }
 
 void PlayerBullet::Update()
 {
+	worldTransform_.translation_ += Velocity_;
 	worldTransform_.matWorldGeneration(worldTransform_);
+
+	if (--deathTimer_ <= 0)
+	{
+		isDead_ = true;
+	}
+
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection)
