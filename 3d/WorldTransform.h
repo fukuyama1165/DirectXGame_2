@@ -46,7 +46,6 @@ struct WorldTransform {
 	/// </summary>
 	void TransferMatrix();
 
-
 	//移動、回転,大きさ変更をする関数群
 	Matrix4 matScaleGeneration(Vector3 scale);
 	Matrix4 matRotateXGeneration(float rotateX);
