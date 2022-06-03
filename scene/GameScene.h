@@ -68,7 +68,7 @@ private: // メンバ変数
 
 	//カメラ上方向の角度
 	float viewAngle = 0.0f;
-
+	
 	//デバックカメラ
 	DebugCamera* debugCamera_ = nullptr;
 
@@ -86,7 +86,25 @@ private: // メンバ変数
 	Matrix4 matRotateZGeneration(float rotateZ);
 	Matrix4 matRotateGeneration(Vector3 rotate);
 	Matrix4 matMoveGeneration(Vector3 move);
-	void matWorldGeneration(WorldTransform worldTransform);
+	void matWorldGeneration(WorldTransform& worldTransform);
+
+	//親持ちのworldTransformの移動行列関数
+	void matWorldParentGeneration(WorldTransform& worldTransform);
+
+	enum PartId
+	{
+		kRoot,//大元
+		kSpine,//脊髄
+		kChest,//胸
+		kHead,//頭
+		kArmL,//左腕
+		kArmR,//右腕
+		kHip,//尻
+		kLegL,//左足
+		kLegR,//右足
+
+		kNumPartId
+	};
 
 	float RadianChange(float Angle);
 	float AngleChange(float Radian);

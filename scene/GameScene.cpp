@@ -61,18 +61,55 @@ void GameScene::Initialize() {
 
 	//ワールドトランスフォームの初期化
 
-				//ワールドトランスフォームの位置変更
-	for (WorldTransform& worldTransform : worldTransforms_)
-	{
-		worldTransform.Initialize();
-		worldTransform.translation_ = { Posdist(engine)  ,Posdist(engine) ,Posdist(engine) };
-		worldTransform.scale_ = { 1.0f  ,1.0f ,1.0f };
-		worldTransform.rotation_ = { rotadist(engine)  ,rotadist(engine) ,rotadist(engine) };
+			
+	//ワールドトランスフォームの位置変更
 
+	//キャラクターの大元
+	worldTransforms_[PartId::kRoot].Initialize();
 
-		matWorldGeneration(worldTransform);
-	}
+	//脊髄
+	worldTransforms_[PartId::kSpine].Initialize();
+	worldTransforms_[PartId::kSpine].translation_ = { 0,0,0 };
+	worldTransforms_[PartId::kSpine].parent_ = &worldTransforms_[PartId::kRoot];
 
+	//上半身
+
+	//胸
+	worldTransforms_[PartId::kChest].Initialize();
+	worldTransforms_[PartId::kChest].translation_ = { 0,0,0 };
+	worldTransforms_[PartId::kChest].parent_ = &worldTransforms_[PartId::kSpine];
+
+	//頭
+	worldTransforms_[PartId::kHead].Initialize();
+	worldTransforms_[PartId::kHead].translation_ = { 0,3,0 };
+	worldTransforms_[PartId::kHead].parent_ = &worldTransforms_[PartId::kChest];
+
+	//左腕
+	worldTransforms_[PartId::kArmL].Initialize();
+	worldTransforms_[PartId::kArmL].translation_ = { -3,0,0 };
+	worldTransforms_[PartId::kArmL].parent_ = &worldTransforms_[PartId::kChest];
+
+	//右腕
+	worldTransforms_[PartId::kArmR].Initialize();
+	worldTransforms_[PartId::kArmR].translation_ = { 3,0,0 };
+	worldTransforms_[PartId::kArmR].parent_ = &worldTransforms_[PartId::kChest];
+
+	//下半身
+
+	//尻
+	worldTransforms_[PartId::kHip].Initialize();
+	worldTransforms_[PartId::kHip].translation_ = { 0,-3,0 };
+	worldTransforms_[PartId::kHip].parent_ = &worldTransforms_[PartId::kSpine];
+
+	//左足
+	worldTransforms_[PartId::kLegL].Initialize();
+	worldTransforms_[PartId::kLegL].translation_ = { -3,-3,0 };
+	worldTransforms_[PartId::kLegL].parent_ = &worldTransforms_[PartId::kHip];
+
+	//右足
+	worldTransforms_[PartId::kLegR].Initialize();
+	worldTransforms_[PartId::kLegR].translation_ = { 3,-3,0 };
+	worldTransforms_[PartId::kLegR].parent_ = &worldTransforms_[PartId::kHip];
 
 	//カメラ視点座標を設定
 	//viewProjection_.eye = { 0,0,-10 };
@@ -89,9 +126,9 @@ void GameScene::Initialize() {
 	//viewProjection_.aspectRatio = 1.0f;
 
 	//ニアクリップ距離を設定
-	viewProjection_.nearZ = 52.0f;
+	//viewProjection_.nearZ = 52.0f;
 	//ファークリップ距離を設定
-	viewProjection_.farZ = 53.0f;
+	//viewProjection_.farZ = 53.0f;
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
@@ -215,20 +252,84 @@ void GameScene::Update()
 
 	//クリップ距離変更処理
 	{
-		//上下キーでニアクリップ距離を増減
-		if(input_->PushKey(DIK_UP))
+		////上下キーでニアクリップ距離を増減
+		//if(input_->PushKey(DIK_UP))
+		//{
+		//	viewProjection_.nearZ += 0.1;
+		//}
+		//else if (input_->PushKey(DIK_DOWN))
+		//{
+		//	viewProjection_.nearZ -= 0.1;
+		//}
+
+		//viewProjection_.UpdateMatrix();
+
+		//debugText_->SetPos(50, 130);
+		//debugText_->Printf("nearZ:%f", viewProjection_.nearZ);
+
+	}
+
+	//キャラクター移動処理
+	{
+		//キャラクターの移動ベクトル
+		Vector3 move = { 0,0,0 };
+
+		const float kMoveSpeed = 0.5;
+
+		if (input_->PushKey(DIK_RIGHT))
 		{
-			viewProjection_.nearZ += 0.1;
+			move.x += kMoveSpeed;
 		}
-		else if (input_->PushKey(DIK_DOWN))
+		else if (input_->PushKey(DIK_LEFT))
 		{
-			viewProjection_.nearZ -= 0.1;
+			move.x -= kMoveSpeed;
 		}
 
-		viewProjection_.UpdateMatrix();
+		worldTransforms_[PartId::kRoot].translation_ += move;
 
-		debugText_->SetPos(50, 130);
-		debugText_->Printf("nearZ:%f", viewProjection_.nearZ);
+		matWorldGeneration(worldTransforms_[PartId::kRoot]);
+
+		debugText_->SetPos(50, 50);
+		debugText_->Printf("translation:%f %f %f", worldTransforms_[PartId::kRoot].translation_.x, worldTransforms_[PartId::kRoot].translation_.y, worldTransforms_[PartId::kRoot].translation_.z);
+
+	}
+
+	//上半身回転処理
+	{
+		if (input_->PushKey(DIK_J))
+		{
+			worldTransforms_[PartId::kChest].rotation_.y += 0.05;
+		}
+		else if (input_->PushKey(DIK_K))
+		{
+			worldTransforms_[PartId::kChest].rotation_.y -= 0.05;
+		}
+	}
+
+	//下半身回転処理
+	{
+		if (input_->PushKey(DIK_U))
+		{
+			worldTransforms_[PartId::kHip].rotation_.y += 0.05;
+		}
+		else if (input_->PushKey(DIK_I))
+		{
+			worldTransforms_[PartId::kHip].rotation_.y -= 0.05;
+		}
+	}
+
+	//子の更新
+	{
+
+		
+		matWorldParentGeneration(worldTransforms_[PartId::kSpine]);
+		matWorldParentGeneration(worldTransforms_[PartId::kChest]);
+		matWorldParentGeneration(worldTransforms_[PartId::kHead]);
+		matWorldParentGeneration(worldTransforms_[PartId::kArmL]);
+		matWorldParentGeneration(worldTransforms_[PartId::kArmR]);
+		matWorldParentGeneration(worldTransforms_[PartId::kHip]);
+		matWorldParentGeneration(worldTransforms_[PartId::kLegL]);
+		matWorldParentGeneration(worldTransforms_[PartId::kLegR]);
 
 	}
 
@@ -263,10 +364,16 @@ void GameScene::Draw() {
 	/// 
 	/// 	//3Dモデル描画
 
-	for (WorldTransform& worldTransform : worldTransforms_)
+	for (int i = 0; i < PartId::kNumPartId; i++)
 	{
-		model_->Draw(worldTransform, viewProjection_, textureHandle_);
+		if (i == 0 or i == 1)
+		{
+			continue;
+		}
+
+		model_->Draw(worldTransforms_[i], viewProjection_, textureHandle_);
 	}
+	
 	///
 
 	//PrimitiveDrawer::GetInstance()->DrawLine3d(siten, syuten, color);
@@ -471,7 +578,7 @@ Matrix4 GameScene::matMoveGeneration(Vector3 move)
 	return matMove;
 }
 
-void GameScene::matWorldGeneration(WorldTransform worldTransform)
+void GameScene::matWorldGeneration(WorldTransform& worldTransform)
 {
 	//スケーリング行列を宣言
 	Matrix4 matScale = matScaleGeneration(worldTransform.scale_);
@@ -483,6 +590,31 @@ void GameScene::matWorldGeneration(WorldTransform worldTransform)
 	Matrix4 matMove = matMoveGeneration(worldTransform.translation_);
 
 	worldTransform.matWorld_ = MathUtility::Matrix4Identity();
+
+	matrotate *= matMove;
+
+	matScale *= matrotate;
+
+	worldTransform.matWorld_ *= matScale;
+
+	worldTransform.TransferMatrix();
+
+}
+
+void GameScene::matWorldParentGeneration(WorldTransform& worldTransform)
+{
+	//スケーリング行列を宣言
+	Matrix4 matScale = matScaleGeneration(worldTransform.scale_);
+
+	//回転軸合成行列を宣言
+	Matrix4 matrotate = matRotateGeneration(worldTransform.rotation_);
+
+	//移動するための行列を用意
+	Matrix4 matMove = matMoveGeneration(worldTransform.translation_);
+
+	worldTransform.matWorld_ = MathUtility::Matrix4Identity();
+
+	matMove *= worldTransform.parent_->matWorld_;
 
 	matrotate *= matMove;
 
