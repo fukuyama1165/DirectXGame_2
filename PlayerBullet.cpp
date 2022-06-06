@@ -30,9 +30,11 @@ void PlayerBullet::Initlize(Model* model, const Vector3& position, const Vector3
 
 void PlayerBullet::Update()
 {
+	//移動するところ
 	worldTransform_.translation_ += Velocity_;
 	worldTransform_.matWorldGeneration(worldTransform_);
 
+	//デスタイマーをひいて0以下になったらフラグを立てる
 	if (--deathTimer_ <= 0)
 	{
 		isDead_ = true;

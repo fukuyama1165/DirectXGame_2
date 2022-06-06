@@ -28,11 +28,11 @@ Player::~Player()
 void Player::Update()
 {
 
-	//デスフラグの立った弾を削除
-	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)
-		{
-			return bullet->IsDead();
-		});
+	//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
+	{
+		return bullet->IsDead();
+	});
 
 	//キャラクターの移動ベクトル
 	Vector3 move = { 0,0,0 };
@@ -74,8 +74,10 @@ void Player::Update()
 	//座標移動(行列更新もこの関数で)
 	matWorldGeneration(worldTransform_);
 
+	//回転処理arrowキーの左右で回転させる
 	Rotate();
 
+	//Spaceキーで弾を生成してplayerの正面に進ませる
 	Attack();
 
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
@@ -87,6 +89,7 @@ void Player::Update()
 	debugText_->Printf("pos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 
 }
+
 void Player::Draw(ViewProjection& viewProjection)
 {
 
@@ -250,16 +253,21 @@ void Player::Attack()
 {
 	if (input_->TriggerKey(DIK_SPACE))
 	{
+		//発射地点の為に自キャラの座標をコピー
 		Vector3 position = worldTransform_.translation_;
 
+		//移動量を追加
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
 
+		//速度ベクトルを自機の向きに合わせて回転する
 		velocity = VectorMat(velocity, worldTransform_.matWorld_);
 
+		//弾の生成と初期化
 		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
 		newBullet->Initlize(model_, position,velocity);
 
+		//弾を登録
 		bullets_.push_back(std::move(newBullet));
 	}
 }
