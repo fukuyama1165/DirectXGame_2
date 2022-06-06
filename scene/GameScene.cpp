@@ -13,9 +13,6 @@ GameScene::~GameScene() {
 
 	delete model_;
 	delete debugCamera_;
-
-	//自キャラの解放
-	delete player_;
 }
 
 
@@ -35,10 +32,22 @@ void GameScene::Initialize() {
 	model_ = Model::Create();
 
 	//自キャラの生成
-	player_ = new Player();
+	player_p = new Player();
+	
 	//自キャラの初期化
-	player_->Initialize(model_, textureHandle_);
+	player_p->Initialize(model_, textureHandle_);
 
+	//ユニークポインタに登録
+	player_.reset(player_p);
+
+	//敵キャラの生成
+	enemy_p = new Enemy();
+
+	//敵キャラの初期化
+	enemy_p->Initialize(model_, { 0,5,150 },{0,0,-1});
+
+	//ユニークポインタに登録
+	enemy_.reset(enemy_p);
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -78,7 +87,20 @@ void GameScene::Update()
 {
 	//debugCamera_->Update();
 
+	//ぬるぽチェック
+	assert(player_);
+	assert(player_p);
+
+	//プレイヤーの更新
 	player_->Update();
+
+	//ぬるぽチェック
+	assert(enemy_);
+	assert(enemy_p);
+
+	//エネミーの更新
+	enemy_->Update();
+
 
 #ifdef _DEBUG
 
@@ -143,6 +165,7 @@ void GameScene::Draw() {
 
 	player_->Draw(viewProjection_);
 
+	enemy_->Draw(viewProjection_);
 
 	///
 

@@ -11,6 +11,9 @@
 #include "WorldTransform.h"
 #include "DebugCamera.h"
 #include "Player.h"
+#include "Enemy.h"
+
+#include <memory>
 
 
 /// <summary>
@@ -60,7 +63,9 @@ private: // メンバ変数
 
 
 	//自キャラ
-	Player* player_ = nullptr;
+	std::unique_ptr<Player> player_;
+
+	Player* player_p = nullptr;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
@@ -91,7 +96,11 @@ private: // メンバ変数
 
 	float Cameramove = 0;
 
-	
+	//敵
+	Enemy* enemy_p = nullptr;
+
+	std::unique_ptr<Enemy> enemy_;
+
 
 
 };
