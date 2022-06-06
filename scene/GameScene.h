@@ -44,7 +44,9 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-
+private:
+	//二次元のアフィン変換
+	void afin(WorldTransform Transform);
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -89,14 +91,7 @@ private: // メンバ変数
 
 	float Cameramove = 0;
 
-	void afin(WorldTransform Transform);
+	
 
-	Matrix4 matScaleGeneration(Vector3 scale);
-	Matrix4 matRotateXGeneration(float rotateX);
-	Matrix4 matRotateYGeneration(float rotateY);
-	Matrix4 matRotateZGeneration(float rotateZ);
-	Matrix4 matRotateGeneration(Vector3 rotate);
-	Matrix4 matMoveGeneration(Vector3 move);
-	void matWorldGeneration(WorldTransform& worldTransform);
 
 };
