@@ -32,7 +32,7 @@ void PlayerBullet::Update()
 {
 	//移動するところ
 	worldTransform_.translation_ += Velocity_;
-	worldTransform_.matWorldGeneration(worldTransform_);
+	worldTransform_.matWorldGeneration();
 
 	//デスタイマーをひいて0以下になったらフラグを立てる
 	if (--deathTimer_ <= 0)

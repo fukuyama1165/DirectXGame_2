@@ -3,15 +3,15 @@
 #include "DebugText.h"
 
 
-Matrix4 WorldTransform::matScaleGeneration(Vector3 scale)
+Matrix4 WorldTransform::matScaleGeneration()
 {
 	//スケーリング行列を宣言
 	Matrix4 matScale;
 
 	//スケーリング倍率を行列に設定
-	matScale.m[0][0] = scale.x;
-	matScale.m[1][1] = scale.y;
-	matScale.m[2][2] = scale.z;
+	matScale.m[0][0] = scale_.x;
+	matScale.m[1][1] = scale_.y;
+	matScale.m[2][2] = scale_.z;
 	matScale.m[3][3] = 1;
 
 	return matScale;
@@ -65,16 +65,16 @@ Matrix4 WorldTransform::matRotateZGeneration(float rotateZ)
 	return matRotateZ;
 }
 
-Matrix4 WorldTransform::matRotateGeneration(Vector3 rotate)
+Matrix4 WorldTransform::matRotateGeneration()
 {
 	//X軸回転行列を宣言
-	Matrix4 matRotateX = matRotateXGeneration(rotate.x);
+	Matrix4 matRotateX = matRotateXGeneration(rotation_.x);
 
 	//Y軸回転行列を宣言
-	Matrix4 matRotateY = matRotateYGeneration(rotate.y);
+	Matrix4 matRotateY = matRotateYGeneration(rotation_.y);
 
 	//Z軸回転行列を宣言
-	Matrix4 matRotateZ = matRotateZGeneration(rotate.z);
+	Matrix4 matRotateZ = matRotateZGeneration(rotation_.z);
 
 	//回転軸合成行列を宣言
 	Matrix4 matrotate;
@@ -90,38 +90,38 @@ Matrix4 WorldTransform::matRotateGeneration(Vector3 rotate)
 	return matrotate;
 }
 
-Matrix4 WorldTransform::matMoveGeneration(Vector3 move)
+Matrix4 WorldTransform::matMoveGeneration()
 {
 	//移動するための行列を用意
 	Matrix4 matMove = MathUtility::Matrix4Identity();
 
 	//行列に移動量を代入
-	matMove.m[3][0] = move.x;
-	matMove.m[3][1] = move.y;
-	matMove.m[3][2] = move.z;
+	matMove.m[3][0] = translation_.x;
+	matMove.m[3][1] = translation_.y;
+	matMove.m[3][2] = translation_.z;
 
 	return matMove;
 }
 
-void WorldTransform::matWorldGeneration(WorldTransform& worldTransform)
+void WorldTransform::matWorldGeneration()
 {
 	//スケーリング行列を宣言
-	Matrix4 matScale = matScaleGeneration(worldTransform.scale_);
+	Matrix4 matScale = matScaleGeneration();
 
 	//回転軸合成行列を宣言
-	Matrix4 matrotate = matRotateGeneration(worldTransform.rotation_);
+	Matrix4 matrotate = matRotateGeneration();
 
 	//移動するための行列を用意
-	Matrix4 matMove = matMoveGeneration(worldTransform.translation_);
+	Matrix4 matMove = matMoveGeneration();
 
-	worldTransform.matWorld_ = MathUtility::Matrix4Identity();
+	matWorld_ = MathUtility::Matrix4Identity();
 
 	matrotate *= matMove;
 
 	matScale *= matrotate;
 
-	worldTransform.matWorld_ *= matScale;
+	matWorld_ *= matScale;
 
-	worldTransform.TransferMatrix();
+	TransferMatrix();
 
 }
