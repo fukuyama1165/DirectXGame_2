@@ -47,6 +47,18 @@ private:
 
 	DebugText* debugText_ = nullptr;
 
+	enum class Phase {
+		Approach,//接近する
+		Leave,//離脱する
+	};
+
+	//敵の挙動について
+	Phase phase_ = Phase::Approach;
+
+	//離脱するときのスピード
+	Vector3 LeaveVelocity_;
+
+
 };
 
 
