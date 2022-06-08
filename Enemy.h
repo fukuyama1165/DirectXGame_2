@@ -31,6 +31,18 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
+
+	//接近するときの動作をする関数
+	void ApproachMove();
+
+	//離脱するときの動作をする関数
+	void LeaveMove();
+
+private:
+
+	//メンバ関数ポインタ
+	static void (Enemy::*PhaseMoveP[])();
+
 private:
 
 	//ワールドトランスフォーム
@@ -58,6 +70,7 @@ private:
 	//離脱するときのスピード
 	Vector3 LeaveVelocity_;
 
+	
 
 };
 

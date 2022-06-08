@@ -31,7 +31,10 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	//引数で受け取った速度をセット
 	Velocity_ = velocity;
 
+	//離脱する時のスピードをセット
 	LeaveVelocity_ = { 0,0.1f,0.1f };
+
+	
 
 }
 
@@ -40,29 +43,24 @@ void Enemy::Update()
 	//速度を足して移動する
 	//worldTransform_.translation_ += Velocity_;
 
-	switch (phase_)
+	/*switch (phase_)
 	{
 	case Enemy::Phase::Approach:
 
-		//移動(ベクトルを加算)
-		worldTransform_.translation_ += Velocity_;
-
-		//規定の位置に到達したら離脱
-		if (worldTransform_.translation_.z < 0.0f)
-		{
-			phase_ = Phase::Leave;
-		}
+		
 
 		break;
 	case Enemy::Phase::Leave:
 
-		//移動(ベクトルを加算)
-		worldTransform_.translation_ += LeaveVelocity_;
-
+		
 		break;
 	default:
 		break;
-	}
+	}*/
+
+	
+
+	(this->*PhaseMoveP[static_cast<size_t>(phase_)])();
 
 	//行列の更新
 	worldTransform_.matWorldGeneration();
@@ -88,3 +86,29 @@ void Enemy::Draw(const ViewProjection& viewProjection)
 	}
 
 }
+
+void Enemy::ApproachMove()
+{
+	//移動(ベクトルを加算)
+	worldTransform_.translation_ += Velocity_;
+
+	//規定の位置に到達したら離脱
+	if (worldTransform_.translation_.z < 0.0f)
+	{
+		phase_ = Phase::Leave;
+	}
+}
+
+void Enemy::LeaveMove()
+{
+	//移動(ベクトルを加算)
+	worldTransform_.translation_ += LeaveVelocity_;
+
+}
+
+//関数ポインタをセット
+void (Enemy::* Enemy::PhaseMoveP[])() =
+{
+	&Enemy::ApproachMove,
+	&Enemy::LeaveMove
+};
