@@ -2,6 +2,9 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "DebugText.h"
+#include "BaseEnemyState.h"
+
+class BaseEnemyState;
 
 /// <summary>
 /// 敵
@@ -38,6 +41,16 @@ public:
 	//離脱するときの動作をする関数
 	void LeaveMove();
 
+	//velocity分Translation移動させる関数
+	void MoveTranslation(Vector3 Velocity);
+
+	//現在位置を返す関数
+	Vector3 GetPos();
+	
+	void ChangeState(BaseEnemyState* newStaete);
+
+	Enemy* getThis();
+
 private:
 
 	//メンバ関数ポインタ
@@ -70,7 +83,7 @@ private:
 	//離脱するときのスピード
 	Vector3 LeaveVelocity_;
 
-	
+	BaseEnemyState *state_=nullptr;
 
 };
 

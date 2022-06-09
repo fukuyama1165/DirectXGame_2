@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include "EnemyStateApproach.h"
 #include <cassert>
 
 Enemy::Enemy()
@@ -7,6 +8,7 @@ Enemy::Enemy()
 
 Enemy::~Enemy()
 {
+	delete state_;
 }
 
 void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity)
@@ -34,7 +36,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	//離脱する時のスピードをセット
 	LeaveVelocity_ = { 0,0.1f,0.1f };
 
-	
+	state_ = new EnemyStateApproach(getThis());
 
 }
 
@@ -58,9 +60,9 @@ void Enemy::Update()
 		break;
 	}*/
 
-	
+	state_->Update();
 
-	(this->*PhaseMoveP[static_cast<size_t>(phase_)])();
+	//(this->*PhaseMoveP[static_cast<size_t>(phase_)])();
 
 	//行列の更新
 	worldTransform_.matWorldGeneration();
@@ -112,3 +114,24 @@ void (Enemy::* Enemy::PhaseMoveP[])() =
 	&Enemy::ApproachMove,
 	&Enemy::LeaveMove
 };
+
+void Enemy::MoveTranslation(Vector3 Velocity)
+{
+	worldTransform_.translation_ += Velocity;
+}
+
+Vector3	Enemy::GetPos()
+{
+	return worldTransform_.translation_;
+}
+
+void Enemy::ChangeState(BaseEnemyState* newState)
+{
+	delete state_;
+	state_ = newState;
+}
+
+Enemy* Enemy::getThis()
+{
+	return this;
+}

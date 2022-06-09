@@ -1,0 +1,20 @@
+#include "EnemyStateApproach.h"
+#include "EnemyStateLeave.h"
+
+EnemyStateApproach::EnemyStateApproach(Enemy* enemy)
+{
+	BaseEnemyState::SetEnemy(enemy);
+}
+
+void EnemyStateApproach::Update()
+{
+	//ˆÚ“®(ƒxƒNƒgƒ‹‚ð‰ÁŽZ)
+	 getEnemy()->MoveTranslation({0,0,-1});
+
+	//‹K’è‚ÌˆÊ’u‚É“ž’B‚µ‚½‚ç—£’E
+	if (getEnemy()->GetPos().z < 0.0f)
+	{
+		getEnemy()->ChangeState(new EnemyStateLeave(getEnemy()));
+	}
+	
+}
