@@ -68,6 +68,7 @@ public:
 
 	void FireAndReset();
 
+	void FireTimeReMoved();
 
 private:
 

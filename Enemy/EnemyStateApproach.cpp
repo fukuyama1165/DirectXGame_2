@@ -15,6 +15,7 @@ void EnemyStateApproach::Update()
 	//‹K’è‚ÌˆÊ’u‚É“ž’B‚µ‚½‚ç—£’E
 	if (getEnemy()->GetPos().z < 0.0f)
 	{
+		getEnemy()->FireTimeReMoved();
 		getEnemy()->ChangeState(new EnemyStateLeave(getEnemy()));
 	}
 	

@@ -37,6 +37,8 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	LeaveVelocity_ = { 0,0.1f,0.1f };
 
 	state_ = new EnemyStateApproach(getThis());
+	
+	FireAndReset();
 
 }
 
@@ -200,4 +202,12 @@ void Enemy::FireAndReset()
 	//発射タイマーをセットする
 	timedCalls_.push_back(std::make_unique<TimeCall>(std::bind(&Enemy::FireAndReset, this), kFireInterval));
 
+}
+
+void Enemy::FireTimeReMoved()
+{
+	timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
+	{
+		return 1;
+	});
 }
