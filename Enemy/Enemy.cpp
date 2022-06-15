@@ -37,6 +37,8 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	LeaveVelocity_ = { 0,0.1f,0.1f };
 
 	state_ = new EnemyStateApproach(getThis());
+	
+	FireAndReset();
 
 }
 
@@ -73,12 +75,22 @@ void Enemy::Update()
 		return bullet->IsDead();
 	});
 
-	if (FireTime_ == 0)
-	{
-		//発射関数
-		Fire();
+	//if (FireTime_ == 0)
+	//{
+	//	//発射関数
+	//	Fire();
 
-		FireTime_ = kFireInterval;
+	//	FireTime_ = kFireInterval;
+	//}
+
+	timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
+	{
+		return timeCall->IsFinished();
+	});
+
+	for (std::unique_ptr<TimeCall>& timeCall : timedCalls_)
+	{
+		timeCall->Updata();
 	}
 
 	//弾の更新処理
@@ -86,6 +98,8 @@ void Enemy::Update()
 	{
 		bullet->Update();
 	}
+
+	
 
 }
 
@@ -178,4 +192,22 @@ void Enemy::SetFireTime(int32_t FireTime)
 int32_t Enemy::GetFireTime()
 {
 	return FireTime_;
+}
+
+void Enemy::FireAndReset()
+{
+	//弾を発射する
+	Fire();
+
+	//発射タイマーをセットする
+	timedCalls_.push_back(std::make_unique<TimeCall>(std::bind(&Enemy::FireAndReset, this), kFireInterval));
+
+}
+
+void Enemy::FireTimeReMoved()
+{
+	timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
+	{
+		return 1;
+	});
 }
