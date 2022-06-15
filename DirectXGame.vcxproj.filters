@@ -49,6 +49,18 @@
     <Filter Include="ヘッダー ファイル\math">
       <UniqueIdentifier>{647f4977-924a-4954-923f-5619e5afc9a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Enemy">
+      <UniqueIdentifier>{b81566c6-802d-4856-8bb5-a2965a71f173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Enemy">
+      <UniqueIdentifier>{0cc8cccd-0400-4e5c-8367-b067f41009d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Player">
+      <UniqueIdentifier>{29fd2477-229a-4c45-997e-b0f336198256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Player">
+      <UniqueIdentifier>{ea2bac69-6f2a-4f7f-b613-71486328cb1a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,29 +78,29 @@
     <ClCompile Include="scene\GameScene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerBullet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="WorldTransform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Enemy\BaseEnemyState.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="BaseEnemyState.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Enemy\Enemy.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyStateApproach.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Enemy\EnemyBullet.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyStateLeave.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Enemy\EnemyStateApproach.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="EnemyBullet.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Enemy\EnemyStateLeave.cpp">
+      <Filter>ソース ファイル\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Player.cpp">
+      <Filter>ソース ファイル\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\PlayerBullet.cpp">
+      <Filter>ソース ファイル\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,26 +185,26 @@
     <ClInclude Include="3d\PrimitiveDrawer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Enemy\BaseEnemyState.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerBullet.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Enemy\Enemy.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Enemy\EnemyBullet.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="BaseEnemyState.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Enemy\EnemyStateApproach.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyStateApproach.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Enemy\EnemyStateLeave.h">
+      <Filter>ヘッダー ファイル\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyStateLeave.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Player\Player.h">
+      <Filter>ヘッダー ファイル\Player</Filter>
     </ClInclude>
-    <ClInclude Include="EnemyBullet.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Player\PlayerBullet.h">
+      <Filter>ヘッダー ファイル\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

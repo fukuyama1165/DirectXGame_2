@@ -6,6 +6,7 @@
 #include "EnemyBullet.h"
 #include <memory>
 #include <list>
+#include "TimeCall.h"
 
 class BaseEnemyState;
 
@@ -59,9 +60,13 @@ public:
 	//’e”­Ë
 	void Fire();
 
+	//fireTime‚ğƒZƒbƒg‚·‚éŠÖ”
 	void SetFireTime(int32_t FireTime);
 
+	//fireTime‚ğæ“¾‚·‚éŠÖ”
 	int32_t GetFireTime();
+
+	void FireAndReset();
 
 
 private:
@@ -107,7 +112,10 @@ private:
 	//’e
 	std::list<std::unique_ptr<EnemyBullet>> bullets_;
 
+	//”­ËŠÔŠu
 	int32_t FireTime_ = 0;
+
+	//std::list<std::unique_ptr<TimeCall>> timedCalls_;
 
 };
 
