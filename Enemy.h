@@ -2,6 +2,12 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "DebugText.h"
+#include "BaseEnemyState.h"
+#include "EnemyBullet.h"
+#include <memory>
+#include <list>
+
+class BaseEnemyState;
 
 /// <summary>
 /// 敵
@@ -31,6 +37,43 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const ViewProjection& viewProjection);
 
+
+	//接近するときの動作をする関数
+	void ApproachMove();
+
+	//離脱するときの動作をする関数
+	void LeaveMove();
+
+	//velocity分Translation移動させる関数
+	void MoveTranslation(Vector3 Velocity);
+
+	//現在位置を返す関数
+	Vector3 GetPos();
+	
+	//スタイル変更用関数
+	void ChangeState(BaseEnemyState* newStaete);
+
+	//自分を返す関数
+	Enemy* getThis();
+
+	//弾発射
+	void Fire();
+
+	void SetFireTime(int32_t FireTime);
+
+	int32_t GetFireTime();
+
+
+private:
+
+	//メンバ関数ポインタ
+	static void (Enemy::*PhaseMoveP[])();
+
+
+public:
+
+	static const int kFireInterval = 50;
+
 private:
 
 	//ワールドトランスフォーム
@@ -58,6 +101,13 @@ private:
 	//離脱するときのスピード
 	Vector3 LeaveVelocity_;
 
+	//行動用のポインタ
+	BaseEnemyState *state_=nullptr;
+
+	//弾
+	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
+	int32_t FireTime_ = 0;
 
 };
 

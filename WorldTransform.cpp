@@ -6,7 +6,7 @@
 Matrix4 WorldTransform::matScaleGeneration()
 {
 	//スケーリング行列を宣言
-	Matrix4 matScale;
+	Matrix4 matScale = MathUtility::Matrix4Identity();
 
 	//スケーリング倍率を行列に設定
 	matScale.m[0][0] = scale_.x;
@@ -20,7 +20,7 @@ Matrix4 WorldTransform::matScaleGeneration()
 Matrix4 WorldTransform::matRotateXGeneration(float rotateX)
 {
 	//X軸回転行列を宣言
-	Matrix4 matRotateX;
+	Matrix4 matRotateX = MathUtility::Matrix4Identity();
 
 	//回転角を行列に設定(ラジアン)
 	matRotateX.m[0][0] = 1;
@@ -36,7 +36,7 @@ Matrix4 WorldTransform::matRotateXGeneration(float rotateX)
 Matrix4 WorldTransform::matRotateYGeneration(float rotateY)
 {
 	//Y軸回転行列を宣言
-	Matrix4 matRotateY;
+	Matrix4 matRotateY = MathUtility::Matrix4Identity();
 
 	//回転角を行列に設定(ラジアン)
 	matRotateY.m[0][0] = cos(rotateY);
@@ -52,7 +52,7 @@ Matrix4 WorldTransform::matRotateYGeneration(float rotateY)
 Matrix4 WorldTransform::matRotateZGeneration(float rotateZ)
 {
 	//Z軸回転行列を宣言
-	Matrix4 matRotateZ;
+	Matrix4 matRotateZ = MathUtility::Matrix4Identity();
 
 	//回転角を行列に設定(ラジアン)
 	matRotateZ.m[0][0] = cos(rotateZ);
@@ -77,7 +77,7 @@ Matrix4 WorldTransform::matRotateGeneration()
 	Matrix4 matRotateZ = matRotateZGeneration(rotation_.z);
 
 	//回転軸合成行列を宣言
-	Matrix4 matrotate;
+	Matrix4 matrotate = MathUtility::Matrix4Identity();
 
 	//計算した角度を計算(順番は回転させるモデルによって変える)
 
