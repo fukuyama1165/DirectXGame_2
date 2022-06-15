@@ -81,15 +81,15 @@ void Enemy::Update()
 	//	FireTime_ = kFireInterval;
 	//}
 
-	/*timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
+	timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
 	{
 		return timeCall->IsFinished();
-	});*/
+	});
 
-	/*for (std::unique_ptr<TimeCall>& timeCall : timedCalls_)
+	for (std::unique_ptr<TimeCall>& timeCall : timedCalls_)
 	{
 		timeCall->Updata();
-	}*/
+	}
 
 	//弾の更新処理
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
@@ -198,6 +198,6 @@ void Enemy::FireAndReset()
 	Fire();
 
 	//発射タイマーをセットする
-	//timedCalls_.push_back(std::make_unique<TimeCall>(std::bind(&Enemy::FireAndReset, this), kFireInterval));
+	timedCalls_.push_back(std::make_unique<TimeCall>(std::bind(&Enemy::FireAndReset, this), kFireInterval));
 
 }
