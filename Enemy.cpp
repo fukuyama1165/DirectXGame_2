@@ -67,6 +67,26 @@ void Enemy::Update()
 	//行列の更新
 	worldTransform_.matWorldGeneration();
 
+	//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
+	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
+	{
+		return bullet->IsDead();
+	});
+
+	if (FireTime_ == 0)
+	{
+		//発射関数
+		Fire();
+
+		FireTime_ = kFireInterval;
+	}
+
+	//弾の更新処理
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
+	{
+		bullet->Update();
+	}
+
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection)
@@ -74,17 +94,12 @@ void Enemy::Draw(const ViewProjection& viewProjection)
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	debugText_->SetPos(50, 90);
 	debugText_->Printf("Enemypos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-	debugText_->SetPos(50, 110);
-	switch (phase_)
+	
+	
+
+	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
-	case Enemy::Phase::Approach:
-		debugText_->Printf("Phase:Approach");
-		break;
-	case Enemy::Phase::Leave:
-		debugText_->Printf("Phase:Leave");
-		break;
-	default:
-		break;
+		bullet->Draw(viewProjection);
 	}
 
 }
@@ -134,4 +149,33 @@ void Enemy::ChangeState(BaseEnemyState* newState)
 Enemy* Enemy::getThis()
 {
 	return this;
+}
+
+void Enemy::Fire()
+{
+	//発射地点の為にキャラの座標をコピー
+	Vector3 position = worldTransform_.translation_;
+
+	//移動量を追加
+	const float kBulletSpeed = -2.0f;
+	Vector3 velocity(0, 0, kBulletSpeed);
+
+
+	//弾の生成と初期化
+	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
+	newBullet->Initlize(model_, position, velocity);
+
+	//弾を登録
+	bullets_.push_back(std::move(newBullet));
+}
+
+
+void Enemy::SetFireTime(int32_t FireTime)
+{
+	FireTime_ = FireTime;
+}
+
+int32_t Enemy::GetFireTime()
+{
+	return FireTime_;
 }

@@ -3,6 +3,9 @@
 #include "WorldTransform.h"
 #include "DebugText.h"
 #include "BaseEnemyState.h"
+#include "EnemyBullet.h"
+#include <memory>
+#include <list>
 
 class BaseEnemyState;
 
@@ -47,14 +50,29 @@ public:
 	//現在位置を返す関数
 	Vector3 GetPos();
 	
+	//スタイル変更用関数
 	void ChangeState(BaseEnemyState* newStaete);
 
+	//自分を返す関数
 	Enemy* getThis();
+
+	//弾発射
+	void Fire();
+
+	void SetFireTime(int32_t FireTime);
+
+	int32_t GetFireTime();
+
 
 private:
 
 	//メンバ関数ポインタ
 	static void (Enemy::*PhaseMoveP[])();
+
+
+public:
+
+	static const int kFireInterval = 50;
 
 private:
 
@@ -83,7 +101,13 @@ private:
 	//離脱するときのスピード
 	Vector3 LeaveVelocity_;
 
+	//行動用のポインタ
 	BaseEnemyState *state_=nullptr;
+
+	//弾
+	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+
+	int32_t FireTime_ = 0;
 
 };
 
