@@ -66,8 +66,10 @@ public:
 	//fireTimeを取得する関数
 	int32_t GetFireTime();
 
+	//弾を発射してリセットする(firetimeの間隔を設定し直す)
 	void FireAndReset();
 
+	//強制的に弾を発射できないようにする
 	void FireTimeReMoved();
 
 private:
@@ -78,6 +80,7 @@ private:
 
 public:
 
+	//発射間隔設定用
 	static const int kFireInterval = 50;
 
 private:
@@ -116,6 +119,7 @@ private:
 	//発射間隔
 	int32_t FireTime_ = 0;
 
+	//カウントダウンのリスト
 	std::list<std::unique_ptr<TimeCall>> timedCalls_;
 
 };

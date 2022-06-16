@@ -4,7 +4,6 @@
 EnemyStateApproach::EnemyStateApproach(Enemy* enemy)
 {
 	BaseEnemyState::SetEnemy(enemy);
-	enemy->SetFireTime(enemy->kFireInterval);
 }
 
 void EnemyStateApproach::Update()
@@ -15,6 +14,7 @@ void EnemyStateApproach::Update()
 	//‹K’è‚ÌˆÊ’u‚É“ž’B‚µ‚½‚ç—£’E
 	if (getEnemy()->GetPos().z < 0.0f)
 	{
+		//’e‚ð”­ŽË‚·‚é‚Ì‚à‚â‚ß‚é
 		getEnemy()->FireTimeReMoved();
 		getEnemy()->ChangeState(new EnemyStateLeave(getEnemy()));
 	}
