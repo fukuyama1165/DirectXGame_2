@@ -36,34 +36,20 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	//離脱する時のスピードをセット
 	LeaveVelocity_ = { 0,0.1f,0.1f };
 
+	//動きを近づくので初期化する
 	state_ = new EnemyStateApproach(getThis());
 	
+	//弾の発射をスタートする
 	FireAndReset();
 
 }
 
 void Enemy::Update()
 {
-	//速度を足して移動する
-	//worldTransform_.translation_ += Velocity_;
-
-	/*switch (phase_)
-	{
-	case Enemy::Phase::Approach:
-
-		
-
-		break;
-	case Enemy::Phase::Leave:
-
-		
-		break;
-	default:
-		break;
-	}*/
-
+	//現在のstateで更新する
 	state_->Update();
 
+	//
 	//(this->*PhaseMoveP[static_cast<size_t>(phase_)])();
 
 	//行列の更新
@@ -83,11 +69,13 @@ void Enemy::Update()
 	//	FireTime_ = kFireInterval;
 	//}
 
+	//カウントダウンが終了していたら消す
 	timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
 	{
 		return timeCall->IsFinished();
 	});
 
+	//生成されているカウントダウンを更新
 	for (std::unique_ptr<TimeCall>& timeCall : timedCalls_)
 	{
 		timeCall->Updata();
@@ -105,12 +93,13 @@ void Enemy::Update()
 
 void Enemy::Draw(const ViewProjection& viewProjection)
 {
+	//モデルを描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 	debugText_->SetPos(50, 90);
 	debugText_->Printf("Enemypos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 	
 	
-
+	//生成された弾を描画
 	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
 	{
 		bullet->Draw(viewProjection);
@@ -206,6 +195,7 @@ void Enemy::FireAndReset()
 
 void Enemy::FireTimeReMoved()
 {
+	//強制的に全ての要素を消す
 	timedCalls_.remove_if([](std::unique_ptr<TimeCall>& timeCall)
 	{
 		return 1;

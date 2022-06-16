@@ -11,12 +11,16 @@ TimeCall::~TimeCall()
 
 void TimeCall::Updata()
 {
-
+	//カウントダウンが終わってたら終わり
 	if (IsEnd)
 	{
 		return;
 	}
+
+	//タイマーを減らす
 	time_--;
+
+	//カウントダウンが0以下になったら
 	if (time_ <= 0)
 	{
 		IsEnd = true;

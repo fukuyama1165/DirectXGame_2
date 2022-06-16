@@ -8,6 +8,7 @@
 class TimeCall
 {
 public:
+	//function<この中身>は使いたい関数の返り値と引数で設定する <返り値(引数)>
 	TimeCall(std::function<void(void)> func,uint32_t time);
 	~TimeCall();
 

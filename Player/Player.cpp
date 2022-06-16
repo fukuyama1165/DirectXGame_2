@@ -80,6 +80,7 @@ void Player::Update()
 	//Spaceキーで弾を生成してplayerの正面に進ませる
 	Attack();
 
+	//生成されている弾を更新する
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Update();
