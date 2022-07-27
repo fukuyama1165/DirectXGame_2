@@ -54,6 +54,11 @@ public:
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	//衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
+	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; };
+
 private:
 
 	//ワールド変換データ

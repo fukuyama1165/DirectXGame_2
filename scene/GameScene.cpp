@@ -45,7 +45,7 @@ void GameScene::Initialize() {
 	enemy_p->SetPlayer(player_p);
 
 	//敵キャラの初期化
-	enemy_p->Initialize(model_, { 0,5,150 },{0,0,-1});
+	enemy_p->Initialize(model_, { 0,5,150 },{0,0,-0.001f});
 	
 
 	//ユニークポインタに登録
@@ -103,6 +103,7 @@ void GameScene::Update()
 	//エネミーの更新
 	enemy_->Update();
 
+	CheckAllCollision();
 
 #ifdef _DEBUG
 
@@ -279,4 +280,96 @@ void GameScene::afin(WorldTransform Transform)
 
 	//行列の転送
 	Transform.TransferMatrix();
+}
+
+void GameScene::CheckAllCollision()
+{
+	//判定対象AとBの座標
+	Vector3 posA, posB;
+
+	//自弾リストの取得
+	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player_.get()->GetBullets();
+
+	//敵弾リストの取得
+	const std::list<std::unique_ptr<EnemyBullet>>& enemyBullets = enemy_.get()->GetBullets();
+
+#pragma region 自キャラと敵弾の当たり判定
+
+	posA = player_.get()->GetWorldPosition();
+
+	for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets)
+	{
+		posB = bullet.get()->GetWorldPosition();
+
+		float len = ((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z));
+
+		//半径が分からなかったので適当
+		if (len <= ((1 + 1) * (1 + 1)))
+		{
+			//自キャラの衝突時コールバックを呼び出す
+			player_.get()->OnCollision();
+
+			//敵弾の衝突時コールバックを呼び出す
+			bullet.get()->OnCollision();
+
+		}
+
+	}
+
+#pragma endregion
+
+#pragma region 自弾と敵キャラの当たり判定
+
+	posA = enemy_.get()->GetWorldPosition();
+
+	for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets)
+	{
+		posB = bullet.get()->GetWorldPosition();
+
+		float len = ((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z));
+
+		//半径が分からなかったので適当
+		if (len <= ((1 + 1) * (1 + 1)))
+		{
+			//自キャラの衝突時コールバックを呼び出す
+			enemy_.get()->OnCollision();
+
+			//敵弾の衝突時コールバックを呼び出す
+			bullet.get()->OnCollision();
+
+		}
+
+	}
+
+#pragma endregion
+
+#pragma region 自弾と敵弾の当たり判定
+
+	for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets)
+	{
+		posA = bullet.get()->GetWorldPosition();
+
+		for (const std::unique_ptr<PlayerBullet>& bullet2 : playerBullets)
+		{
+			posB = bullet2.get()->GetWorldPosition();
+
+			float len = ((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z));
+
+			//半径が分からなかったので適当
+			if (len <= ((1 + 1) * (1 + 1)))
+			{
+				//自キャラの衝突時コールバックを呼び出す
+				bullet.get()->OnCollision();
+
+				//敵弾の衝突時コールバックを呼び出す
+				bullet2.get()->OnCollision();
+
+			}
+
+		}
+	}
+
+#pragma endregion
+
+	
 }

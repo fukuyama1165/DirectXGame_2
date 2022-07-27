@@ -88,8 +88,6 @@ void Enemy::Update()
 		bullet->Update();
 	}
 
-	
-
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection)
@@ -233,4 +231,9 @@ Vector3 Enemy::GetWorldPosition()
 	worldpos.z = worldTransform_.matWorld_.m[3][2];
 
 	return worldpos;
+}
+
+void Enemy::OnCollision()
+{
+
 }

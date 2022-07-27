@@ -47,6 +47,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollision();
+
 private:
 	//二次元のアフィン変換
 	void afin(WorldTransform Transform);

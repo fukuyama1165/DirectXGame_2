@@ -46,3 +46,21 @@ void EnemyBullet::Draw(const ViewProjection& viewProjection)
 {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
 }
+
+void EnemyBullet::OnCollision()
+{
+	isDead_ = true;
+}
+
+Vector3 EnemyBullet::GetWorldPosition()
+{
+	//ワールド座標を入れる変数
+	Vector3 worldpos;
+
+	//ワールド行列の平行移動成分を取得(ワールド座標)
+	worldpos.x = worldTransform_.matWorld_.m[3][0];
+	worldpos.y = worldTransform_.matWorld_.m[3][1];
+	worldpos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldpos;
+}
