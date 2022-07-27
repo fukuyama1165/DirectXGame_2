@@ -51,6 +51,9 @@ public:
 	/// </summary>
 	Vector3 VectorMat(Matrix4 mat, Vector3 vector);
 
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
 private:
 
 	//ワールド変換データ

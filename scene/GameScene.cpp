@@ -42,9 +42,11 @@ void GameScene::Initialize() {
 
 	//敵キャラの生成
 	enemy_p = new Enemy();
+	enemy_p->SetPlayer(player_p);
 
 	//敵キャラの初期化
 	enemy_p->Initialize(model_, { 0,5,150 },{0,0,-1});
+	
 
 	//ユニークポインタに登録
 	enemy_.reset(enemy_p);
