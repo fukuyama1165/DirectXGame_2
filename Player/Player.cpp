@@ -171,3 +171,22 @@ Vector3 Player::VectorMat(Matrix4 mat, Vector3 vector)
 
 	return changeVector;
 }
+
+Vector3 Player::GetWorldPosition()
+{
+	//ワールド座標を入れる変数
+	Vector3 worldpos;
+
+	//ワールド行列の平行移動成分を取得(ワールド座標)
+	worldpos.x = worldTransform_.matWorld_.m[3][0];
+	worldpos.y = worldTransform_.matWorld_.m[3][1];
+	worldpos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldpos;
+
+}
+
+void Player::OnCollision()
+{
+
+}

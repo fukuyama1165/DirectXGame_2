@@ -9,6 +9,7 @@
 #include "TimeCall.h"
 
 class BaseEnemyState;
+class Player;
 
 /// <summary>
 /// 敵
@@ -72,6 +73,17 @@ public:
 	//強制的に弾を発射できないようにする
 	void FireTimeReMoved();
 
+	void SetPlayer(Player* player) { player_ = player; };
+
+	//ワールド座標を取得
+	Vector3 GetWorldPosition();
+
+	//衝突を検出したら呼び出されるコールバック関数
+	void OnCollision();
+
+
+	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; };
+
 private:
 
 	//メンバ関数ポインタ
@@ -121,6 +133,8 @@ private:
 
 	//カウントダウンのリスト
 	std::list<std::unique_ptr<TimeCall>> timedCalls_;
+
+	Player* player_ = nullptr;
 
 };
 

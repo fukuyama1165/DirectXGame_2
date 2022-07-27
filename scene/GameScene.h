@@ -12,6 +12,7 @@
 #include "DebugCamera.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Skydome.h"
 
 #include <memory>
 
@@ -46,6 +47,11 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollision();
 
 private:
 	//二次元のアフィン変換
@@ -101,6 +107,12 @@ private: // メンバ変数
 
 	std::unique_ptr<Enemy> enemy_;
 
+	Skydome* skydome_p = nullptr;
+
+	std::unique_ptr<Skydome> skydome_;
+
+	//3Dモデル
+	Model* modelSkydome_ = nullptr;
 
 
 };

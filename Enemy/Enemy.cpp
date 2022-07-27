@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "EnemyStateApproach.h"
+#include "Player.h"
 #include <cassert>
 
 Enemy::Enemy()
@@ -87,8 +88,6 @@ void Enemy::Update()
 		bullet->Update();
 	}
 
-	
-
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection)
@@ -156,17 +155,36 @@ Enemy* Enemy::getThis()
 
 void Enemy::Fire()
 {
-	//発射地点の為にキャラの座標をコピー
-	Vector3 position = worldTransform_.translation_;
+	////発射地点の為にキャラの座標をコピー
+	//Vector3 position = worldTransform_.translation_;
 
-	//移動量を追加
-	const float kBulletSpeed = -2.0f;
-	Vector3 velocity(0, 0, kBulletSpeed);
+	////移動量を追加
+	//const float kBulletSpeed = -2.0f;
+	//Vector3 velocity(0, 0, kBulletSpeed);
 
+	assert(player_);
+
+	//弾の速度
+	const float kBulletSpeed = 1.0f;
+
+	Vector3 playerVec;
+	Vector3 enemyVec;
+	Vector3 enemyPlayerVec;
+
+	playerVec = player_->GetWorldPosition();
+	enemyVec = GetWorldPosition();
+
+	enemyPlayerVec = { playerVec.x - enemyVec.x,playerVec.y - enemyVec.y,playerVec.z - enemyVec.z };
+
+	float len = sqrtf(enemyPlayerVec.x * enemyPlayerVec.x + enemyPlayerVec.y * enemyPlayerVec.y + enemyPlayerVec.z * enemyPlayerVec.z);
+
+	enemyPlayerVec /= len;
+
+	Vector3 bullrtSpeed = { enemyPlayerVec.x * kBulletSpeed,enemyPlayerVec.y * kBulletSpeed,enemyPlayerVec.z * kBulletSpeed };
 
 	//弾の生成と初期化
 	std::unique_ptr<EnemyBullet> newBullet = std::make_unique<EnemyBullet>();
-	newBullet->Initlize(model_, position, velocity);
+	newBullet->Initlize(model_, worldTransform_.translation_, bullrtSpeed);
 
 	//弾を登録
 	bullets_.push_back(std::move(newBullet));
@@ -200,4 +218,22 @@ void Enemy::FireTimeReMoved()
 	{
 		return 1;
 	});
+}
+
+Vector3 Enemy::GetWorldPosition()
+{
+	//ワールド座標を入れる変数
+	Vector3 worldpos;
+
+	//ワールド行列の平行移動成分を取得(ワールド座標)
+	worldpos.x = worldTransform_.matWorld_.m[3][0];
+	worldpos.y = worldTransform_.matWorld_.m[3][1];
+	worldpos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldpos;
+}
+
+void Enemy::OnCollision()
+{
+
 }
