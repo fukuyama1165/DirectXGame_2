@@ -12,6 +12,7 @@
 #include "DebugCamera.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Skydome.h"
 
 #include <memory>
 
@@ -106,6 +107,12 @@ private: // メンバ変数
 
 	std::unique_ptr<Enemy> enemy_;
 
+	Skydome* skydome_p = nullptr;
+
+	std::unique_ptr<Skydome> skydome_;
+
+	//3Dモデル
+	Model* modelSkydome_ = nullptr;
 
 
 };

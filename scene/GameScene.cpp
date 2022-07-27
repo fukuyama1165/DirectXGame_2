@@ -13,6 +13,7 @@ GameScene::~GameScene() {
 
 	delete model_;
 	delete debugCamera_;
+	delete modelSkydome_;
 }
 
 
@@ -30,6 +31,8 @@ void GameScene::Initialize() {
 	//3Dモデルの生成
 
 	model_ = Model::Create();
+
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
 	//自キャラの生成
 	player_p = new Player();
@@ -50,6 +53,18 @@ void GameScene::Initialize() {
 
 	//ユニークポインタに登録
 	enemy_.reset(enemy_p);
+
+
+
+	//天球の生成
+	skydome_p = new Skydome;
+
+	skydome_p->Initialize(modelSkydome_);
+
+	//ユニークポインタに登録
+	skydome_.reset(skydome_p);
+
+	
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -104,6 +119,8 @@ void GameScene::Update()
 	enemy_->Update();
 
 	CheckAllCollision();
+
+	skydome_->Update();
 
 #ifdef _DEBUG
 
@@ -166,10 +183,13 @@ void GameScene::Draw() {
 	
 				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 
+	skydome_->Draw(viewProjection_);
+
 	player_->Draw(viewProjection_);
 
 	enemy_->Draw(viewProjection_);
 
+	
 	///
 
 	//PrimitiveDrawer::GetInstance()->DrawLine3d(siten, syuten, color);
@@ -295,11 +315,11 @@ void GameScene::CheckAllCollision()
 
 #pragma region 自キャラと敵弾の当たり判定
 
-	posA = player_.get()->GetWorldPosition();
+	posA = player_->GetWorldPosition();
 
 	for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets)
 	{
-		posB = bullet.get()->GetWorldPosition();
+		posB = bullet->GetWorldPosition();
 
 		float len = ((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z));
 
@@ -307,10 +327,10 @@ void GameScene::CheckAllCollision()
 		if (len <= ((1 + 1) * (1 + 1)))
 		{
 			//自キャラの衝突時コールバックを呼び出す
-			player_.get()->OnCollision();
+			player_->OnCollision();
 
 			//敵弾の衝突時コールバックを呼び出す
-			bullet.get()->OnCollision();
+			bullet->OnCollision();
 
 		}
 
@@ -320,11 +340,11 @@ void GameScene::CheckAllCollision()
 
 #pragma region 自弾と敵キャラの当たり判定
 
-	posA = enemy_.get()->GetWorldPosition();
+	posA = enemy_->GetWorldPosition();
 
 	for (const std::unique_ptr<PlayerBullet>& bullet : playerBullets)
 	{
-		posB = bullet.get()->GetWorldPosition();
+		posB = bullet->GetWorldPosition();
 
 		float len = ((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z));
 
@@ -332,10 +352,10 @@ void GameScene::CheckAllCollision()
 		if (len <= ((1 + 1) * (1 + 1)))
 		{
 			//自キャラの衝突時コールバックを呼び出す
-			enemy_.get()->OnCollision();
+			enemy_->OnCollision();
 
 			//敵弾の衝突時コールバックを呼び出す
-			bullet.get()->OnCollision();
+			bullet->OnCollision();
 
 		}
 
@@ -347,11 +367,11 @@ void GameScene::CheckAllCollision()
 
 	for (const std::unique_ptr<EnemyBullet>& bullet : enemyBullets)
 	{
-		posA = bullet.get()->GetWorldPosition();
+		posA = bullet->GetWorldPosition();
 
 		for (const std::unique_ptr<PlayerBullet>& bullet2 : playerBullets)
 		{
-			posB = bullet2.get()->GetWorldPosition();
+			posB = bullet2->GetWorldPosition();
 
 			float len = ((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z));
 
@@ -359,10 +379,10 @@ void GameScene::CheckAllCollision()
 			if (len <= ((1 + 1) * (1 + 1)))
 			{
 				//自キャラの衝突時コールバックを呼び出す
-				bullet.get()->OnCollision();
+				bullet->OnCollision();
 
 				//敵弾の衝突時コールバックを呼び出す
-				bullet2.get()->OnCollision();
+				bullet2->OnCollision();
 
 			}
 
