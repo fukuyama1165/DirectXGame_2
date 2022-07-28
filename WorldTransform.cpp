@@ -24,10 +24,10 @@ Matrix4 WorldTransform::matRotateXGeneration(float rotateX)
 
 	//回転角を行列に設定(ラジアン)
 	matRotateX.m[0][0] = 1;
-	matRotateX.m[1][1] = cos(rotateX);
-	matRotateX.m[1][2] = sin(rotateX);
-	matRotateX.m[2][1] = -sin(rotateX);
-	matRotateX.m[2][2] = cos(rotateX);
+	matRotateX.m[1][1] = cosf(rotateX);
+	matRotateX.m[1][2] = sinf(rotateX);
+	matRotateX.m[2][1] = -sinf(rotateX);
+	matRotateX.m[2][2] = cosf(rotateX);
 	matRotateX.m[3][3] = 1;
 
 	return matRotateX;
@@ -39,11 +39,11 @@ Matrix4 WorldTransform::matRotateYGeneration(float rotateY)
 	Matrix4 matRotateY = MathUtility::Matrix4Identity();
 
 	//回転角を行列に設定(ラジアン)
-	matRotateY.m[0][0] = cos(rotateY);
-	matRotateY.m[0][2] = -sin(rotateY);
+	matRotateY.m[0][0] = cosf(rotateY);
+	matRotateY.m[0][2] = -sinf(rotateY);
 	matRotateY.m[1][1] = 1;
-	matRotateY.m[2][0] = sin(rotateY);
-	matRotateY.m[2][2] = cos(rotateY);
+	matRotateY.m[2][0] = sinf(rotateY);
+	matRotateY.m[2][2] = cosf(rotateY);
 	matRotateY.m[3][3] = 1;
 
 	return matRotateY;
@@ -55,10 +55,10 @@ Matrix4 WorldTransform::matRotateZGeneration(float rotateZ)
 	Matrix4 matRotateZ = MathUtility::Matrix4Identity();
 
 	//回転角を行列に設定(ラジアン)
-	matRotateZ.m[0][0] = cos(rotateZ);
-	matRotateZ.m[0][1] = sin(rotateZ);
-	matRotateZ.m[1][0] = -sin(rotateZ);
-	matRotateZ.m[1][1] = cos(rotateZ);
+	matRotateZ.m[0][0] = cosf(rotateZ);
+	matRotateZ.m[0][1] = sinf(rotateZ);
+	matRotateZ.m[1][0] = -sinf(rotateZ);
+	matRotateZ.m[1][1] = cosf(rotateZ);
 	matRotateZ.m[2][2] = 1;
 	matRotateZ.m[3][3] = 1;
 
@@ -123,5 +123,17 @@ void WorldTransform::matWorldGeneration()
 	matWorld_ *= matScale;
 
 	TransferMatrix();
+
+}
+
+Vector3 WorldTransform::matWorldGetPos()
+{
+	Vector3 ans = {};
+
+	ans.x = matWorld_.m[3][0];
+	ans.y = matWorld_.m[3][1];
+	ans.z = matWorld_.m[3][2];
+
+	return ans;
 
 }

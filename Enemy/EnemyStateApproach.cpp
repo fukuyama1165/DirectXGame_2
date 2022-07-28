@@ -9,7 +9,7 @@ EnemyStateApproach::EnemyStateApproach(Enemy* enemy)
 void EnemyStateApproach::Update()
 {
 	//ˆÚ“®(ƒxƒNƒgƒ‹‚ð‰ÁŽZ)
-	 getEnemy()->MoveTranslation({0,0,-0.001f});
+	 getEnemy()->MoveTranslation({0,0,-0.1f});
 
 	//‹K’è‚ÌˆÊ’u‚É“ž’B‚µ‚½‚ç—£’E
 	if (getEnemy()->GetPos().z < 0.0f)

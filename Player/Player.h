@@ -59,6 +59,8 @@ public:
 
 	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; };
 
+	void SetCameraMat(Matrix4 CameraMat);
+
 private:
 
 	//ワールド変換データ
@@ -76,6 +78,8 @@ private:
 
 	//弾
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
+
+	Matrix4 CameraMat_ = {};
 
 };
 
