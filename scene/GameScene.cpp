@@ -43,6 +43,7 @@ void GameScene::Initialize() {
 	//ユニークポインタに登録
 	player_.reset(player_p);
 
+
 	//敵キャラの生成
 	enemy_p = new Enemy();
 	enemy_p->SetPlayer(player_p);
@@ -64,7 +65,17 @@ void GameScene::Initialize() {
 	//ユニークポインタに登録
 	skydome_.reset(skydome_p);
 
-	
+	//レールカメラの生成
+	railCamera_p = new RailCamera;
+
+	railCamera_p->Initialize({ 0.0f,0.0f,-50.0f },{0.0f,0.0f,0.0f});
+
+	//ユニークポインタに登録
+	railCamera_.reset(railCamera_p);
+
+	railView = railCamera_->getView();
+
+	player_->SetCameraMat(railCamera_->getMatWorld());
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -96,6 +107,7 @@ void GameScene::Initialize() {
 
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
+	railView.Initialize();
 
 
 }
@@ -103,6 +115,14 @@ void GameScene::Initialize() {
 void GameScene::Update() 
 {
 	//debugCamera_->Update();
+
+	
+
+	cameraSpeed += 0.01f;
+
+	railCamera_->setPos({ 0.0f,0.0f,-20 + cameraSpeed });
+	railCamera_->Update();
+	player_->SetCameraMat(railCamera_->getMatWorld());
 
 	//ぬるぽチェック
 	assert(player_);
@@ -121,6 +141,8 @@ void GameScene::Update()
 	CheckAllCollision();
 
 	skydome_->Update();
+
+	
 
 #ifdef _DEBUG
 
@@ -144,8 +166,10 @@ void GameScene::Update()
 	else
 	{
 		viewProjection_.UpdateMatrix();
+		railView.UpdateMatrix();
 
 		viewProjection_.TransferMatrix();
+		railView.TransferMatrix();
 	}
 
 
@@ -183,11 +207,13 @@ void GameScene::Draw() {
 	
 				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
 
-	skydome_->Draw(viewProjection_);
+	railView = railCamera_->getView();
 
-	player_->Draw(viewProjection_);
+	skydome_->Draw(railView);
 
-	enemy_->Draw(viewProjection_);
+	player_->Draw(railView);
+
+	enemy_->Draw(railView);
 
 	
 	///

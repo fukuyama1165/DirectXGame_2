@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Skydome.h"
+#include "RailCamera.h"
 
 #include <memory>
 
@@ -107,6 +108,7 @@ private: // メンバ変数
 
 	std::unique_ptr<Enemy> enemy_;
 
+	//天球
 	Skydome* skydome_p = nullptr;
 
 	std::unique_ptr<Skydome> skydome_;
@@ -114,5 +116,13 @@ private: // メンバ変数
 	//3Dモデル
 	Model* modelSkydome_ = nullptr;
 
+	//レールカメラ
+	RailCamera* railCamera_p = nullptr;
+
+	std::unique_ptr<RailCamera> railCamera_;
+
+	float cameraSpeed = 0;
+
+	ViewProjection railView;
 
 };

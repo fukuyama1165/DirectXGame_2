@@ -60,6 +60,9 @@ struct WorldTransform {
 	//scale,rotation_,translation_を行列に入れmatworldにかけていれ転送する関数
 	void matWorldGeneration();
 
+	//ワールド座標の平行移動成分を取り出す関数
+	Vector3 matWorldGetPos();
+
 private:
 
 	//x軸の回転を行列に入れる関数

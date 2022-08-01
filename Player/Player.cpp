@@ -9,12 +9,16 @@ void Player::Initialize(Model* model, uint32_t textureHandle)
 	model_ = model;
 	textureHandle_ = textureHandle;
 
+	CameraMat_ = MathUtility::Matrix4Identity();
+
 	//シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 	debugText_ = DebugText::GetInstance();
 
 	//ワールド変換の初期化
 	worldTransform_.Initialize();
+
+	worldTransform_.translation_ = { 0,0,50 };
 }
 
 Player::Player()
@@ -77,6 +81,10 @@ void Player::Update()
 	//回転処理arrowキーの左右で回転させる
 	Rotate();
 
+	worldTransform_.matWorld_ *= CameraMat_;
+
+	worldTransform_.TransferMatrix();
+
 	//Spaceキーで弾を生成してplayerの正面に進ませる
 	Attack();
 
@@ -87,7 +95,7 @@ void Player::Update()
 	}
 
 	debugText_->SetPos(50, 70);
-	debugText_->Printf("pos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
+	debugText_->Printf("pos:(%f,%f,%f)",worldTransform_.matWorldGetPos().x, worldTransform_.matWorldGetPos().y,worldTransform_.matWorldGetPos().z);
 
 }
 
@@ -109,7 +117,7 @@ void Player::Rotate()
 	//キャラクターの移動ベクトル
 	Vector3 rotate = { 0,0,0 };
 
-	const float MoveSpeed = 0.1;
+	const float MoveSpeed = 0.1f;
 
 	if (input_->PushKey(DIK_RIGHT))
 	{
@@ -132,7 +140,7 @@ void Player::Attack()
 	if (input_->TriggerKey(DIK_SPACE))
 	{
 		//発射地点の為に自キャラの座標をコピー
-		Vector3 position = worldTransform_.translation_;
+		Vector3 position = worldTransform_.matWorldGetPos();
 
 		//移動量を追加
 		const float kBulletSpeed = 1.0f;
@@ -189,4 +197,9 @@ Vector3 Player::GetWorldPosition()
 void Player::OnCollision()
 {
 
+}
+
+void Player::SetCameraMat(Matrix4 CameraMat)
+{
+	CameraMat_ = CameraMat;
 }
