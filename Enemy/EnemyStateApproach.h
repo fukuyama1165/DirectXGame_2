@@ -9,7 +9,7 @@ public:
 
 	
 
-	void Update();
+	void Update(Vector3 speed);
 
 
 };

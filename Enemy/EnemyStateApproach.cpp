@@ -6,10 +6,10 @@ EnemyStateApproach::EnemyStateApproach(Enemy* enemy)
 	BaseEnemyState::SetEnemy(enemy);
 }
 
-void EnemyStateApproach::Update()
+void EnemyStateApproach::Update(Vector3 speed)
 {
 	//ˆÚ“®(ƒxƒNƒgƒ‹‚ð‰ÁŽZ)
-	 getEnemy()->MoveTranslation({0,0,-0.1f});
+	 getEnemy()->MoveTranslation(speed);
 
 	//‹K’è‚ÌˆÊ’u‚É“ž’B‚µ‚½‚ç—£’E
 	if (getEnemy()->GetPos().z < 0.0f)

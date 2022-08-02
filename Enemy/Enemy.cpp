@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include "EnemyStateApproach.h"
 #include "Player.h"
+#include "GameScene.h"
 #include <cassert>
 
 Enemy::Enemy()
@@ -48,7 +49,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 void Enemy::Update()
 {
 	//現在のstateで更新する
-	state_->Update();
+	state_->Update(Velocity_);
 
 	//
 	//(this->*PhaseMoveP[static_cast<size_t>(phase_)])();
@@ -56,11 +57,7 @@ void Enemy::Update()
 	//行列の更新
 	worldTransform_.matWorldGeneration();
 
-	//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
-	bullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
-	{
-		return bullet->IsDead();
-	});
+	
 
 	//if (FireTime_ == 0)
 	//{
@@ -82,11 +79,7 @@ void Enemy::Update()
 		timeCall->Updata();
 	}
 
-	//弾の更新処理
-	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
-	{
-		bullet->Update();
-	}
+	
 
 }
 
@@ -98,11 +91,7 @@ void Enemy::Draw(const ViewProjection& viewProjection)
 	debugText_->Printf("Enemypos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 	
 	
-	//生成された弾を描画
-	for (std::unique_ptr<EnemyBullet>& bullet : bullets_)
-	{
-		bullet->Draw(viewProjection);
-	}
+	
 
 }
 
@@ -187,7 +176,10 @@ void Enemy::Fire()
 	newBullet->Initlize(model_, worldTransform_.translation_, bullrtSpeed);
 
 	//弾を登録
-	bullets_.push_back(std::move(newBullet));
+	//bullets_.push_back(std::move(newBullet));
+
+	gameScene_->AddEnemyBullet(std::move(newBullet));
+
 }
 
 
@@ -235,5 +227,10 @@ Vector3 Enemy::GetWorldPosition()
 
 void Enemy::OnCollision()
 {
+	HP--;
 
+	if (HP <= 0)
+	{
+		IsDead_ = true;
+	}
 }
