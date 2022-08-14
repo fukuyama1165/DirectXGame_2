@@ -50,6 +50,7 @@ void RailCamera::Update()
 	//レールカメラの回転を反映(レールカメラの上方ベクトル)
 	viewProjection_.up = VectorMat(up, worldTransform_.matWorld_);
 
+	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();
 
 	debugText_->SetPos(50, 110);

@@ -29,6 +29,8 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	
+
+	TextureManager::Load("Reticle.png");
 	//3Dモデルの生成
 
 	model_ = Model::Create();
@@ -143,7 +145,7 @@ void GameScene::Update()
 	assert(player_p);
 
 	//プレイヤーの更新
-	player_->Update();
+	player_->Update(railCamera_->getView());
 
 	//ぬるぽチェック
 	
@@ -200,18 +202,16 @@ void GameScene::Update()
 	{
 		debugCamera_->Update();
 		//デバックカメラがONになっているならviewProjectionをデバックカメラに
-		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		railView.matView = debugCamera_->GetViewProjection().matView;
+		railView.matProjection = debugCamera_->GetViewProjection().matProjection;
 
-		viewProjection_.TransferMatrix();
+		railView.TransferMatrix();
 	}
 	else
 	{
 		viewProjection_.UpdateMatrix();
-		railView.UpdateMatrix();
 
 		viewProjection_.TransferMatrix();
-		railView.TransferMatrix();
 	}
 
 
@@ -283,6 +283,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	player_->DrawUI();
 
 	/*debugText_->SetPos(50, 70);
 	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
