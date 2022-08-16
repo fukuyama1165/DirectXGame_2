@@ -21,7 +21,7 @@ void RailCamera::Initialize(Vector3 worldPos, Vector3 Rot)
 	
 
 	//ビュープロジェクションの初期化
-	viewProjection_.farZ = 10000.0f;
+	viewProjection_.farZ = 1000000.0f;
 	viewProjection_.Initialize();
 
 	debugText_ = DebugText::GetInstance();

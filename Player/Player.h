@@ -1,4 +1,6 @@
 #pragma once
+#include "WinApp.h"
+#include "MathUtility.h"
 #include "Model.h"
 #include "WorldTransform.h"
 #include "DebugText.h"
@@ -66,6 +68,9 @@ public:
 	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; };
 
 	void SetCameraMat(Matrix4 CameraMat);
+
+	//2Dレティクルをマウスの位置に置いてそこに発射する関数
+	void Reticle2DMouseAttack(ViewProjection viewProjection);
 
 private:
 
