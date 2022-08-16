@@ -11,6 +11,8 @@
 class BaseEnemyState;
 class Player;
 
+class GameScene;
+
 /// <summary>
 /// 敵
 /// </summary>
@@ -75,14 +77,16 @@ public:
 
 	void SetPlayer(Player* player) { player_ = player; };
 
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; };
+
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
 	//衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
 
-
-	const std::list<std::unique_ptr<EnemyBullet>>& GetBullets() { return bullets_; };
+	bool IsDead()const { return IsDead_; }
+	
 
 private:
 
@@ -125,8 +129,7 @@ private:
 	//行動用のポインタ
 	BaseEnemyState *state_=nullptr;
 
-	//弾
-	std::list<std::unique_ptr<EnemyBullet>> bullets_;
+	
 
 	//発射間隔
 	int32_t FireTime_ = 0;
@@ -135,6 +138,12 @@ private:
 	std::list<std::unique_ptr<TimeCall>> timedCalls_;
 
 	Player* player_ = nullptr;
+
+	GameScene* gameScene_ = nullptr;
+
+	int HP = 3;
+
+	bool IsDead_ = false;
 
 };
 

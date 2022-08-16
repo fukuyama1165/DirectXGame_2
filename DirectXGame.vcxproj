@@ -103,6 +103,7 @@
     <ClCompile Include="Enemy\EnemyStateApproach.cpp" />
     <ClCompile Include="Enemy\EnemyStateLeave.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerBullet.cpp" />
     <ClCompile Include="RailCamera.cpp" />

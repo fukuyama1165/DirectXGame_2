@@ -7,7 +7,7 @@ public:
 
 	EnemyStateLeave(Enemy* enemy);
 
-	void Update();
+	void Update(Vector3 speed);
 
 
 };

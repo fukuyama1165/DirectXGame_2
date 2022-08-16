@@ -14,6 +14,7 @@
 #include "Enemy.h"
 #include "Skydome.h"
 #include "RailCamera.h"
+#include <sstream>
 
 #include <memory>
 
@@ -53,6 +54,26 @@ public: // メンバ関数
 	/// 衝突判定と応答
 	/// </summary>
 	void CheckAllCollision();
+
+	/// <summary>
+	/// 敵弾を追加する
+	/// </summary>
+	/// <param name="enemyBullet">敵弾</param>
+	void AddEnemyBullet(std::unique_ptr<EnemyBullet> enemyBullet);
+
+	const std::list<std::unique_ptr<EnemyBullet>>& GetEnemyBullets() { return enemyBullets_; };
+
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopCommands();
+
+	void PopEnemy(Vector3 pos);
 
 private:
 	//二次元のアフィン変換
@@ -104,9 +125,9 @@ private: // メンバ変数
 	float Cameramove = 0;
 
 	//敵
-	Enemy* enemy_p = nullptr;
+	//Enemy* enemy_p = nullptr;
 
-	std::unique_ptr<Enemy> enemy_;
+	std::list<std::unique_ptr<Enemy>> enemy_;
 
 	//天球
 	Skydome* skydome_p = nullptr;
@@ -124,5 +145,15 @@ private: // メンバ変数
 	float cameraSpeed = 0;
 
 	ViewProjection railView;
+
+	//敵弾
+	std::list<std::unique_ptr<EnemyBullet>> enemyBullets_;
+
+	//敵発生コマンド
+	std::stringstream enemyPopCommands;
+
+	bool isWait = false;
+
+	int32_t waitTimer = 0;
 
 };

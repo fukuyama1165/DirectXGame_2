@@ -19,6 +19,9 @@ class Vector3 {
 	Vector3 operator+() const;
 	Vector3 operator-() const;
 
+	float length()const;
+	Vector3& normalize();
+
 	// 代入演算子オーバーロード
 	Vector3& operator+=(const Vector3& v);
 	Vector3& operator-=(const Vector3& v);

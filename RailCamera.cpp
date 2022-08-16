@@ -21,7 +21,7 @@ void RailCamera::Initialize(Vector3 worldPos, Vector3 Rot)
 	
 
 	//ビュープロジェクションの初期化
-	viewProjection_.farZ = 10000.0f;
+	viewProjection_.farZ = 1000000.0f;
 	viewProjection_.Initialize();
 
 	debugText_ = DebugText::GetInstance();
@@ -50,6 +50,7 @@ void RailCamera::Update()
 	//レールカメラの回転を反映(レールカメラの上方ベクトル)
 	viewProjection_.up = VectorMat(up, worldTransform_.matWorld_);
 
+	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();
 
 	debugText_->SetPos(50, 110);

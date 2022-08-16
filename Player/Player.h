@@ -1,4 +1,6 @@
 #pragma once
+#include "WinApp.h"
+#include "MathUtility.h"
 #include "Model.h"
 #include "WorldTransform.h"
 #include "DebugText.h"
@@ -25,13 +27,19 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	/// <param name="viewProjection">ビュープロジェクション(参照渡し)</param>
+	void Update(ViewProjection viewProjection);
 
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション(参照渡し)</param>
 	void Draw(ViewProjection& viewProjection);
+
+	/// <summary>
+	/// UI描画
+	/// </summary>
+	void DrawUI();
 
 	//回転(arrowキーの左右で変更)
 	void Rotate();
@@ -61,10 +69,15 @@ public:
 
 	void SetCameraMat(Matrix4 CameraMat);
 
+	//2Dレティクルをマウスの位置に置いてそこに発射する関数
+	void Reticle2DMouseAttack(ViewProjection viewProjection);
+
 private:
 
 	//ワールド変換データ
 	WorldTransform worldTransform_;
+
+	ViewProjection viewProjection_;
 
 	//モデル
 	Model* model_ = nullptr;
@@ -80,6 +93,12 @@ private:
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 
 	Matrix4 CameraMat_ = {};
+
+	//3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+
+	//2dレティクル用スプライト
+	std::unique_ptr<Sprite> sprite2DReticle_;
 
 };
 

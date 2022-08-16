@@ -14,7 +14,7 @@ public:
 	void SetEnemy(Enemy* enemy);
 	
 	//ƒˆ‰¼‘zŠÖ”
-	virtual void Update()=0;
+	virtual void Update(Vector3 speed)=0;
 
 	
 

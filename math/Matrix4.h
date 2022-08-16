@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Vector4.h"
+#include "Vector3.h"
 /// <summary>
 /// 行列
 /// </summary>
@@ -18,4 +20,20 @@ class Matrix4 {
 
 	// 代入演算子オーバーロード
 	Matrix4& operator*=(const Matrix4& m2);
+
+	Matrix4 operator*(Matrix4& mat);
+
+	Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos);
+
+	Vector3 VectorMat(Vector3 vector, Matrix4 mat);
+	
+
+	Vector3 VectorMat(Matrix4 mat, Vector3 vector);
+
+	Vector3 PosMat(Vector3 vector, Matrix4 mat);
+
+
+	Vector3 PosMat(Matrix4 mat, Vector3 vector);
+	
+
 };
