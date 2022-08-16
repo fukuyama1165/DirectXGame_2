@@ -2,6 +2,7 @@
 
 #include "Model.h"
 #include "WorldTransform.h"
+#include "MathUtility.h"
 
 /// <summary>
 /// Ž©ƒLƒƒƒ‰‚Ì’e

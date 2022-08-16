@@ -16,15 +16,29 @@ void EnemyBullet::Initlize(Model* model, const Vector3& position, const Vector3&
 
 	model_ = model;
 
-	textureHandle_ = TextureManager::Load("hokehoke.png");
-
-	worldTransform_.Initialize();
+	textureHandle_ = TextureManager::Load("enemyBall.png");
 
 	//引数で受け取った初期座標をセット
 	worldTransform_.translation_ = position;
 
 	Velocity_ = velocity;
 
+	worldTransform_.scale_.x = 0.5f;
+	worldTransform_.scale_.y = 0.5f;
+	worldTransform_.scale_.z = 3.0f;
+	worldTransform_.Initialize();
+
+	//Y軸周り角度(Θy)
+	worldTransform_.rotation_.y = std::atan2(velocity.x,velocity.z);
+
+	worldTransform_.rotation_.y = worldTransform_.rotation_.y;
+
+	Matrix4 rotMat = worldTransform_.matRotateGeneration();
+	
+	Vector3 velocityZ = MathUtility::operator*(Velocity_, rotMat);
+
+	//X軸周り角度(Θx)
+	worldTransform_.rotation_.x = std::atan2(-velocityZ.y, velocityZ.z);
 
 }
 
