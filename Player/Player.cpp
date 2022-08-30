@@ -55,7 +55,16 @@ void Player::Update(ViewProjection viewProjection)
 
 	const float MoveSpeed = 1;
 
-	if (input_->PushKey(DIK_W))
+	XINPUT_STATE joyState;
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * MoveSpeed;
+		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * MoveSpeed;
+		
+	}
+
+	/*if (input_->PushKey(DIK_W))
 	{
 		move = { 0,MoveSpeed,0 };
 	}
@@ -73,7 +82,7 @@ void Player::Update(ViewProjection viewProjection)
 	if (input_->PushKey(DIK_A))
 	{
 		move = { -MoveSpeed,0,0 };
-	}
+	}*/
 
 	//移動限界座標
 	const float kMoveLimitX = 30;
@@ -209,7 +218,38 @@ void Player::Rotate()
 
 void Player::Attack()
 {
-	if (input_->TriggerKey(DIK_SPACE))
+	//if (input_->TriggerKey(DIK_SPACE))
+	//{
+	//	//発射地点の為に自キャラの座標をコピー
+	//	Vector3 position = worldTransform_.matWorldGetPos();
+
+	//	//移動量を追加
+	//	const float kBulletSpeed = 1.0f;
+	//	Vector3 velocity(0, 0, 0);
+	//	velocity = worldTransform3DReticle_.matWorldGetPos() - worldTransform_.matWorldGetPos();
+	//	velocity = velocity.normalize() * kBulletSpeed;
+
+	//	//速度ベクトルを自機の向きに合わせて回転する
+	//	velocity = VectorMat(velocity, worldTransform_.matWorld_);
+
+	//	//弾の生成と初期化
+	//	std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+	//	newBullet->Initlize(model_, position,velocity);
+
+	//	//弾を登録
+	//	bullets_.push_back(std::move(newBullet));
+	//}
+
+	XINPUT_STATE joyState;
+
+	//ゲームパッド未接続なら何もせず抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		return;
+	}
+
+	//Rトリガーを押していたら
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
 	{
 		//発射地点の為に自キャラの座標をコピー
 		Vector3 position = worldTransform_.matWorldGetPos();
@@ -230,6 +270,7 @@ void Player::Attack()
 		//弾を登録
 		bullets_.push_back(std::move(newBullet));
 	}
+
 }
 
 Vector3 Player::VectorMat(Vector3 vector, Matrix4 mat)
@@ -281,49 +322,67 @@ void Player::SetCameraMat(Matrix4 CameraMat)
 void Player::Reticle2DMouseAttack(ViewProjection viewProjection)
 {
 
-	POINT mousePosition;
+	POINT mousePosition={};
 
-	//スクリーン座標を取得
-	GetCursorPos(&mousePosition);
+	////スクリーン座標を取得
+	//GetCursorPos(&mousePosition);
 
-	//クライアントエリア座標に変換する
-	HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	ScreenToClient(hwnd, &mousePosition);
+	////クライアントエリア座標に変換する
+	//HWND hwnd = WinApp::GetInstance()->GetHwnd();
+	//ScreenToClient(hwnd, &mousePosition);
 
-	sprite2DReticle_->SetPosition(Vector2(mousePosition.x, mousePosition.y));
+	//sprite2DReticle_->SetPosition(Vector2(mousePosition.x, mousePosition.y));
+
+	Vector2 spritePosition = sprite2DReticle_->GetPosition();
+
+	XINPUT_STATE joyState;
+
+	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 7.0f;
+		spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 7.0f;
+
+		sprite2DReticle_->SetPosition(spritePosition);
+	}
+
+
 
 	Matrix4 matViewport = {
-			1280 / 2,0,0,0,
-			0,-720 / 2,0,0,
+			640,0,0,0,
+			0,-360,0,0,
 			0,0,1,0,
-			1280 / 2 + 0,720 / 2 + 0,0,1
+			640 + 0,360 + 0,0,1
 	};
 
 	//ビュー行列とプロジェクション行列、ビューポート行列を合成する
-	Matrix4 matVPV = viewProjection_.matView * viewProjection_.matProjection * matViewport;
-
+	Matrix4 matVPV;
+	matVPV = viewProjection.matView;
+	matVPV *= viewProjection.matProjection;
+	matVPV *= matViewport;
 	//合成行列の逆行列を計算する
 	Matrix4 matInverseVPV = MathUtility::Matrix4Inverse(matVPV);
 	
 	//スクリーン座標
-	Vector3 posNear = Vector3(mousePosition.x, mousePosition.y, 0);
-	Vector3 posFar = Vector3(mousePosition.x, mousePosition.y, 1);
+	Vector3 posNear = Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 0);
+	Vector3 posFar = Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 1);
 
 	//スクリーン座標系からワールド座標系へ
-	posNear = matInverseVPV.VectorMatDivW(matInverseVPV, posNear);
-	posFar = matInverseVPV.VectorMatDivW(matInverseVPV, posFar);
+	posNear = VectorMatDivW(matInverseVPV, posNear);
+	posFar = VectorMatDivW(matInverseVPV, posFar);
 
 	//マウスレイの方向
- 	Vector3 mouseDirection = posFar - posNear;
+ 	Vector3 mouseDirection = nainavec3(posFar,posNear);
 	mouseDirection = mouseDirection.normalize();
 
 	//カメラから照準オブジェクトの距離
-	const float kDistanceTestObject = 90;
+	const float kDistanceTestObject = 100;
 
+	Vector3 A = posNear;
+	A += Vector3(mouseDirection.x * kDistanceTestObject, mouseDirection.y * kDistanceTestObject, mouseDirection.z * kDistanceTestObject);
+	worldTransform3DReticle_.translation_ = A;
 
-	worldTransform3DReticle_.translation_.x = posNear.x+mouseDirection.x * kDistanceTestObject;
-	worldTransform3DReticle_.translation_.y = posNear.y+mouseDirection.y * kDistanceTestObject;
-	worldTransform3DReticle_.translation_.z = posNear.z+(mouseDirection.z + kDistanceTestObject);
+	/*worldTransform3DReticle_.translation_ = posNear+mouseDirection * kDistanceTestObject;*/
+	
 	worldTransform3DReticle_.matWorldGeneration();
 
 	debugText_->SetPos(20, 200);

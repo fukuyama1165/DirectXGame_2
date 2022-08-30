@@ -134,7 +134,7 @@ void GameScene::Update()
 
 	
 
-	cameraSpeed += 0.01f;
+	//cameraSpeed += 0.01f;
 
 	railCamera_->setPos({ 0.0f,0.0f,-20 + cameraSpeed });
 	railCamera_->Update();
