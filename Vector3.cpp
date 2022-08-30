@@ -45,3 +45,13 @@ Vector3& Vector3::normalize()
 
 	return *this;
 }
+
+Vector3 nainavec3(Vector3 a, Vector3 b)
+{
+	Vector3 ans = {};
+
+	ans = { a.x - b.x,a.y - b.y,a.z - b.z };
+
+	return ans;
+
+}

@@ -46,21 +46,16 @@ Vector3 Matrix4::PosMat(Matrix4 mat, Vector3 vector)
 	return changeVector;
 }
 
-Vector3 Matrix4::VectorMatDivW(Matrix4 mat, Vector3 pos)
+Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos)
 {
 	float w = pos.x * mat.m[0][3] + pos.y * mat.m[1][3] + pos.z * mat.m[2][3] + mat.m[3][3];
 
-	Vector3 result = {};
-	/*{
+	Vector3 result =
+	{
 		(pos.x * mat.m[0][0] + pos.y * mat.m[1][0] + pos.z * mat.m[2][0] + mat.m[3][0]) / w,
 		(pos.x * mat.m[0][1] + pos.y * mat.m[1][1] + pos.z * mat.m[2][1] + mat.m[3][1]) / w,
 		(pos.x * mat.m[0][2] + pos.y * mat.m[1][2] + pos.z * mat.m[2][2] + mat.m[3][2]) / w
-	};*/
-
-	result = PosMat(pos, mat);
-
-	result = { result.x / w,result.y / w ,result.z / w };
-
+	};
 
 	return result;
 }

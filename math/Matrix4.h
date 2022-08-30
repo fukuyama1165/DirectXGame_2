@@ -23,7 +23,7 @@ class Matrix4 {
 
 	Matrix4 operator*(Matrix4& mat);
 
-	Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos);
+	
 
 	Vector3 VectorMat(Vector3 vector, Matrix4 mat);
 	
@@ -37,3 +37,5 @@ class Matrix4 {
 	
 
 };
+
+Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos);
