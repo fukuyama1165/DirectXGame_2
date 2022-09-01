@@ -20,7 +20,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
-	win->CreateGameWindow();
+	win->CreateGameWindow("starShooter");
 
 	// DirectX初期化処理
 	dxCommon = DirectXCommon::GetInstance();
@@ -85,6 +85,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		primitiveDrawer->Reset();
 		// 描画終了
 		dxCommon->PostDraw();
+
+		if (input->TriggerKey(DIK_ESCAPE))
+		{
+			break;
+		}
+
 	}
 
 	// 各種解放

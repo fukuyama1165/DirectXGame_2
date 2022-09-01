@@ -102,12 +102,14 @@
     <ClCompile Include="Enemy\EnemyBullet.cpp" />
     <ClCompile Include="Enemy\EnemyStateApproach.cpp" />
     <ClCompile Include="Enemy\EnemyStateLeave.cpp" />
+    <ClCompile Include="FPS.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerBullet.cpp" />
     <ClCompile Include="RailCamera.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Score.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="TimeCall.cpp" />
     <ClCompile Include="Vector3.cpp" />
@@ -139,6 +141,7 @@
     <ClInclude Include="Enemy\EnemyBullet.h" />
     <ClInclude Include="Enemy\EnemyStateApproach.h" />
     <ClInclude Include="Enemy\EnemyStateLeave.h" />
+    <ClInclude Include="FPS.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="math\MathUtility.h" />
     <ClInclude Include="math\Matrix4.h" />
@@ -149,6 +152,7 @@
     <ClInclude Include="Player\PlayerBullet.h" />
     <ClInclude Include="RailCamera.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Score.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="TimeCall.h" />
   </ItemGroup>

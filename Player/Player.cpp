@@ -1,12 +1,14 @@
 #include "Player.h"
 #include <cassert>
 
-void Player::Initialize(Model* model, uint32_t textureHandle)
+void Player::Initialize(Model* model, Model* playerModel, uint32_t textureHandle)
 {
 	//NULLポインタチェック
 	assert(model);
+	assert(playerModel);
 
 	model_ = model;
+	playerModel_ = playerModel;
 	textureHandle_ = textureHandle;
 
 	CameraMat_ = MathUtility::Matrix4Identity();
@@ -61,10 +63,10 @@ void Player::Update(ViewProjection viewProjection)
 	{
 		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * MoveSpeed;
 		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * MoveSpeed;
-		
+
 	}
 
-	/*if (input_->PushKey(DIK_W))
+	if (input_->PushKey(DIK_W))
 	{
 		move = { 0,MoveSpeed,0 };
 	}
@@ -82,7 +84,7 @@ void Player::Update(ViewProjection viewProjection)
 	if (input_->PushKey(DIK_A))
 	{
 		move = { -MoveSpeed,0,0 };
-	}*/
+	}
 
 	//移動限界座標
 	const float kMoveLimitX = 30;
@@ -169,8 +171,8 @@ void Player::Update(ViewProjection viewProjection)
 	}
 	
 
-	debugText_->SetPos(50, 70);
-	debugText_->Printf("pos:(%f,%f,%f)",worldTransform_.matWorldGetPos().x, worldTransform_.matWorldGetPos().y,worldTransform_.matWorldGetPos().z);
+	//debugText_->SetPos(50, 70);
+	//debugText_->Printf("pos:(%f,%f,%f)",worldTransform_.matWorldGetPos().x, worldTransform_.matWorldGetPos().y,worldTransform_.matWorldGetPos().z);
 	
 }
 
@@ -178,8 +180,8 @@ void Player::Draw(ViewProjection& viewProjection)
 {
 
 	//3Dモデルを描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	model_->Draw(worldTransform3DReticle_, viewProjection);
+	playerModel_->Draw(worldTransform_, viewProjection);
+	//model_->Draw(worldTransform3DReticle_, viewProjection);
 
 	for(std::unique_ptr<PlayerBullet>& bullet:bullets_)
 	{
@@ -218,41 +220,11 @@ void Player::Rotate()
 
 void Player::Attack()
 {
-	//if (input_->TriggerKey(DIK_SPACE))
-	//{
-	//	//発射地点の為に自キャラの座標をコピー
-	//	Vector3 position = worldTransform_.matWorldGetPos();
-
-	//	//移動量を追加
-	//	const float kBulletSpeed = 1.0f;
-	//	Vector3 velocity(0, 0, 0);
-	//	velocity = worldTransform3DReticle_.matWorldGetPos() - worldTransform_.matWorldGetPos();
-	//	velocity = velocity.normalize() * kBulletSpeed;
-
-	//	//速度ベクトルを自機の向きに合わせて回転する
-	//	velocity = VectorMat(velocity, worldTransform_.matWorld_);
-
-	//	//弾の生成と初期化
-	//	std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-	//	newBullet->Initlize(model_, position,velocity);
-
-	//	//弾を登録
-	//	bullets_.push_back(std::move(newBullet));
-	//}
-
-	XINPUT_STATE joyState;
-
-	//ゲームパッド未接続なら何もせず抜ける
-	if (!Input::GetInstance()->GetJoystickState(0, joyState))
-	{
-		return;
-	}
-
-	//Rトリガーを押していたら
-	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)
+	if (input_->TriggerKey(DIK_SPACE))
 	{
 		//発射地点の為に自キャラの座標をコピー
 		Vector3 position = worldTransform_.matWorldGetPos();
+		position.z += 2;
 
 		//移動量を追加
 		const float kBulletSpeed = 1.0f;
@@ -269,6 +241,45 @@ void Player::Attack()
 
 		//弾を登録
 		bullets_.push_back(std::move(newBullet));
+	}
+
+	XINPUT_STATE joyState;
+
+	//ゲームパッド未接続なら何もせず抜ける
+	if (!Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		return;
+	}
+
+	if (bulletCT > 0)
+	{
+		bulletCT--;
+	}
+
+	//Rトリガーを押していたら
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER and bulletCT<=0)
+	{
+		//発射地点の為に自キャラの座標をコピー
+		Vector3 position = worldTransform_.matWorldGetPos();
+		position.z += 2;
+
+		//移動量を追加
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, 0);
+		velocity = worldTransform3DReticle_.matWorldGetPos() - worldTransform_.matWorldGetPos();
+		velocity = velocity.normalize() * kBulletSpeed;
+
+		//速度ベクトルを自機の向きに合わせて回転する
+		velocity = VectorMat(velocity, worldTransform_.matWorld_);
+
+		//弾の生成と初期化
+		std::unique_ptr<PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+		newBullet->Initlize(model_, position, velocity);
+
+		//弾を登録
+		bullets_.push_back(std::move(newBullet));
+
+		bulletCT = 5;
 	}
 
 }
@@ -321,21 +332,26 @@ void Player::SetCameraMat(Matrix4 CameraMat)
 
 void Player::Reticle2DMouseAttack(ViewProjection viewProjection)
 {
+	XINPUT_STATE joyState;
 
-	POINT mousePosition={};
+	POINT mousePosition = {};
 
-	////スクリーン座標を取得
-	//GetCursorPos(&mousePosition);
+	if (!Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		//スクリーン座標を取得
+		GetCursorPos(&mousePosition);
 
-	////クライアントエリア座標に変換する
-	//HWND hwnd = WinApp::GetInstance()->GetHwnd();
-	//ScreenToClient(hwnd, &mousePosition);
+		//クライアントエリア座標に変換する
+		HWND hwnd = WinApp::GetInstance()->GetHwnd();
+		ScreenToClient(hwnd, &mousePosition);
 
-	//sprite2DReticle_->SetPosition(Vector2(mousePosition.x, mousePosition.y));
+		sprite2DReticle_->SetPosition(Vector2(mousePosition.x, mousePosition.y));
+	};
+	
 
 	Vector2 spritePosition = sprite2DReticle_->GetPosition();
 
-	XINPUT_STATE joyState;
+	
 
 	if (Input::GetInstance()->GetJoystickState(0, joyState))
 	{
@@ -361,7 +377,7 @@ void Player::Reticle2DMouseAttack(ViewProjection viewProjection)
 	matVPV *= matViewport;
 	//合成行列の逆行列を計算する
 	Matrix4 matInverseVPV = MathUtility::Matrix4Inverse(matVPV);
-	
+
 	//スクリーン座標
 	Vector3 posNear = Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 0);
 	Vector3 posFar = Vector3(sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y, 1);
@@ -371,7 +387,7 @@ void Player::Reticle2DMouseAttack(ViewProjection viewProjection)
 	posFar = VectorMatDivW(matInverseVPV, posFar);
 
 	//マウスレイの方向
- 	Vector3 mouseDirection = nainavec3(posFar,posNear);
+	Vector3 mouseDirection = nainavec3(posFar, posNear);
 	mouseDirection = mouseDirection.normalize();
 
 	//カメラから照準オブジェクトの距離
@@ -382,17 +398,31 @@ void Player::Reticle2DMouseAttack(ViewProjection viewProjection)
 	worldTransform3DReticle_.translation_ = A;
 
 	/*worldTransform3DReticle_.translation_ = posNear+mouseDirection * kDistanceTestObject;*/
-	
+
 	worldTransform3DReticle_.matWorldGeneration();
 
-	debugText_->SetPos(20, 200);
+	/*debugText_->SetPos(20, 200);
 	debugText_->Printf("mouse ScreenPos:(%d,%d)", mousePosition.x, mousePosition.y);
 	debugText_->SetPos(20, 220);
 	debugText_->Printf("Near:(%f,%f,%f)", posNear.x, posNear.y, posNear.z);
 	debugText_->SetPos(20, 240);
 	debugText_->Printf("Far:(%f,%f,%f)", posFar.x, posFar.y, posFar.z);
 	debugText_->SetPos(20, 260);
-	debugText_->Printf("mouseObject:(%f,%f,%f)", worldTransform3DReticle_.translation_.x, worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
+	debugText_->Printf("mouseObject:(%f,%f,%f)", worldTransform3DReticle_.translation_.x, worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);*/
 
+
+}
+
+
+void Player::reset()
+{
+	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
+	{
+		return 1;
+	});
+
+	worldTransform_.translation_ = { 0,0,50 };
+	worldTransform_.matWorldGeneration();
+	sprite2DReticle_->SetPosition(Vector2(640, 360));
 
 }
