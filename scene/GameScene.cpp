@@ -257,6 +257,7 @@ void GameScene::Update()
 
 	//cameraSpeed += 0.01f;
 	
+	int a;
 
 	XINPUT_STATE joyState = {};
 
