@@ -8,11 +8,17 @@
 
 const float PI = 3.141592653589f;
 
+
+
 GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 
 	delete model_;
+	delete playerModel_;
+	delete playerbulletModel_;
+	delete enemybulletModel_;
+	delete enemyModel_;
 	delete debugCamera_;
 	delete modelSkydome_;
 }
@@ -20,6 +26,8 @@ GameScene::~GameScene() {
 
 
 void GameScene::Initialize() {
+
+	fps.Init();
 
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
@@ -29,11 +37,97 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	
+	/*textureNum_[0] = TextureManager::Load("suuji0.png");
+	textureNum_[1] = TextureManager::Load("suuji1.png");
+	textureNum_[2] = TextureManager::Load("suuji2.png");
+	textureNum_[3] = TextureManager::Load("suuji3.png");
+	textureNum_[4] = TextureManager::Load("suuji4.png");
+	textureNum_[5] = TextureManager::Load("suuji5.png");
+	textureNum_[6] = TextureManager::Load("suuji6.png");
+	textureNum_[7] = TextureManager::Load("suuji7.png");
+	textureNum_[8] = TextureManager::Load("suuji8.png");
+	textureNum_[9] = TextureManager::Load("suuji9.png");
 
-	TextureManager::Load("Reticle.png");
+	SAimTexture = TextureManager::Load("aimImage.png");
+	SAttackTexture = TextureManager::Load("attackImage.png");
+	mouseTexture = TextureManager::Load("mouseimage.png");
+	SMoveTexture = TextureManager::Load("moveImage.png");
+	keyTexture = TextureManager::Load("movekeyimage.png");
+	SOrTexture = TextureManager::Load("orImage.png");
+	padButtonATexture = TextureManager::Load("padButtonAimage.png");
+	padButtonBTexture = TextureManager::Load("padButtonBimage.png");
+	RTriggerTexture = TextureManager::Load("Rtrigger.png");
+	SSpaceTexture = TextureManager::Load("SPACEimage.png");
+	SStartTexture = TextureManager::Load("STARTimage.png");
+	stickLTexture = TextureManager::Load("stickL2.png");
+	stickRTexture = TextureManager::Load("stickR2.png");
+	STitleTexture = TextureManager::Load("titleImage.png");
+
+	SPlayerTexture = TextureManager::Load("playerImage.png");
+	SEnemyTexture = TextureManager::Load("enemyImage.png");
+	SBulletTexture = TextureManager::Load("bulletImage.png");
+	SHitTexture = TextureManager::Load("hitImage.png");
+	SclearTimeTexture = TextureManager::Load("clearTimeImage.png");*/
+
+	//TextureManager::Load("Reticle.png");
+
+	//ScoreTexture = TextureManager::Load("score.png");
+	//GoalTexture = TextureManager::Load("GOAL.png");
+	//titleTexture = TextureManager::Load("title.png");
+	
+	/*ScoreImage.reset(Sprite::Create(ScoreTexture, { 0,0 }, { 1,1,1,1 }, { 0.0f,0.0f }));
+	GoalImage.reset(Sprite::Create(GoalTexture, { 672,0 }, { 1,1,1,1 }, { 0.0f,0.0f }));
+	titleImage.reset(Sprite::Create(titleTexture, { 640,320 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SAimImage.reset(Sprite::Create(SAimTexture, { 1255,500 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SAttackImage.reset(Sprite::Create(SAttackTexture, { 1240,620 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	mouseImage.reset(Sprite::Create(mouseTexture, { 1220,500 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SMoveImage.reset(Sprite::Create(SMoveTexture, { 1245,560 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	keyImage.reset(Sprite::Create(keyTexture, { 1185,560 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SOrImage.reset(Sprite::Create(SOrTexture, { 610,480 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	padButtonAImage.reset(Sprite::Create(padButtonATexture, { 640,480 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	padButtonBImage.reset(Sprite::Create(padButtonBTexture, { 640,480 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	RTriggerImage.reset(Sprite::Create(RTriggerTexture, { 1120,620 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SSpaceImage.reset(Sprite::Create(SSpaceTexture, { 565,480 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SStartImage.reset(Sprite::Create(SStartTexture, { 690,480 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	stickLImage.reset(Sprite::Create(stickLTexture, { 1140,560 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	stickRImage.reset(Sprite::Create(stickRTexture, { 1190,500 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	STitleImage.reset(Sprite::Create(STitleTexture, { 690,480 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SPlayerImage.reset(Sprite::Create(SPlayerTexture, { 580,235 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SEnemyImage.reset(Sprite::Create(SEnemyTexture, { 575, 300 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SBulletImage.reset(Sprite::Create(SBulletTexture, { 580, 365 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SHitImage1.reset(Sprite::Create(SHitTexture, { 630,235 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+	SHitImage2.reset(Sprite::Create(SHitTexture, { 630, 300 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+	SHitImage3.reset(Sprite::Create(SHitTexture, { 630, 365 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+
+	SClearTimeImage.reset(Sprite::Create(SclearTimeTexture, { 620,427 }, { 1,1,1,1 }, { 0.5f,0.5f }));*/
+
+	
+
 	//3Dモデルの生成
 
 	model_ = Model::Create();
+	playerModel_ = Model::CreateFromOBJ("player",true);
+	enemyModel_ = Model::CreateFromOBJ("enemy",true);
+	playerbulletModel_ = Model::CreateFromOBJ("playerbullet",true);
+	enemybulletModel_ = Model::CreateFromOBJ("enemybullet",true);
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
@@ -41,7 +135,7 @@ void GameScene::Initialize() {
 	player_p = new Player();
 	
 	//自キャラの初期化
-	player_p->Initialize(model_, textureHandle_);
+	player_p->Initialize(playerbulletModel_,playerModel_, textureHandle_);
 
 	//ユニークポインタに登録
 	player_.reset(player_p);
@@ -96,6 +190,15 @@ void GameScene::Initialize() {
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
+	scoore.init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+	Goal.init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+	clearScore[0].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+	clearScore[1].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+	clearScore[2].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+	clearScore[3].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+	clear.init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
+
+
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向補油時が参照するビュープロジェクションを指定する(アドレス渡し)
@@ -112,80 +215,209 @@ void GameScene::Initialize() {
 
 				//ワールドトランスフォームの位置変更
 
-
+	title.Initialize();
+	title.translation_={ 5,0,-30 };
+	title.rotation_ = { 0,0,135 * PI / 180 };
+	title.matWorldGeneration();
 
 
 				viewProjection_.eye = { 0.0f,0.0f,-50.0f };
 				viewProjection_.target = { 0.0f,0.0f,0.0f };
 				viewProjection_.up = { 0.0f,1.0f,0.0f };
+				viewProjection_.farZ = 1000000.0f;
 
 
 
+
+	worldTransform_.Initialize();
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
-	railView.Initialize();
+	//railView.Initialize();
 
+	scoore.Scorenum = 0;
+	scoore.HiScorenum = 10000;
+
+	titleView.Initialize();
+
+	titleView = railView;
+
+	effectM.Init();
+	effectM2.Init();
+	effectM.setPos({ 10,0,0 });
 
 }
 
 void GameScene::Update() 
 {
-	//debugCamera_->Update();
+	fps.Ran();
 
-	
+	debugCamera_->Update();
+
+	//scoore.Scorenum++;
 
 	//cameraSpeed += 0.01f;
 
-	railCamera_->setPos({ 0.0f,0.0f,-20 + cameraSpeed });
-	railCamera_->Update();
-	player_->SetCameraMat(railCamera_->getMatWorld());
+	XINPUT_STATE joyState = {};
 
-	//ぬるぽチェック
-	assert(player_);
-	assert(player_p);
+	Input::GetInstance()->GetJoystickState(0, joyState);
 
-	//プレイヤーの更新
-	player_->Update(railCamera_->getView());
+	//if (effectM.GetIsEffctEnd() == false)
+	//{
+	//	effectM.ExplosionEffect(5000);
+	//}
 
-	//ぬるぽチェック
+	//effectM.Update();
+
+	//if (effectM2.GetIsEffctEnd() == false)
+	//{
+	//	effectM2.ExplosionEffect(5000);
+	//}
+
+	//effectM2.Update();
+
+	/*switch (scene)
+	{
+	case 0:
+		
+
+		if (input_->TriggerKey(DIK_SPACE) or joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)
+		{
+			scene = 1;
+		}
+
+		break;
+	case 1:
+		railCamera_->setPos({ 0.0f,0.0f,-20 + cameraSpeed });
+		railCamera_->Update();
+		player_->SetCameraMat(railCamera_->getMatWorld());
+
+		//ぬるぽチェック
+		assert(player_);
+		assert(player_p);
+
+		//プレイヤーの更新
+		player_->Update(railCamera_->getView());
+
+		//ぬるぽチェック
+
+		//assert(enemy_p);
+
+		if (input_->TriggerKey(DIK_R))
+		{
+			resetGame();
+		}
+
+		//エネミーの更新
+		//弾の更新処理
+
+		UpdateEnemyPopCommands();
+
+		for (std::unique_ptr<Enemy>& enemy : enemy_)
+		{
+			enemy->Update();
+			if (enemy->IsDead())
+			{
+				scoore.Scorenum += 300;
+
+				enemyHitNum++;
+			}
+		}
+		//enemy_->Update();
+
+		
+
+		//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
+		enemy_.remove_if([](std::unique_ptr<Enemy>& enemy)//ifの中で簡易的な関数を生成してる->[](引数)
+			{
+				return enemy->IsDead();
+			});
+
+		//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
+		enemyBullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
+			{
+				return bullet->IsDead();
+			});
+
+		//弾の更新処理
+		for (std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets_)
+		{
+			enemyBullet->Update();
+		}
+
+		CheckAllCollision();
+
+		skydome_->Update();
+
+		if (scoore.Scorenum >= 10000)
+		{
+			scene = 2;
+		}
+		clearTimer++;
+
+		break;
+	case 2:
+
+		if (playerHitNum > 0)
+		{
+			playerHitNum--;
+
+			clearPlayerHitNum++;
+
+		}
+		else if (enemyHitNum > 0)
+		{
+
+			enemyHitNum--;
+
+			clearEnemyHitNum++;
+
+		}
+		else if (bulletHitNum > 0)
+		{
+
+			bulletHitNum--;
+
+			clearBulletHitNum++;
+
+		}
+
+
+		if ((input_->TriggerKey(DIK_SPACE) or joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) and bulletHitNum<=0)
+		{
+			resetGame();
+			scene = 0;
+			playerHitNum = 0;
+			enemyHitNum = 0;
+			bulletHitNum = 0;
+
+			clearScene = 0;
+
+			clearPlayerHitNum = 0;
+			clearEnemyHitNum = 0;
+			clearBulletHitNum = 0;
+			clearTimer = 0;
+
+			enemy_.remove_if([](std::unique_ptr<Enemy>& enemy)//ifの中で簡易的な関数を生成してる->[](引数)
+			{
+				return 1;
+			});
+
+			//弾を削除(remove_if->条件一致を全て削除)
+			enemyBullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
+			{
+				return 1;
+			});
+
+			player_->reset();
+		}
+
+		break;
+	default:
+		break;
+	}*/
+
 	
-	//assert(enemy_p);
-
-
-
-	//エネミーの更新
-	//弾の更新処理
-
-	UpdateEnemyPopCommands();
-
-	for (std::unique_ptr<Enemy>& enemy : enemy_)
-	{
-		enemy->Update();
-	}
-	//enemy_->Update();
-
-	//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
-	enemy_.remove_if([](std::unique_ptr<Enemy>& enemy)//ifの中で簡易的な関数を生成してる->[](引数)
-	{
-		return enemy->IsDead();
-	});
-
-	//デスフラグの立った弾を削除(remove_if->条件一致を全て削除)
-	enemyBullets_.remove_if([](std::unique_ptr<EnemyBullet>& bullet)//ifの中で簡易的な関数を生成してる->[](引数)
-	{
-		return bullet->IsDead();
-	});
-
-	//弾の更新処理
-	for (std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets_)
-	{
-		enemyBullet->Update();
-	}
-
-	CheckAllCollision();
-
-	skydome_->Update();
-
+	
 	
 
 #ifdef _DEBUG
@@ -202,10 +434,11 @@ void GameScene::Update()
 	{
 		debugCamera_->Update();
 		//デバックカメラがONになっているならviewProjectionをデバックカメラに
-		railView.matView = debugCamera_->GetViewProjection().matView;
-		railView.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		debugCamera_->SetDistance(10000);
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 
-		railView.TransferMatrix();
+		viewProjection_.TransferMatrix();
 	}
 	else
 	{
@@ -214,7 +447,7 @@ void GameScene::Update()
 		viewProjection_.TransferMatrix();
 	}
 
-
+	
 
 }
 
@@ -248,26 +481,45 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 	
 				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
-
-	railView = railCamera_->getView();
-
-	skydome_->Draw(railView);
-
-	player_->Draw(railView);
-
-	for (std::unique_ptr<Enemy>& enemy : enemy_)
+	/*switch (scene)
 	{
-		enemy->Draw(railView);
-	}
-	//enemy_->Draw(railView);
+	case 0:
+		
+		skydome_->Draw(railView);
+		playerModel_->Draw(title, titleView);
 
-	//生成された弾を描画
-	for (std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets_)
-	{
-		enemyBullet->Draw(railView);
-	}
+		break;
+	case 1:
+		railView = railCamera_->getView();
 
+		skydome_->Draw(railView);
+
+		player_->Draw(railView);
+
+		for (std::unique_ptr<Enemy>& enemy : enemy_)
+		{
+			enemy->Draw(railView);
+		}
+		//enemy_->Draw(railView);
+
+		//生成された弾を描画
+		for (std::unique_ptr<EnemyBullet>& enemyBullet : enemyBullets_)
+		{
+			enemyBullet->Draw(railView);
+		}
+		break;
+	case 2:
+		skydome_->Draw(railView);
+		break;
+	default:
+		break;
+	};*/
 	
+	skydome_->Draw(viewProjection_);
+
+	//model_->Draw(worldTransform_, viewProjection_);
+	//effectM.draw(viewProjection_);
+	//effectM2.draw(viewProjection_);
 	///
 
 	//PrimitiveDrawer::GetInstance()->DrawLine3d(siten, syuten, color);
@@ -283,8 +535,81 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	/*switch (scene)
+	{
+	case 0:
+		
+		titleImage->Draw();
 
-	player_->DrawUI();
+		SSpaceImage->SetPosition({ 565,480 });
+		SSpaceImage->Draw();
+		padButtonAImage->Draw();
+
+		SOrImage->SetPosition({ 610,480 });
+		SOrImage->Draw();
+		SStartImage->Draw();
+
+
+		break;
+	case 1:
+		player_->DrawUI();
+		SAimImage->Draw();
+		SAttackImage->Draw();
+		mouseImage->Draw();
+		SMoveImage->Draw();
+		keyImage->Draw();
+		RTriggerImage->Draw();
+		SSpaceImage->SetPosition({1170,620});
+		SSpaceImage->Draw();
+		stickLImage->Draw();
+		stickRImage->Draw();
+
+		scoore.graphNumberDisplayScore(64, 0, scoore.Scorenum, 5);
+		ScoreImage->SetPosition({ 0,0 });
+		ScoreImage->Draw();
+		Goal.graphNumberDisplayScore(736, 0, scoore.HiScorenum, 5);
+		GoalImage->Draw();
+		break;
+	case 2:
+
+		ScoreImage->SetPosition({ 580,120 });
+		ScoreImage->Draw();
+
+		SPlayerImage->Draw();
+
+		SEnemyImage->Draw();
+
+		SBulletImage->Draw();
+
+		SHitImage1->Draw();
+		SHitImage2->Draw();
+		SHitImage3->Draw();
+
+		SClearTimeImage->Draw();
+
+		if (bulletHitNum <= 0)
+		{
+			SSpaceImage->SetPosition({ 565,480 });
+			SSpaceImage->Draw();
+
+			SOrImage->SetPosition({ 610,480 });
+			SOrImage->Draw();
+
+			padButtonBImage->Draw();
+
+			STitleImage->Draw();
+		}
+
+		scoore.graphNumberDisplayScore(640, 120, scoore.Scorenum, 5);
+		clearScore[0].graphNumberDisplayScore(640, 220, clearPlayerHitNum, 5);
+		clearScore[1].graphNumberDisplayScore(640, 284, clearEnemyHitNum, 5);
+		clearScore[2].graphNumberDisplayScore(640, 348, clearBulletHitNum, 5);
+		clear.graphNumberDisplayScore(672, 412, clearTimer/60, 4);
+
+		break;
+	default:
+		break;
+	};*/
 
 	/*debugText_->SetPos(50, 70);
 	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
@@ -293,6 +618,7 @@ void GameScene::Draw() {
 	debugText_->SetPos(50, 110);
 	debugText_->Printf("up:(%f,%f,%f)", viewProjection_.up.x, viewProjection_.up.y, viewProjection_.up.z);*/
 
+	//fps.FPSDraw();
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);
@@ -412,6 +738,11 @@ void GameScene::CheckAllCollision()
 			//敵弾の衝突時コールバックを呼び出す
 			bullet->OnCollision();
 
+			scoore.Scorenum -= 10;
+
+			playerHitNum++;
+			
+
 		}
 
 	}
@@ -438,6 +769,9 @@ void GameScene::CheckAllCollision()
 
 				//敵弾の衝突時コールバックを呼び出す
 				bullet->OnCollision();
+
+				
+				
 
 			}
 
@@ -466,6 +800,9 @@ void GameScene::CheckAllCollision()
 
 				//敵弾の衝突時コールバックを呼び出す
 				bullet2->OnCollision();
+
+				scoore.Scorenum+=5;
+				bulletHitNum++;
 
 			}
 
@@ -507,7 +844,7 @@ void GameScene::PopEnemy(Vector3 pos)
 	newEnemy->SetPlayer(player_p);
 	newEnemy->SetGameScene(this);
 
-	newEnemy->Initialize(model_, pos, { 0,0,-0.1f });
+	newEnemy->Initialize(enemybulletModel_,enemyModel_, pos, { 0,0,-0.1f });
 
 	//敵キャラを登録
 	enemy_.push_back(std::move(newEnemy));
@@ -588,5 +925,15 @@ void GameScene::UpdateEnemyPopCommands()
 		
 
 	}
+
+}
+
+void GameScene::resetGame()
+{
+	scoore.Scorenum = 0;
+
+	enemyPopCommands.str("");
+	enemyPopCommands.clear(std::stringstream::goodbit);
+	LoadEnemyPopData();
 
 }

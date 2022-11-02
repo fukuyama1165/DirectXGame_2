@@ -13,13 +13,15 @@ Enemy::~Enemy()
 	delete state_;
 }
 
-void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity)
+void Enemy::Initialize(Model* model, Model* enemyModel, const Vector3& position, const Vector3& velocity)
 {
 
 	//ヌルポチェック
 	assert(model);
+	assert(enemyModel);
 
 	model_ = model;
+	enemyModel_ = enemyModel;
 
 	debugText_ = DebugText::GetInstance();
 
@@ -57,7 +59,10 @@ void Enemy::Update()
 	//行列の更新
 	worldTransform_.matWorldGeneration();
 
-	
+	if (worldTransform_.matWorldGetPos().y > 80)
+	{
+		IsDead_ = true;
+	}
 
 	//if (FireTime_ == 0)
 	//{
@@ -86,9 +91,9 @@ void Enemy::Update()
 void Enemy::Draw(const ViewProjection& viewProjection)
 {
 	//モデルを描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	debugText_->SetPos(50, 90);
-	debugText_->Printf("Enemypos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
+	enemyModel_->Draw(worldTransform_, viewProjection);
+	/*debugText_->SetPos(50, 90);
+	debugText_->Printf("Enemypos:(%f,%f,%f)", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);*/
 	
 	
 	

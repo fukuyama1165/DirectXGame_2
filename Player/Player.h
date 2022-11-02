@@ -22,7 +22,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, uint32_t textureHandle);
+	void Initialize(Model* model, Model* playerModel, uint32_t textureHandle);
 
 	/// <summary>
 	/// 更新
@@ -72,6 +72,8 @@ public:
 	//2Dレティクルをマウスの位置に置いてそこに発射する関数
 	void Reticle2DMouseAttack(ViewProjection viewProjection);
 
+	void reset();
+
 private:
 
 	//ワールド変換データ
@@ -81,6 +83,7 @@ private:
 
 	//モデル
 	Model* model_ = nullptr;
+	Model* playerModel_ = nullptr;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
@@ -99,6 +102,10 @@ private:
 
 	//2dレティクル用スプライト
 	std::unique_ptr<Sprite> sprite2DReticle_;
+
+	int bulletCT = 0;
+
+	const int MAXBulletCT = 5;
 
 };
 

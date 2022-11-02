@@ -28,7 +28,7 @@ public:
 	/// <param name="model">モデル</param>
 	/// <param name="position">初期座標</param>
 	/// /// <param name="velocity">速度</param>
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+	void Initialize(Model* model, Model* enemyModel, const Vector3& position, const Vector3& velocity);
 
 	/// <summary>
 	/// 更新
@@ -109,6 +109,7 @@ private:
 
 	//3Dモデル
 	Model* model_ = nullptr;
+	Model* enemyModel_ = nullptr;
 
 	//速度
 	Vector3	Velocity_;
