@@ -256,7 +256,7 @@ void GameScene::Update()
 	//scoore.Scorenum++;
 
 	//cameraSpeed += 0.01f;
-	int a;
+	
 
 	XINPUT_STATE joyState = {};
 
