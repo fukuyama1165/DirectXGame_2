@@ -37,7 +37,7 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
 	
-	textureNum_[0] = TextureManager::Load("suuji0.png");
+	/*textureNum_[0] = TextureManager::Load("suuji0.png");
 	textureNum_[1] = TextureManager::Load("suuji1.png");
 	textureNum_[2] = TextureManager::Load("suuji2.png");
 	textureNum_[3] = TextureManager::Load("suuji3.png");
@@ -67,15 +67,15 @@ void GameScene::Initialize() {
 	SEnemyTexture = TextureManager::Load("enemyImage.png");
 	SBulletTexture = TextureManager::Load("bulletImage.png");
 	SHitTexture = TextureManager::Load("hitImage.png");
-	SclearTimeTexture = TextureManager::Load("clearTimeImage.png");
+	SclearTimeTexture = TextureManager::Load("clearTimeImage.png");*/
 
 	//TextureManager::Load("Reticle.png");
 
-	ScoreTexture = TextureManager::Load("score.png");
-	GoalTexture = TextureManager::Load("GOAL.png");
-	titleTexture = TextureManager::Load("title.png");
+	//ScoreTexture = TextureManager::Load("score.png");
+	//GoalTexture = TextureManager::Load("GOAL.png");
+	//titleTexture = TextureManager::Load("title.png");
 	
-	ScoreImage.reset(Sprite::Create(ScoreTexture, { 0,0 }, { 1,1,1,1 }, { 0.0f,0.0f }));
+	/*ScoreImage.reset(Sprite::Create(ScoreTexture, { 0,0 }, { 1,1,1,1 }, { 0.0f,0.0f }));
 	GoalImage.reset(Sprite::Create(GoalTexture, { 672,0 }, { 1,1,1,1 }, { 0.0f,0.0f }));
 	titleImage.reset(Sprite::Create(titleTexture, { 640,320 }, { 1,1,1,1 }, { 0.5f,0.5f }));
 
@@ -117,7 +117,7 @@ void GameScene::Initialize() {
 	SHitImage2.reset(Sprite::Create(SHitTexture, { 630, 300 }, { 1,1,1,1 }, { 0.5f,0.5f }));
 	SHitImage3.reset(Sprite::Create(SHitTexture, { 630, 365 }, { 1,1,1,1 }, { 0.5f,0.5f }));
 
-	SClearTimeImage.reset(Sprite::Create(SclearTimeTexture, { 620,427 }, { 1,1,1,1 }, { 0.5f,0.5f }));
+	SClearTimeImage.reset(Sprite::Create(SclearTimeTexture, { 620,427 }, { 1,1,1,1 }, { 0.5f,0.5f }));*/
 
 	
 
@@ -200,9 +200,9 @@ void GameScene::Initialize() {
 
 
 	//軸方向表示の表示を有効にする
-	//AxisIndicator::GetInstance()->SetVisible(true);
+	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向補油時が参照するビュープロジェクションを指定する(アドレス渡し)
-	//AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	//PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
@@ -224,12 +224,15 @@ void GameScene::Initialize() {
 				viewProjection_.eye = { 0.0f,0.0f,-50.0f };
 				viewProjection_.target = { 0.0f,0.0f,0.0f };
 				viewProjection_.up = { 0.0f,1.0f,0.0f };
+				viewProjection_.farZ = 1000000.0f;
 
 
 
+
+	worldTransform_.Initialize();
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
-	railView.Initialize();
+	//railView.Initialize();
 
 	scoore.Scorenum = 0;
 	scoore.HiScorenum = 10000;
@@ -238,13 +241,17 @@ void GameScene::Initialize() {
 
 	titleView = railView;
 
+	effectM.Init();
+	effectM2.Init();
+	effectM.setPos({ 10,0,0 });
+
 }
 
 void GameScene::Update() 
 {
 	fps.Ran();
 
-	//debugCamera_->Update();
+	debugCamera_->Update();
 
 	//scoore.Scorenum++;
 
@@ -254,7 +261,21 @@ void GameScene::Update()
 
 	Input::GetInstance()->GetJoystickState(0, joyState);
 
-	switch (scene)
+	//if (effectM.GetIsEffctEnd() == false)
+	//{
+	//	effectM.ExplosionEffect(5000);
+	//}
+
+	//effectM.Update();
+
+	//if (effectM2.GetIsEffctEnd() == false)
+	//{
+	//	effectM2.ExplosionEffect(5000);
+	//}
+
+	//effectM2.Update();
+
+	/*switch (scene)
 	{
 	case 0:
 		
@@ -393,7 +414,7 @@ void GameScene::Update()
 		break;
 	default:
 		break;
-	}
+	}*/
 
 	
 	
@@ -413,10 +434,11 @@ void GameScene::Update()
 	{
 		debugCamera_->Update();
 		//デバックカメラがONになっているならviewProjectionをデバックカメラに
-		railView.matView = debugCamera_->GetViewProjection().matView;
-		railView.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
+		debugCamera_->SetDistance(10000);
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 
-		railView.TransferMatrix();
+		viewProjection_.TransferMatrix();
 	}
 	else
 	{
@@ -459,7 +481,7 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 	
 				//model_->Draw(worldTransform_, viewProjection_, textureHandle_);
-	switch (scene)
+	/*switch (scene)
 	{
 	case 0:
 		
@@ -491,8 +513,13 @@ void GameScene::Draw() {
 		break;
 	default:
 		break;
-	};
+	};*/
 	
+	skydome_->Draw(viewProjection_);
+
+	//model_->Draw(worldTransform_, viewProjection_);
+	//effectM.draw(viewProjection_);
+	//effectM2.draw(viewProjection_);
 	///
 
 	//PrimitiveDrawer::GetInstance()->DrawLine3d(siten, syuten, color);
@@ -508,7 +535,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	switch (scene)
+	/*switch (scene)
 	{
 	case 0:
 		
@@ -582,7 +609,7 @@ void GameScene::Draw() {
 		break;
 	default:
 		break;
-	};
+	};*/
 
 	/*debugText_->SetPos(50, 70);
 	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);

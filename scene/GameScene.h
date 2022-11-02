@@ -21,6 +21,7 @@
 
 #include <memory>
 
+#include "EffectManager.h"
 
 /// <summary>
 /// ゲームシーン
@@ -111,7 +112,7 @@ private: // メンバ変数
 	Model* enemybulletModel_ = nullptr;
 
 	//ワールドトランスフォーム
-	//WorldTransform worldTransform_;
+	WorldTransform worldTransform_;
 
 	WorldTransform title;
 
@@ -244,5 +245,8 @@ private: // メンバ変数
 	float clearPlayerHitNum = 0;
 	float clearEnemyHitNum = 0;
 	float clearBulletHitNum = 0;
+
+	EffectManager effectM;
+	EffectManager effectM2;
 
 };
