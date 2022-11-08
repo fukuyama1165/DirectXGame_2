@@ -119,6 +119,8 @@ void GameScene::Update()
 	float cameraX = railCamera_->GetWorldPosition().x;
 	float cameraZ = railCamera_->GetWorldPosition().z;
 
+	//cameraRotateY = 0;
+
 	/*if (input_->PushKey(DIK_UP))
 	{
 		cameraZ += 5;
@@ -127,19 +129,21 @@ void GameScene::Update()
 	if (input_->PushKey(DIK_DOWN))
 	{
 		cameraZ -= 5;
-	}
+	}*/
 
-	if (input_->PushKey(DIK_RIGHT))
-	{
-		cameraX += 5;
-	}
+	//if (input_->PushKey(DIK_RIGHT))
+	//{
+	//	//cameraX += 5;
+	//	rotateY += 0.01;
+	//}
 
-	if (input_->PushKey(DIK_LEFT))
-	{
-		cameraX -= 5;
-	}
+	//if (input_->PushKey(DIK_LEFT))
+	//{
+	//	//cameraX -= 5;
+	//	rotateY -= 0.01;
+	//}
 
-	if (input_->PushKey(DIK_W))
+	/*if (input_->PushKey(DIK_W))
 	{
 		rotateX -= 0.1;
 	}
@@ -147,19 +151,21 @@ void GameScene::Update()
 	if (input_->PushKey(DIK_S))
 	{
 		rotateX += 0.1;
-	}
+	}*/
 
 	if (input_->PushKey(DIK_D))
 	{
-		rotateY += 0.1;
+		cameraRotateY += 0.01f;
+		rotateY += 0.01f;
 	}
 
 	if (input_->PushKey(DIK_A))
 	{
-		rotateY -= 0.1;
+		cameraRotateY -= 0.01f;
+		rotateY -= 0.01f;
 	}
 
-	if (input_->TriggerKey(DIK_I))
+	/*if (input_->TriggerKey(DIK_I))
 	{
 		boss.setisAttackFlagL(true);
 	}*/
@@ -168,10 +174,12 @@ void GameScene::Update()
 
 	player_->Update(railView);
 
-	railCamera_->setPos(Vector3(player_->GetWorldPosition().x, player_->GetWorldPosition().y + 2, player_->GetWorldPosition().z - 20));
+	railCamera_->setPos(Vector3(sinf(cameraRotateY)*20+ player_->GetWorldPosition().x, player_->GetWorldPosition().y + 2, cosf(cameraRotateY)*20+player_->GetWorldPosition().z));
 	railCamera_->setRotate({ rotateX,rotateY,0 });
 	boss.Update();
 	
+	debugText_->SetPos(0, 0);
+	debugText_->Printf("%f", cameraRotateY);
 
 #ifdef _DEBUG
 

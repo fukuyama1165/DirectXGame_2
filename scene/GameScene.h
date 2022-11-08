@@ -188,6 +188,9 @@ private: // メンバ変数
 	float rotateX=0;
 	float rotateY=0;
 
+	float cameraRotateX = 0;
+	float cameraRotateY = 9.45f;
+
 	bosstest boss;
 
 };
