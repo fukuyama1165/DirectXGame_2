@@ -38,7 +38,14 @@ public:
 
 	Matrix4 getMatWorld();
 
+	Vector3 getForwardVec();
+
+	//ƒ[ƒ‹ƒhÀ•W‚ğæ“¾
+	Vector3 GetWorldPosition();
+
 	void setPos(Vector3 pos);
+
+	void setRotate(Vector3 rotate);
 
 	void setWorldMat(Matrix4 woeldMat);
 
@@ -51,6 +58,8 @@ private:
 	ViewProjection viewProjection_;
 
 	DebugText* debugText_ = nullptr;
+
+	Vector3 forward = { 0.0f, 0.0f, 1.0f };
 
 };
 

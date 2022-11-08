@@ -36,7 +36,7 @@ void RailCamera::Update()
 	viewProjection_.eye = worldTransform_.matWorldGetPos();
 
 	//ワールド前方ベクトル
-	Vector3 forward(0, 0, 1);
+	forward = { 0.0f, 0.0f, 1.0f };
 
 	//レールカメラの回転を反映
 	forward = VectorMat(forward, worldTransform_.matWorld_);
@@ -95,7 +95,33 @@ void RailCamera::setPos(Vector3 pos)
 	worldTransform_.matWorldGeneration();
 }
 
+void RailCamera::setRotate(Vector3 rotate)
+{
+	worldTransform_.rotation_ = rotate;
+	worldTransform_.matWorldGeneration();
+}
+
 void RailCamera::setWorldMat(Matrix4 woeldMat)
 {
 	worldTransform_.matWorld_ = woeldMat;
+}
+
+Vector3 RailCamera::GetWorldPosition()
+{
+
+	//ワールド座標を入れる変数
+	Vector3 worldpos;
+
+	//ワールド行列の平行移動成分を取得(ワールド座標)
+	worldpos.x = worldTransform_.matWorld_.m[3][0];
+	worldpos.y = worldTransform_.matWorld_.m[3][1];
+	worldpos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldpos;
+
+}
+
+Vector3 RailCamera::getForwardVec()
+{
+	return forward.normalize();
 }

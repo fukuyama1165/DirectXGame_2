@@ -105,6 +105,7 @@ void Enemy::ApproachMove()
 	//ˆÚ“®(ƒxƒNƒgƒ‹‚ð‰ÁŽZ)
 	worldTransform_.translation_ += Velocity_;
 
+
 	//‹K’è‚ÌˆÊ’u‚É“ž’B‚µ‚½‚ç—£’E
 	if (worldTransform_.translation_.z < 0.0f)
 	{

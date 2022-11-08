@@ -23,6 +23,8 @@
 
 #include "EffectManager.h"
 
+#include "bosstest.h"
+
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -248,5 +250,10 @@ private: // メンバ変数
 
 	EffectManager effectM;
 	EffectManager effectM2;
+
+	float rotateX=0;
+	float rotateY=0;
+
+	bosstest boss;
 
 };

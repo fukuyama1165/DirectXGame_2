@@ -122,6 +122,11 @@ void WorldTransform::matWorldGeneration()
 
 	matWorld_ *= matScale;
 
+	if (parent_ != nullptr)
+	{
+		matWorld_ *= parent_->matWorld_;
+	}
+
 	TransferMatrix();
 
 }

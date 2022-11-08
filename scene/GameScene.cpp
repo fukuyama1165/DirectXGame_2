@@ -137,6 +137,8 @@ void GameScene::Initialize() {
 	effectM2.Init();
 	effectM.setPos({ 10,0,0 });
 
+	boss.Initialize(model_, { 0,0,200 });
+
 }
 
 void GameScene::Update() 
@@ -167,9 +169,58 @@ void GameScene::Update()
 	//}
 
 	//effectM2.Update();
+	float cameraX = railCamera_->GetWorldPosition().x;
+	float cameraZ = railCamera_->GetWorldPosition().z;
 
-	
-	
+	if (input_->PushKey(DIK_UP))
+	{
+		cameraZ += 5;
+	}
+
+	if (input_->PushKey(DIK_DOWN))
+	{
+		cameraZ -= 5;
+	}
+
+	if (input_->PushKey(DIK_RIGHT))
+	{
+		cameraX += 5;
+	}
+
+	if (input_->PushKey(DIK_LEFT))
+	{
+		cameraX -= 5;
+	}
+
+	if (input_->PushKey(DIK_W))
+	{
+		rotateX -= 0.1;
+	}
+
+	if (input_->PushKey(DIK_S))
+	{
+		rotateX += 0.1;
+	}
+
+	if (input_->PushKey(DIK_D))
+	{
+		rotateY += 0.1;
+	}
+
+	if (input_->PushKey(DIK_A))
+	{
+		rotateY -= 0.1;
+	}
+
+	if (input_->TriggerKey(DIK_I))
+	{
+		boss.setisAttackFlagL(true);
+	}
+
+	railCamera_->setPos({ cameraX,railCamera_->GetWorldPosition().y,cameraZ });
+	railCamera_->setRotate({ rotateX,rotateY,0 });
+
+	boss.Update();
 	
 
 #ifdef _DEBUG
@@ -194,9 +245,8 @@ void GameScene::Update()
 	}
 	else
 	{
-		viewProjection_.UpdateMatrix();
-
-		viewProjection_.TransferMatrix();
+		railCamera_->Update();
+		railView = railCamera_->getView();
 	}
 
 	
@@ -233,7 +283,9 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 	
 	
-	skydome_->Draw(viewProjection_);
+	skydome_->Draw(railView);
+
+	boss.Draw(railView);
 
 	//model_->Draw(worldTransform_, viewProjection_);
 	//effectM.draw(viewProjection_);
