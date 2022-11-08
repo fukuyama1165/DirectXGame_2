@@ -164,10 +164,12 @@ void GameScene::Update()
 		boss.setisAttackFlagL(true);
 	}*/
 
-	railCamera_->setPos({ cameraX,railCamera_->GetWorldPosition().y,cameraZ });
-	railCamera_->setRotate({ rotateX,rotateY,0 });
+	
 
 	player_->Update(railView);
+
+	railCamera_->setPos(Vector3(player_->GetWorldPosition().x, player_->GetWorldPosition().y + 2, player_->GetWorldPosition().z - 20));
+	railCamera_->setRotate({ rotateX,rotateY,0 });
 	boss.Update();
 	
 
