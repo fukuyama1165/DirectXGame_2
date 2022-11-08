@@ -49,16 +49,12 @@ void GameScene::Initialize() {
 
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 
-	//自キャラの生成
-	player_p = new Player();
 	
-	//自キャラの初期化
-	player_p->Initialize(playerbulletModel_,playerModel_, textureHandle_);
+	player_p = new Player();
 
-	//ユニークポインタに登録
+	player_p->Initialize(model_, playerModel_, textureHandle_);
+
 	player_.reset(player_p);
-
-
 
 	//天球の生成
 	skydome_p = new Skydome;
@@ -78,20 +74,12 @@ void GameScene::Initialize() {
 
 	railView = railCamera_->getView();
 
-	player_->SetCameraMat(railCamera_->getMatWorld());
+	
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
-	scoore.init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-	Goal.init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-	clearScore[0].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-	clearScore[1].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-	clearScore[2].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-	clearScore[3].init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-	clear.init(textureNum_[0], textureNum_[1], textureNum_[2], textureNum_[3], textureNum_[4], textureNum_[5], textureNum_[6], textureNum_[7], textureNum_[8], textureNum_[9]);
-
-
+	
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向補油時が参照するビュープロジェクションを指定する(アドレス渡し)
@@ -100,43 +88,13 @@ void GameScene::Initialize() {
 	//ライン描画が参照するビュープロジェクションを指定する(アドレス渡し)
 	//PrimitiveDrawer::GetInstance()->SetViewProjection(&debugCamera_->GetViewProjection());
 
-	siten = Vector3();
-	syuten = Vector3(20.0f, 20.0f, 20.0f);
-	color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-
-	//ワールドトランスフォームの初期化
-
-				//ワールドトランスフォームの位置変更
-
-	title.Initialize();
-	title.translation_={ 5,0,-30 };
-	title.rotation_ = { 0,0,135 * PI / 180 };
-	title.matWorldGeneration();
-
-
-				viewProjection_.eye = { 0.0f,0.0f,-50.0f };
-				viewProjection_.target = { 0.0f,0.0f,0.0f };
-				viewProjection_.up = { 0.0f,1.0f,0.0f };
-				viewProjection_.farZ = 1000000.0f;
-
-
-
-
-	worldTransform_.Initialize();
+	
+	
+	
+	
 	//ビュープロジェクションの初期化
 	viewProjection_.Initialize();
 	//railView.Initialize();
-
-	scoore.Scorenum = 0;
-	scoore.HiScorenum = 10000;
-
-	titleView.Initialize();
-
-	titleView = railView;
-
-	effectM.Init();
-	effectM2.Init();
-	effectM.setPos({ 10,0,0 });
 
 	boss.Initialize(model_, { 0,0,200 });
 
@@ -157,23 +115,11 @@ void GameScene::Update()
 
 	Input::GetInstance()->GetJoystickState(0, joyState);
 
-	//if (effectM.GetIsEffctEnd() == false)
-	//{
-	//	effectM.ExplosionEffect(5000);
-	//}
 
-	//effectM.Update();
-
-	//if (effectM2.GetIsEffctEnd() == false)
-	//{
-	//	effectM2.ExplosionEffect(5000);
-	//}
-
-	//effectM2.Update();
 	float cameraX = railCamera_->GetWorldPosition().x;
 	float cameraZ = railCamera_->GetWorldPosition().z;
 
-	if (input_->PushKey(DIK_UP))
+	/*if (input_->PushKey(DIK_UP))
 	{
 		cameraZ += 5;
 	}
@@ -216,11 +162,12 @@ void GameScene::Update()
 	if (input_->TriggerKey(DIK_I))
 	{
 		boss.setisAttackFlagL(true);
-	}
+	}*/
 
 	railCamera_->setPos({ cameraX,railCamera_->GetWorldPosition().y,cameraZ });
 	railCamera_->setRotate({ rotateX,rotateY,0 });
 
+	player_->Update(railView);
 	boss.Update();
 	
 
@@ -285,7 +232,7 @@ void GameScene::Draw() {
 	
 	
 	skydome_->Draw(railView);
-
+	player_->Draw(railView);
 	boss.Draw(railView);
 
 	//model_->Draw(worldTransform_, viewProjection_);
@@ -429,7 +376,6 @@ void GameScene::CheckAllCollision()
 
 			scoore.Scorenum -= 10;
 
-			playerHitNum++;
 			
 
 		}
@@ -490,8 +436,7 @@ void GameScene::CheckAllCollision()
 				//敵弾の衝突時コールバックを呼び出す
 				bullet2->OnCollision();
 
-				scoore.Scorenum+=5;
-				bulletHitNum++;
+				scoore.Scorenum += 5;
 
 			}
 

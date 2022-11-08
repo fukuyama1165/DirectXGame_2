@@ -43,7 +43,6 @@ private:
 	WorldTransform worldTransform_;
 
 	//テクスチャハンドル
-	uint32_t textureHandle_ = 0;
 
 	//3Dモデル(借りてくるやつらしい)
 	Model* model_ = nullptr;

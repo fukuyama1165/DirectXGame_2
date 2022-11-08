@@ -16,8 +16,6 @@ void PlayerBullet::Initlize(Model* model, const Vector3& position, const Vector3
 
 	model_ = model;
 
-	textureHandle_ = TextureManager::Load("basketballman2.png");
-
 	worldTransform_.Initialize();
 
 	//引数で受け取った初期座標をセット
@@ -44,7 +42,7 @@ void PlayerBullet::Update()
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection)
 {
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
 }
 
 void PlayerBullet::OnCollision()

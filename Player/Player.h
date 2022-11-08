@@ -38,12 +38,7 @@ public:
 
 	/// <summary>
 	/// UI描画
-	/// </summary>
-	void DrawUI();
-
-	//回転(arrowキーの左右で変更)
-	void Rotate();
-
+	
 	/// <summary>
 	/// 攻撃
 	/// </summary>
@@ -67,10 +62,6 @@ public:
 
 	const std::list<std::unique_ptr<PlayerBullet>>& GetBullets() { return bullets_; };
 
-	void SetCameraMat(Matrix4 CameraMat);
-
-	//2Dレティクルをマウスの位置に置いてそこに発射する関数
-	void Reticle2DMouseAttack(ViewProjection viewProjection);
 
 	void reset();
 
@@ -95,13 +86,6 @@ private:
 	//弾
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 
-	Matrix4 CameraMat_ = {};
-
-	//3Dレティクル用ワールドトランスフォーム
-	WorldTransform worldTransform3DReticle_;
-
-	//2dレティクル用スプライト
-	std::unique_ptr<Sprite> sprite2DReticle_;
 
 	int bulletCT = 0;
 
