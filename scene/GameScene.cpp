@@ -8,7 +8,8 @@
 
 const float PI = 3.141592653589f;
 
-
+bool CollsionAABB(WorldTransform a, WorldTransform b);
+Vector3 CollsionBackAABB(WorldTransform a, WorldTransform b, Vector3 vec);
 
 GameScene::GameScene() {}
 
@@ -626,3 +627,79 @@ void GameScene::resetGame()
 
 }
 //ここまで
+
+Vector3 CollsionBackAABB(WorldTransform a, WorldTransform b, Vector3 vec)
+{
+	Vector3 aa = a.translation_;
+
+
+
+	if (CollsionAABB(a, b))
+	{
+		if (
+			vec.x > 0 && a.translation_.x + a.scale_.x > b.translation_.x - b.scale_.x &&
+			a.translation_.x <= b.translation_.x - b.scale_.x)
+		{
+			aa.x = b.translation_.x - b.scale_.x - a.scale_.x;
+		}
+		if (vec.x < 0 && a.translation_.x - a.scale_.x < b.translation_.x + b.scale_.x &&
+			a.translation_.x >= b.translation_.x + b.scale_.x)
+		{
+			aa.x = b.translation_.x + b.scale_.x + a.scale_.x;
+		}
+		if (
+			vec.y > 0 && a.translation_.y + a.scale_.y > b.translation_.y - b.scale_.y &&
+			a.translation_.y <= b.translation_.y - b.scale_.y)
+		{
+			aa.y = b.translation_.y - b.scale_.y - a.scale_.y;
+		}
+		if (
+			vec.y < 0 && a.translation_.y - a.scale_.y < b.translation_.y + b.scale_.y &&
+			a.translation_.y >= b.translation_.y + b.scale_.y)
+		{
+			aa.y = b.translation_.y + b.scale_.y + a.scale_.y;
+		}
+		if (vec.z > 0 && a.translation_.z + a.scale_.z > b.translation_.z - b.scale_.z &&
+			a.translation_.z <= b.translation_.z - b.scale_.z)
+		{
+			aa.z = b.translation_.z - b.scale_.z - a.scale_.z;
+		}
+		if (
+			vec.z < 0 && a.translation_.z - a.scale_.z < b.translation_.z + b.scale_.z &&
+			a.translation_.z >= b.translation_.z + b.scale_.z)
+		{
+			aa.z = b.translation_.z + b.scale_.z + a.scale_.z;
+		}
+	}
+
+
+
+	return aa;
+
+}
+
+bool CollsionAABB(WorldTransform a, WorldTransform b)
+{
+	float aLeft = a.translation_.x - a.scale_.x;
+	float aRight = a.translation_.x + a.scale_.x;
+	float aTop = a.translation_.y + a.scale_.y;
+	float aBottom = a.translation_.y - a.scale_.y;
+	float aFlont = a.translation_.z + a.scale_.z;
+	float aBack = a.translation_.z - a.scale_.z;
+
+	float bLeft = b.translation_.x - b.scale_.x;
+	float bRight = b.translation_.x + b.scale_.x;
+	float bTop = b.translation_.y + b.scale_.y;
+	float bBottom = b.translation_.y - b.scale_.y;
+	float bFlont = b.translation_.z + b.scale_.z;
+	float bBack = b.translation_.z - b.scale_.z;
+
+	if (
+		aLeft < bRight && bLeft < aRight && aBottom < bTop && bBottom < aTop && aBack < bFlont &&
+		bBack < aFlont) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
