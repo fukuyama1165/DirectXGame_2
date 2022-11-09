@@ -87,7 +87,7 @@ private:
 	float waitTime = 0;
 
 	float attackWaitTime = 40;
-	float returnWaitTime = 80;
+	float returnWaitTime = 160;
 
 	Vector3 targetPos = {};
 

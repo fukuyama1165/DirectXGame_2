@@ -77,13 +77,13 @@ void bosstest::Update()
 			if (waitTime < attackWaitTime and isAttackReturnFlagL == false)
 			{
 
-				leftHand.translation_ = { cosf(waitTime)*10 + worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z };
+				leftHand.translation_ = { cosf(waitTime) + worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z };
 
 				leftHand.matWorldGeneration();
 
 			}
 
-			if ( timeCount!=maxTime and isAttackReturnFlagL==false)
+			if ( timeCount!=maxTime and isAttackReturnFlagL==false and waitTime > attackWaitTime)
 			{
 
 
@@ -92,7 +92,7 @@ void bosstest::Update()
 				
 				leftHand.matWorldGeneration();
 			}
-			else if (isAttackReturnFlagL == false)
+			else if (isAttackReturnFlagL == false and waitTime > attackWaitTime)
 			{
 				isAttackReturnFlagL = true;
 				waitTime = 0;
@@ -103,16 +103,16 @@ void bosstest::Update()
 				returnTimeCount++;
 			}
 
-			if (waitTime < returnWaitTime and isAttackReturnFlagL)
+			if (waitTime > 80 and waitTime < returnWaitTime and isAttackReturnFlagL)
 			{
 
-				leftHand.translation_ = { cosf(waitTime)*10 + targetPos.x,  targetPos.y,  targetPos.z };
+				leftHand.translation_ = { cosf(waitTime)/10 + targetPos.x,  targetPos.y,  targetPos.z };
 
 				leftHand.matWorldGeneration();
 
 			}
 
-			if (isAttackReturnFlagL and returnTimeCount != maxReturnTime)
+			if (isAttackReturnFlagL and returnTimeCount != maxReturnTime and waitTime > returnWaitTime)
 			{
 
 				leftHand.translation_ = lerp(targetPos, Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), returnTimeCount / maxReturnTime);
@@ -123,6 +123,8 @@ void bosstest::Update()
 			{
 				attackEnd();
 			}
+
+			waitTime++;
 
 		}
 	}
@@ -144,9 +146,10 @@ void bosstest::Update()
 			attackEnd();
 		}
 
+
 	}
 
-	waitTime++;
+	
 
 	debugText_->SetPos(50, 90);
 	debugText_->Printf("leftHandpos:(%f,%f,%f)", leftHand.translation_.x, leftHand.translation_.y, leftHand.translation_.z);
