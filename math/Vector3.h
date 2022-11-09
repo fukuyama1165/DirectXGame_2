@@ -22,6 +22,8 @@ class Vector3 {
 	float length()const;
 	Vector3& normalize();
 
+	Vector3 cross(const Vector3& v)const;
+
 	// 代入演算子オーバーロード
 	Vector3& operator+=(const Vector3& v);
 	Vector3& operator-=(const Vector3& v);

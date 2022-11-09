@@ -8,6 +8,7 @@
 #include "PlayerBullet.h"
 #include <memory>
 #include <list>
+#include"RailCamera.h"
 
 /// <summary>
 /// 自キャラ
@@ -22,7 +23,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, Model* playerModel, uint32_t textureHandle);
+	void Initialize(Model* model, Model* playerModel, uint32_t textureHandle,RailCamera* camera);
 
 	/// <summary>
 	/// 更新
@@ -42,7 +43,7 @@ public:
 	/// <summary>
 	/// 攻撃
 	/// </summary>
-	void Attack();
+	void Attack(Vector3 flont);
 
 	/// <summary>
 	/// 行列とベクトルの計算(左側が行列計算の先)
@@ -54,8 +55,14 @@ public:
 	/// </summary>
 	Vector3 VectorMat(Matrix4 mat, Vector3 vector);
 
+	Vector3 PlayerMoveVec();
+
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	WorldTransform GetMat();
+
+	void SetWorldPosition(Vector3 osimodosi);
 
 	//衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
@@ -66,6 +73,8 @@ public:
 	void reset();
 
 private:
+
+	RailCamera* camera = nullptr;
 
 	//ワールド変換データ
 	WorldTransform worldTransform_;
@@ -90,6 +99,8 @@ private:
 	int bulletCT = 0;
 
 	const int MAXBulletCT = 5;
+
+	Vector3 moveVec;
 
 };
 
