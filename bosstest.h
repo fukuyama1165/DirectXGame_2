@@ -41,6 +41,12 @@ public:
 	void setisAttackFlagL(bool flag);
 	void setisAttackFlagR(bool flag);
 
+	//プレイヤーの攻撃によって跳ね返された時１回だけ行う処理
+	void playerAttackReturnL();
+	void playerAttackReturnR();
+
+	void attackEnd();
+
 private:
 
 	DebugText* debugText_ = nullptr;
@@ -55,6 +61,7 @@ private:
 	//手が攻撃中か
 	bool isAttackFlagL = false;
 	bool isAttackFlagR = false;
+	//攻撃が終わって戻っている時か
 	bool isAttackReturnFlagL = false;
 	bool isAttackReturnFlagR = false;
 
@@ -62,7 +69,7 @@ private:
 	bool isReturnHandL = false;
 	bool isReturnHandR = false;
 
-
+	
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
@@ -71,9 +78,12 @@ private:
 
 	float timeCount = 0;
 	float returnTimeCount = 0;
+	float returnAttackTimeCount = 0;
 
 	float maxTime = 500.0f;
 	float maxReturnTime = 500.0f;
+	float maxReturnAttackTime = 200.0f;
 
+	Vector3 returnPos = {};
 };
 

@@ -77,19 +77,15 @@ void bosstest::Update()
 			if ( timeCount!=maxTime and isAttackReturnFlagL==false)
 			{
 
-				Vector3 bossplayer = { 0 - (worldTransform.translation_.x + 2.0f),0 - worldTransform.translation_.y ,0-worldTransform.translation_.z };
-
-				bossplayer.normalize();
 
 				//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
-				leftHand.translation_.z += bossplayer.z * 1;
+				leftHand.translation_ = lerp(Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z),Vector3(0,0,0),timeCount/ maxTime);
 				
 				leftHand.matWorldGeneration();
 			}
 			else if (isAttackReturnFlagL == false)
 			{
 				isAttackReturnFlagL = true;
-				timeCount = 0;
 			}
 
 			if (isAttackReturnFlagL and returnTimeCount < maxReturnTime)
@@ -99,12 +95,14 @@ void bosstest::Update()
 
 			if (isAttackReturnFlagL and returnTimeCount != maxReturnTime)
 			{
-				Vector3 bossplayer = { worldTransform.translation_.x + 1.5f - 0,worldTransform.translation_.y - 0,worldTransform.translation_.z - 1 };
 
-				bossplayer.normalize();
-
-				leftHand.translation_.z += bossplayer.z * 1;
+				leftHand.translation_ = lerp(Vector3(0, 0, 0), Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), returnTimeCount / maxReturnTime);
 				leftHand.matWorldGeneration();
+			}
+
+			if (returnTimeCount == maxReturnTime)
+			{
+				attackEnd();
 			}
 
 		}
@@ -112,7 +110,20 @@ void bosstest::Update()
 	else
 	{
 
+		if (returnAttackTimeCount < maxReturnAttackTime)
+		{
+			returnAttackTimeCount++;
+		}
 
+		leftHand.translation_ = lerp(returnPos, Vector3(worldTransform.translation_.x, worldTransform.translation_.y, worldTransform.translation_.z), returnAttackTimeCount / maxReturnAttackTime);
+		leftHand.matWorldGeneration();
+
+		if (returnAttackTimeCount == maxReturnAttackTime)
+		{
+			leftHand.translation_ = { worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z };
+			leftHand.matWorldGeneration();
+			attackEnd();
+		}
 
 	}
 
@@ -149,6 +160,26 @@ void bosstest::setisAttackFlagL(bool flag)
 void bosstest::setisAttackFlagR(bool flag)
 {
 	isAttackFlagR = flag;
+}
+
+void bosstest::playerAttackReturnL()
+{
+
+	isReturnHandL = true;
+	returnPos = leftHand.matWorldGetPos();
+
+}
+
+void bosstest::attackEnd()
+{
+	isReturnHandL = false;
+	isAttackFlagL = false;
+	isAttackReturnFlagL = false;
+	returnAttackTimeCount = 0;
+	timeCount = 0;
+	returnTimeCount = 0;
+	
+
 }
 
 const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)

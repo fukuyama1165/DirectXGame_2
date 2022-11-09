@@ -52,9 +52,7 @@ void GameScene::Initialize() {
 	
 	player_p = new Player();
 
-	player_p->Initialize(model_, playerModel_, textureHandle_);
-
-	player_.reset(player_p);
+	
 
 	//天球の生成
 	skydome_p = new Skydome;
@@ -74,7 +72,9 @@ void GameScene::Initialize() {
 
 	railView = railCamera_->getView();
 
-	
+	player_p->Initialize(model_, playerModel_, textureHandle_, railCamera_.get());
+
+	player_.reset(player_p);
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
