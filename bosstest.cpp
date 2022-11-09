@@ -69,9 +69,18 @@ void bosstest::Update()
 		if (isAttackFlagL)
 		{
 
-			if (timeCount < maxTime)
+			if (timeCount < maxTime and waitTime > attackWaitTime)
 			{
 				timeCount++;
+			}
+
+			if (waitTime < attackWaitTime and isAttackReturnFlagL == false)
+			{
+
+				leftHand.translation_ = { cosf(waitTime)*10 + worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z };
+
+				leftHand.matWorldGeneration();
+
 			}
 
 			if ( timeCount!=maxTime and isAttackReturnFlagL==false)
@@ -79,24 +88,34 @@ void bosstest::Update()
 
 
 				//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
-				leftHand.translation_ = lerp(Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z),Vector3(0,0,0),timeCount/ maxTime);
+				leftHand.translation_ = lerp(Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), targetPos,timeCount/ maxTime);
 				
 				leftHand.matWorldGeneration();
 			}
 			else if (isAttackReturnFlagL == false)
 			{
 				isAttackReturnFlagL = true;
+				waitTime = 0;
 			}
 
-			if (isAttackReturnFlagL and returnTimeCount < maxReturnTime)
+			if (isAttackReturnFlagL and returnTimeCount < maxReturnTime and waitTime > returnWaitTime)
 			{
 				returnTimeCount++;
+			}
+
+			if (waitTime < returnWaitTime and isAttackReturnFlagL)
+			{
+
+				leftHand.translation_ = { cosf(waitTime)*10 + targetPos.x,  targetPos.y,  targetPos.z };
+
+				leftHand.matWorldGeneration();
+
 			}
 
 			if (isAttackReturnFlagL and returnTimeCount != maxReturnTime)
 			{
 
-				leftHand.translation_ = lerp(Vector3(0, 0, 0), Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), returnTimeCount / maxReturnTime);
+				leftHand.translation_ = lerp(targetPos, Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), returnTimeCount / maxReturnTime);
 				leftHand.matWorldGeneration();
 			}
 
@@ -126,6 +145,8 @@ void bosstest::Update()
 		}
 
 	}
+
+	waitTime++;
 
 	debugText_->SetPos(50, 90);
 	debugText_->Printf("leftHandpos:(%f,%f,%f)", leftHand.translation_.x, leftHand.translation_.y, leftHand.translation_.z);
@@ -178,7 +199,7 @@ void bosstest::attackEnd()
 	returnAttackTimeCount = 0;
 	timeCount = 0;
 	returnTimeCount = 0;
-	
+	waitTime = 0;
 
 }
 

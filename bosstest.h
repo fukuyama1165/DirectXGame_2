@@ -84,6 +84,13 @@ private:
 	float maxReturnTime = 500.0f;
 	float maxReturnAttackTime = 200.0f;
 
+	float waitTime = 0;
+
+	float attackWaitTime = 40;
+	float returnWaitTime = 80;
+
+	Vector3 targetPos = {};
+
 	Vector3 returnPos = {};
 };
 

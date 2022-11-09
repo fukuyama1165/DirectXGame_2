@@ -171,10 +171,15 @@ void GameScene::Update()
 		rotateY -= 0.01f;
 	}
 
-	/*if (input_->TriggerKey(DIK_I))
+	if (input_->TriggerKey(DIK_I))
 	{
 		boss.setisAttackFlagL(true);
-	}*/
+	}
+
+	if (input_->TriggerKey(DIK_O))
+	{
+		boss.playerAttackReturnL();
+	}
 
 	
 
