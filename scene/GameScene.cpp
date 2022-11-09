@@ -52,7 +52,13 @@ void GameScene::Initialize() {
 	
 	player_p = new Player();
 
-	
+	worldTransform_.Initialize();
+
+	worldTransform_.scale_ = { 200.0f,1.0f,200.0f };
+
+	worldTransform_.translation_.y = -3.0f;
+
+	worldTransform_.matWorldGeneration();
 
 	//天球の生成
 	skydome_p = new Skydome;
@@ -143,15 +149,15 @@ void GameScene::Update()
 	//	rotateY -= 0.01;
 	//}
 
-	/*if (input_->PushKey(DIK_W))
+	if (input_->PushKey(DIK_W))
 	{
-		rotateX -= 0.1;
+		rotateX -= 0.01;
 	}
 
 	if (input_->PushKey(DIK_S))
 	{
-		rotateX += 0.1;
-	}*/
+		rotateX += 0.01;
+	}
 
 	if (input_->PushKey(DIK_D))
 	{
@@ -173,6 +179,7 @@ void GameScene::Update()
 	
 
 	player_->Update(railView);
+	player_->SetWorldPosition(CollsionBackAABB(player_->GetMat(), worldTransform_, player_->PlayerMoveVec()));
 
 	railCamera_->setPos(Vector3(sinf(cameraRotateY)*20+ player_->GetWorldPosition().x, player_->GetWorldPosition().y + 2, cosf(cameraRotateY)*20+player_->GetWorldPosition().z));
 	railCamera_->setRotate({ rotateX,rotateY,0 });
@@ -244,6 +251,7 @@ void GameScene::Draw() {
 	skydome_->Draw(railView);
 	player_->Draw(railView);
 	boss.Draw(railView);
+	model_->Draw(worldTransform_, railView);
 
 	//model_->Draw(worldTransform_, viewProjection_);
 	//effectM.draw(viewProjection_);
