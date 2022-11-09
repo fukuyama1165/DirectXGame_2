@@ -56,6 +56,7 @@ void Player::Update(ViewProjection viewProjection)
 	Vector3 right = {-Flont.z,0,Flont.x};
 
 	right.normalize();
+	right *= move_speed;
 
 	Flont *= move_speed;
 
