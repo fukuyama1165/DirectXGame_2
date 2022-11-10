@@ -2,7 +2,7 @@
 #include <cassert>
 #include <cstdlib>
 
-const Vector3 lerp(const Vector3& start, const Vector3& end, const float t);
+//const Vector3 lerp(const Vector3& start, const Vector3& end, const float t);
 
 //単純に!=
 bool vector3IsDiffer(Vector3 a, Vector3 b);
@@ -35,22 +35,26 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 
 	worldTransform.matWorldGeneration();
 
-	leftHand.Initialize();
+	for (int i = 0; i < _countof(Hand); i++)
+	{
+		Hand[i].init({ 1.0f,1.0f,1.0f }, {}, { sinf(i*2)*5,cosf(i*2)*5,200}, model);
+	}
+	
+	/*Hand[1].init({ 1.0f,1.0f,1.0f }, {}, { -4.0f,-0.5f,200 }, model);
+	Hand[2].init({ 1.0f,1.0f,1.0f }, {}, { 4.0f,0,200 }, model);
+	Hand[3].init({1.0f,1.0f,1.0f}, {}, {4.0f,0,200}, model);
+	Hand[4].init({1.0f,1.0f,1.0f}, {}, {4.0f,0,200}, model);
+	Hand[5].init({1.0f,1.0f,1.0f}, {}, {4.0f,0,200}, model);
+	Hand[6].init({1.0f,1.0f,1.0f}, {}, {4.0f,0,200}, model);
+	Hand[7].init({1.0f,1.0f,1.0f}, {}, {4.0f,0,200}, model);*/
 
-	rightHand.Initialize();
+	
 
-	/*leftHand.parent_ = &worldTransform;
-	rightHand.parent_ = &worldTransform;*/
 
-	leftHand.scale_ = { 1.0f,1.0f,1.0f };
-	leftHand.translation_ = { 4.0f,0,200 };
-
-	leftHand.matWorldGeneration();
-
-	rightHand.scale_ = { 1.0f,1.0f,1.0f };
+	/*rightHand.scale_ = { 1.0f,1.0f,1.0f };
 	rightHand.translation_ = { -4.0f,-0.5f,200 };
 
-	rightHand.matWorldGeneration();
+	rightHand.matWorldGeneration();*/
 
 
 }
@@ -61,104 +65,27 @@ void bosstest::Update()
 	
 
 	worldTransform.matWorldGeneration();
-	leftHand.matWorldGeneration();
-	rightHand.matWorldGeneration();
 
-	if (!isReturnHandL)
-	{
-		if (isAttackFlagL)
-		{
-
-			if (timeCount < maxTime and waitTime > attackWaitTime)
-			{
-				timeCount++;
-			}
-
-			if (waitTime < attackWaitTime and isAttackReturnFlagL == false)
-			{
-
-				leftHand.translation_ = { cosf(waitTime) + worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z };
-
-				leftHand.matWorldGeneration();
-
-			}
-
-			if ( timeCount!=maxTime and isAttackReturnFlagL==false and waitTime > attackWaitTime)
-			{
-
-
-				//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
-				leftHand.translation_ = lerp(Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), targetPos,timeCount/ maxTime);
-				
-				leftHand.matWorldGeneration();
-			}
-			else if (isAttackReturnFlagL == false and waitTime > attackWaitTime)
-			{
-				isAttackReturnFlagL = true;
-				waitTime = 0;
-			}
-
-			if (isAttackReturnFlagL and returnTimeCount < maxReturnTime and waitTime > returnWaitTime)
-			{
-				returnTimeCount++;
-			}
-
-			if (waitTime > 80 and waitTime < returnWaitTime and isAttackReturnFlagL)
-			{
-
-				leftHand.translation_ = { cosf(waitTime)/10 + targetPos.x,  targetPos.y,  targetPos.z };
-
-				leftHand.matWorldGeneration();
-
-			}
-
-			if (isAttackReturnFlagL and returnTimeCount != maxReturnTime and waitTime > returnWaitTime)
-			{
-
-				leftHand.translation_ = lerp(targetPos, Vector3(worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z), returnTimeCount / maxReturnTime);
-				leftHand.matWorldGeneration();
-			}
-
-			if (returnTimeCount == maxReturnTime)
-			{
-				attackEnd();
-			}
-
-			waitTime++;
-
-		}
-	}
-	else
+	for (int i = 0; i < _countof(Hand); i++)
 	{
 
-		if (returnAttackTimeCount < maxReturnAttackTime)
-		{
-			returnAttackTimeCount++;
-		}
-
-		leftHand.translation_ = lerp(returnPos, Vector3(worldTransform.translation_.x, worldTransform.translation_.y, worldTransform.translation_.z), returnAttackTimeCount / maxReturnAttackTime);
-		leftHand.matWorldGeneration();
-
-		if (returnAttackTimeCount == maxReturnAttackTime)
-		{
-			leftHand.translation_ = { worldTransform.translation_.x + 4.0f, worldTransform.translation_.y, worldTransform.translation_.z };
-			leftHand.matWorldGeneration();
-			attackEnd();
-		}
-
+		Hand[i].setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8)*5,worldTransform.matWorldGetPos().y + cosf(i * 8)*5,worldTransform.matWorldGetPos().z });
 
 	}
-
+	for (int i = 0; i < _countof(Hand); i++)
+	{
+		Hand[i].update(worldTransform);
+	}
 	
-
-	debugText_->SetPos(50, 90);
-	debugText_->Printf("leftHandpos:(%f,%f,%f)", leftHand.translation_.x, leftHand.translation_.y, leftHand.translation_.z);
 }
 
 void bosstest::Draw(const ViewProjection& viewProjection)
 {
-	model_->Draw(leftHand, viewProjection);
-	model_->Draw(rightHand, viewProjection);
+	
+	for (int i = 0; i < _countof(Hand); i++)
+	{
+		Hand[i].draw(viewProjection);
+	}
 	model_->Draw(worldTransform, viewProjection);
 	
 }
@@ -178,38 +105,26 @@ void bosstest::setPos(Vector3 pos)
 
 void bosstest::setisAttackFlagL(bool flag)
 {
-	isAttackFlagL = flag;
-}
-
-void bosstest::setisAttackFlagR(bool flag)
-{
-	isAttackFlagR = flag;
+	for (int i = 0; i < _countof(Hand); i++)
+	{
+		Hand[i].setisAttackFlag(flag);
+	}
 }
 
 void bosstest::playerAttackReturnL()
 {
-
-	isReturnHandL = true;
-	returnPos = leftHand.matWorldGetPos();
-
+	for (int i = 0; i < _countof(Hand); i++)
+	{
+		Hand[i].playerAttackReturn();
+	}
 }
 
-void bosstest::attackEnd()
-{
-	isReturnHandL = false;
-	isAttackFlagL = false;
-	isAttackReturnFlagL = false;
-	returnAttackTimeCount = 0;
-	timeCount = 0;
-	returnTimeCount = 0;
-	waitTime = 0;
 
-}
 
-const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)
-{
-	return start +  t * (end - start);
-}
+//const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)
+//{
+//	return start +  t * (end - start);
+//}
 
 bool vector3IsDiffer(Vector3 a, Vector3 b)
 {
