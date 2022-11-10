@@ -40,7 +40,7 @@ void bossHand::draw(const ViewProjection& viewProjection)
 void bossHand::punch(WorldTransform worldTransform)
 {
 
-	if (!isReturnHand)
+	if (isReturnHand==false)
 	{
 		if (isAttackFlag)
 		{
@@ -104,7 +104,8 @@ void bossHand::punch(WorldTransform worldTransform)
 
 		}
 	}
-	else
+
+	if(isReturnHand)
 	{
 
 		if (returnAttackTimeCount < maxReturnAttackTime)

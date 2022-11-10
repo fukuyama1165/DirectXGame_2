@@ -39,7 +39,7 @@ private:
 	bool isAttackReturnFlag = false;
 
 	//手を跳ね返した時のフラグ
-	bool isReturnHand = false;
+	bool isReturnHand = true;
 
 	//タイムカウンター
 	float timeCount = 0;

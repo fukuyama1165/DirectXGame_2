@@ -41,7 +41,7 @@ public:
 
 	WorldTransform getPos() { return worldTransform; };
 
-	std::vector<bossHand> getHand() { return hand; };
+	std::vector<bossHand*> getHand() { return hand; };
 
 private:
 
@@ -53,7 +53,7 @@ private:
 	//手の座標(もしかしたら処理が同じかもしれないのでクラス化したほうがいいかも)
 	/*bossHand hand[8];*/
 
-	std::vector<bossHand> hand;
+	std::vector<bossHand*> hand;
 	
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;

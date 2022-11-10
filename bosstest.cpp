@@ -38,8 +38,8 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 	for (int i = 0; i < 8; i++)
 	{
 
-		bossHand newHand;
-		newHand.init({ 1.0f,1.0f,1.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200 }, model);
+		bossHand* newHand=new bossHand();
+		newHand->init({ 1.0f,1.0f,1.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200 }, model);
 
 		hand.push_back(newHand);
 	}
@@ -73,12 +73,12 @@ void bosstest::Update()
 	for (int i = 0; i < hand.size(); i++)
 	{
 
-		hand[i].setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8)*5,worldTransform.matWorldGetPos().y + cosf(i * 8)*5,worldTransform.matWorldGetPos().z });
+		hand[i]->setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8)*5,worldTransform.matWorldGetPos().y + cosf(i * 8)*5,worldTransform.matWorldGetPos().z });
 
 	}
 	for (int i = 0; i < hand.size(); i++)
 	{
-		hand[i].update(worldTransform);
+		hand[i]->update(worldTransform);
 	}
 	
 }
@@ -88,7 +88,9 @@ void bosstest::Draw(const ViewProjection& viewProjection)
 	
 	for (int i = 0; i < hand.size(); i++)
 	{
-		hand[i].draw(viewProjection);
+		hand[i]->draw(viewProjection);
+		debugText_->SetPos(0, i * 20 + 50);
+		debugText_->Printf("%d", hand[i]->getisReturnHand());
 	}
 	model_->Draw(worldTransform, viewProjection);
 	
@@ -111,7 +113,7 @@ void bosstest::setisAttackFlagL(bool flag)
 {
 	for (int i = 0; i < hand.size(); i++)
 	{
-		hand[i].setisAttackFlag(flag);
+		hand[i]->setisAttackFlag(flag);
 	}
 }
 
@@ -119,7 +121,7 @@ void bosstest::playerAttackReturnL()
 {
 	for (int i = 0; i < hand.size(); i++)
 	{
-		hand[i].playerAttackReturn();
+		hand[i]->playerAttackReturn();
 	}
 }
 
