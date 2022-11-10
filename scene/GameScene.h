@@ -87,6 +87,8 @@ private:
 	//二次元のアフィン変換
 	void afin(WorldTransform Transform);
 
+	void AllCol();
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;

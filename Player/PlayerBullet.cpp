@@ -62,3 +62,8 @@ Vector3 PlayerBullet::GetWorldPosition()
 
 	return worldpos;
 }
+
+Vector3 PlayerBullet::GetScale()
+{
+	return worldTransform_.scale_;
+}

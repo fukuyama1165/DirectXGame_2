@@ -36,6 +36,7 @@ public:
 	void OnCollision();
 
 	Vector3 GetWorldPosition();
+	Vector3 GetScale();
 
 private:
 
