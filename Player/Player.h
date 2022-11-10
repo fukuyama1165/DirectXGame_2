@@ -113,5 +113,12 @@ private:
 
 	float hopper_speed;
 
+	bool cooldown;
+
+	Vector3 dash_vec;
+
+	bool B_bottan;
+	bool old_B_bottan;
+
 };
 

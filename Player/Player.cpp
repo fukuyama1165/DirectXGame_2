@@ -38,6 +38,12 @@ void Player::Initialize(Model* model, Model* playerModel, uint32_t textureHandle
 
 	hopper_speed = 0;
 
+	cooldown = false;
+
+	B_bottan = false;
+	old_B_bottan = false;
+
+
 }
 
 Player::Player()
@@ -50,6 +56,8 @@ Player::~Player()
 
 void Player::Update(ViewProjection viewProjection)
 {
+	XINPUT_STATE joystate;
+
 	Vector3 move = { 0,0,0 };
 
 	Vector3 up = { 0,1.0f,0 };
@@ -71,32 +79,31 @@ void Player::Update(ViewProjection viewProjection)
 			return bullet->IsDead();
 		});
 
+	if (Input::GetInstance()->GetJoystickState(0, joystate))
+	{
+		moveVec.x += (float)joystate.Gamepad.sThumbLX / SHRT_MAX;
+		moveVec.z += (float)joystate.Gamepad.sThumbLY / SHRT_MAX;
+	}
+
+	if (input_->PushKey(DIK_UP))
+	{
+		moveVec.z = 1;
+	}
+	if (input_->PushKey(DIK_DOWN))
+	{
+		moveVec.z = -1;
+	}
+	if (input_->PushKey(DIK_RIGHT))
+	{
+		moveVec.x = 1;
+	}
+	if (input_->PushKey(DIK_LEFT))
+	{
+		moveVec.x = -1;
+	}
 
 	//ˆÚ“®
-	if (!hopper_dash)
-	{
-		if (input_->PushKey(DIK_UP))
-		{
-			worldTransform_.translation_ += Flont * move_speed;
-			moveVec.z = 1;
-		}
-		if (input_->PushKey(DIK_DOWN))
-		{
-			worldTransform_.translation_ -= Flont * move_speed;
-			moveVec.z = -1;
-		}
-		if (input_->PushKey(DIK_RIGHT))
-		{
-			worldTransform_.translation_ -= Vector3(-Flont.z,0,Flont.x) * move_speed;
-			moveVec.x = 1;
-		}
-		if (input_->PushKey(DIK_LEFT))
-		{
-			worldTransform_.translation_ += Vector3(-Flont.z, 0, Flont.x) * move_speed;
-			moveVec.x = -1;
-
-		}
-	}
+	
 	
 	float p_pos = atan2(moveVec.x, moveVec.z);
 	float c_vec = atan2(Flont.x, Flont.z);
@@ -111,6 +118,68 @@ void Player::Update(ViewProjection viewProjection)
 
 	target.translation_ = worldTransform_.translation_ + (mae * 5.0f);
 
+	if (!hopper_dash && !cooldown)
+	{
+		if(moveVec.x!=0|| moveVec.z != 0)
+		worldTransform_.translation_ += mae * move_speed;
+	}
+
+	old_B_bottan = B_bottan;
+
+	if (joystate.Gamepad.wButtons&XINPUT_GAMEPAD_A)
+	{
+		B_bottan = true;
+	}
+	else
+	{
+		B_bottan = false;
+	}
+	
+
+	if ((input_->TriggerKey(DIK_Z)||(B_bottan&&!old_B_bottan))&& hopper_speed <= 0&&!cooldown)
+	{
+		hopper_dash = true;
+
+		cooltime += 30;
+
+		yuyotime = 120;
+
+		hopper_speed = 10.0f;
+
+		dash_vec = mae;
+
+		dash_vec.normalize();
+
+	}
+	if (cooltime > 150)
+	{
+		cooltime = 150;
+	}
+
+	if (hopper_dash)
+	{
+		if (hopper_speed >= 0)
+		{
+			worldTransform_.translation_ += dash_vec * hopper_speed;
+			hopper_speed -= 1.0f;
+		}
+
+		if (hopper_speed < 0)
+		{
+			yuyotime--;
+		}
+		if (yuyotime <= 0)
+		{
+			cooltime--;
+			cooldown = true;
+		}
+		if (cooltime <= 0)
+		{
+			hopper_dash = false;
+			cooldown = false;
+		}
+
+	}
 	
 
 	worldTransform_.translation_.y -= 0.1f;
@@ -119,7 +188,7 @@ void Player::Update(ViewProjection viewProjection)
 
 
 
-	if (input_->PushKey(DIK_SPACE))
+	if (input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
 		Attack(camera->getForwardVec());
 	}
@@ -163,7 +232,7 @@ void Player::Attack(Vector3 flont)
 
 	Vector3 velocity=flont;
 
-	velocity = worldTransform_.matWorld_.VectorMat(velocity,worldTransform_.matWorld_);
+	//velocity = worldTransform_.matWorld_.VectorMat(velocity,worldTransform_.matWorld_);
 	velocity.normalize();
 
 	velocity *= kBulletSpeed;
