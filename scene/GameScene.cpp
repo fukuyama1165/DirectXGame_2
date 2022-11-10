@@ -411,17 +411,18 @@ void GameScene::AllCol()
 
 	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player_->GetBullets();
 
+	std::vector<bossHand> bosshands = boss.getHand();
 	//ボスハンドのリスト化したユニークptr変数
 
 	for (const std::unique_ptr<PlayerBullet>& p_bullet : playerBullets)
 	{
-		//for (ボスハンド)
-		//{
-		//	if(CollsionSphere(p_bullet->GetWorldPosition(),p_bullet->GetScale().x,{ボスハンドの位置},{ボスハンドの半径(scaleのxだったりyだったり)})
-		//	{
-		//		ボスハンドお帰り処理
-		//	}
-		//}
+		for (int i = 0; i < bosshands.size(); i++)
+		{
+			if(CollsionSphere(p_bullet->GetWorldPosition(),p_bullet->GetScale().x,bosshands[i].GetwroldTransform().translation_, bosshands[i].GetwroldTransform().scale_.x))
+			{
+				bosshands[i].playerAttackReturn();
+			}
+		}
 	}
 
 

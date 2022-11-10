@@ -28,6 +28,8 @@ public:
 
 	void setdefaultPos(Vector3 pos) { defaultPos = pos; };
 
+	WorldTransform GetwroldTransform() { return Hand; }
+
 private:
 	WorldTransform Hand;
 
