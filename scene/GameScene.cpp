@@ -169,6 +169,28 @@ void GameScene::Update()
 		
 	}
 
+	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		cameraRotateY += (float)joyState.Gamepad.sThumbRX / SHRT_MAX*0.01f;
+		rotateY += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 0.01f;
+		if ((cameraRotateX < 0.27f&& (float)joyState.Gamepad.sThumbRY / SHRT_MAX>0) || (cameraRotateX > -0.6f && (float)joyState.Gamepad.sThumbRY / SHRT_MAX < 0))
+		{
+			cameraRotateX += (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 0.01f;
+			rotateX -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 0.01f;
+		}
+
+		//if (cameraRotateX < 0.27f)
+		//{
+		//	cameraRotateX = 0.27f;
+		//	//rotateX = -0.27f;
+		//}
+		//if (cameraRotateX > -0.6f)
+		//{
+		//	cameraRotateX = -0.6f;
+		//	//rotateX = 0.6f;
+		//}
+	}
+
 	if (input_->PushKey(DIK_D))
 	{
 		cameraRotateY += 0.01f;
