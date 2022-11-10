@@ -46,6 +46,42 @@ Vector3 Matrix4::PosMat(Matrix4 mat, Vector3 vector)
 	return changeVector;
 }
 
+Matrix4* Matrix4::CalcLookAtMatrix(Matrix4* mat, Vector3* pos, Vector3* look, Vector3* up)
+{
+	Vector3 X, Y, Z, D;
+
+	D = *look - *pos;
+
+	D.normalize();
+	Y = up->normalize();
+	X = Y.cross(D);
+	X.normalize();
+	Z = X.cross(Y);
+	Z.normalize();
+
+	mat->m[0][0] = X.x;
+	mat->m[0][1] = X.y;
+	mat->m[0][2] = X.z;
+	mat->m[0][3] = 0;
+
+	mat->m[1][0] = Y.x;
+	mat->m[1][1] = Y.y;
+	mat->m[1][2] = Y.z;
+	mat->m[1][3] = 0;
+
+	mat->m[2][0] = Z.x;
+	mat->m[2][1] = Z.y;
+	mat->m[2][2] = Z.z;
+	mat->m[2][3] = 0;
+
+	mat->m[3][0] = 0;
+	mat->m[3][1] = 0;
+	mat->m[3][2] = 0;
+	mat->m[3][3] = 1.0f;
+
+	return mat;
+}
+
 Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos)
 {
 	float w = pos.x * mat.m[0][3] + pos.y * mat.m[1][3] + pos.z * mat.m[2][3] + mat.m[3][3];

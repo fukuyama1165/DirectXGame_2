@@ -20,11 +20,23 @@ void Player::Initialize(Model* model, Model* playerModel, uint32_t textureHandle
 	//ƒ[ƒ‹ƒh•ÏŠ·‚Ì‰Šú‰»
 	worldTransform_.Initialize();
 
+	target.Initialize();
+
 	worldTransform_.translation_ = { 0,0,0 };
 
 	moveVec = { 0,0,0 };
 
 	viewProjection_.Initialize();
+
+	move_speed = 0.3f;
+
+	hopper_dash = false;
+
+	cooltime = 0;
+
+	yuyotime = 0;
+
+	hopper_speed = 0;
 
 }
 
@@ -40,59 +52,72 @@ void Player::Update(ViewProjection viewProjection)
 {
 	Vector3 move = { 0,0,0 };
 
+	Vector3 up = { 0,1.0f,0 };
+
 	moveVec = { 0,0,0 };
 
 	Vector3 rota = { 0,0,0 };
 
 	Vector3 Flont = camera->getForwardVec();
 
-	float move_speed = 0.3f;
+	Flont.y = 0;
 
-	Flont = worldTransform_.matWorld_.VectorMat(Flont, worldTransform_.matWorld_);
+	//Flont = worldTransform_.matWorld_.VectorMat(Flont, worldTransform_.matWorld_);
 	Flont.normalize();
 
-	
-
-	Vector3 right = {-Flont.z,0,Flont.x};
-
-	right.normalize();
-	right *= move_speed;
-
-	Flont *= move_speed;
 
 	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)
 		{
 			return bullet->IsDead();
 		});
 
-	Vector3 Yrota = Flont.cross(right);
 
 	//ˆÚ“®
-	if (input_->PushKey(DIK_UP))
+	if (!hopper_dash)
 	{
-		worldTransform_.translation_+=Flont;
-		moveVec.z = 1;
-	}
-	if (input_->PushKey(DIK_DOWN))
-	{
-		worldTransform_.translation_ -= Flont;
-		moveVec.z = -1;
-	}
-	if (input_->PushKey(DIK_RIGHT))
-	{
-		worldTransform_.translation_ -= right;
-		moveVec.x = 1;
-	}
-	if (input_->PushKey(DIK_LEFT))
-	{
-		worldTransform_.translation_ += right;
-		moveVec.x = -1;
+		if (input_->PushKey(DIK_UP))
+		{
+			worldTransform_.translation_ += Flont * move_speed;
+			moveVec.z = 1;
+		}
+		if (input_->PushKey(DIK_DOWN))
+		{
+			worldTransform_.translation_ -= Flont * move_speed;
+			moveVec.z = -1;
+		}
+		if (input_->PushKey(DIK_RIGHT))
+		{
+			worldTransform_.translation_ -= Vector3(-Flont.z,0,Flont.x) * move_speed;
+			moveVec.x = 1;
+		}
+		if (input_->PushKey(DIK_LEFT))
+		{
+			worldTransform_.translation_ += Vector3(-Flont.z, 0, Flont.x) * move_speed;
+			moveVec.x = -1;
 
+		}
 	}
-	//worldTransform_.translation_ += move;
+	
+	float p_pos = atan2(moveVec.x, moveVec.z);
+	float c_vec = atan2(Flont.x, Flont.z);
+
+	worldTransform_.rotation_.y = (p_pos + c_vec);
+
+	Vector3 mae = { 0,0,1.0f };
+
+	mae = worldTransform_.matWorld_.VectorMat(mae, worldTransform_.matWorld_);
+
+	mae.normalize();
+
+	target.translation_ = worldTransform_.translation_ + (mae * 5.0f);
+
+	
 
 	worldTransform_.translation_.y -= 0.1f;
 	moveVec.y = -1;
+
+
+
 
 	if (input_->PushKey(DIK_SPACE))
 	{
@@ -104,6 +129,9 @@ void Player::Update(ViewProjection viewProjection)
 		bullet->Update();
 	}
 
+	
+	target.matWorldGeneration();
+
 
 	worldTransform_.matWorldGeneration();
 		
@@ -114,6 +142,7 @@ void Player::Draw(ViewProjection& viewProjection)
 
 	//3Dƒ‚ƒfƒ‹‚ð•`‰æ
 	playerModel_->Draw(worldTransform_, viewProjection);
+	model_->Draw(target, viewProjection);
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 
 	for(std::unique_ptr<PlayerBullet>& bullet:bullets_)

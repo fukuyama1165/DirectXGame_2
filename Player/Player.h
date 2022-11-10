@@ -78,6 +78,7 @@ private:
 
 	//ワールド変換データ
 	WorldTransform worldTransform_;
+	WorldTransform target;
 
 	ViewProjection viewProjection_;
 
@@ -101,6 +102,16 @@ private:
 	const int MAXBulletCT = 5;
 
 	Vector3 moveVec;
+
+	float move_speed;
+
+	bool hopper_dash;
+
+	int cooltime;
+
+	int yuyotime;
+
+	float hopper_speed;
 
 };
 
