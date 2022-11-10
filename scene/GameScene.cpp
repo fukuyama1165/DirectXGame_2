@@ -71,7 +71,7 @@ void GameScene::Initialize() {
 	//レールカメラの生成
 	railCamera_p = new RailCamera;
 
-	railCamera_p->Initialize({ 0.0f,0.0f,-50.0f },{0.0f,0.0f,0.0f});
+	railCamera_p->Initialize({ 0.0f,0.0f,0.0f },{0.0f,0.0f,0.0f});
 
 	//ユニークポインタに登録
 	railCamera_.reset(railCamera_p);
@@ -151,12 +151,22 @@ void GameScene::Update()
 
 	if (input_->PushKey(DIK_W))
 	{
-		rotateX -= 0.01;
+		if (cameraRotateX < 0.27f)
+		{
+			cameraRotateX += 0.01f;
+			rotateX -= 0.01f;
+		}
+		
 	}
 
 	if (input_->PushKey(DIK_S))
 	{
-		rotateX += 0.01;
+		if (cameraRotateX > -0.6f)
+		{
+			cameraRotateX -= 0.01f;
+			rotateX += 0.01f;
+		}
+		
 	}
 
 	if (input_->PushKey(DIK_D))
@@ -186,12 +196,14 @@ void GameScene::Update()
 	player_->Update(railView);
 	player_->SetWorldPosition(CollsionBackAABB(player_->GetMat(), worldTransform_, player_->PlayerMoveVec()));
 
-	railCamera_->setPos(Vector3(sinf(cameraRotateY)*20+ player_->GetWorldPosition().x, player_->GetWorldPosition().y + 2, cosf(cameraRotateY)*20+player_->GetWorldPosition().z));
+	railCamera_->setPos(Vector3((sinf(cameraRotateY)*20+ player_->GetWorldPosition().x) , (sinf(-cameraRotateX) * 20+player_->GetWorldPosition().y+5) , (cosf(cameraRotateY)*20+player_->GetWorldPosition().z)));
 	railCamera_->setRotate({ rotateX,rotateY,0 });
 	boss.Update();
 	
 	debugText_->SetPos(0, 0);
-	debugText_->Printf("%f", cameraRotateY);
+	debugText_->Printf("%f", sinf(cameraRotateX) * 20);
+	debugText_->SetPos(0, 20);
+	debugText_->Printf("%f", player_->GetWorldPosition().y);
 
 #ifdef _DEBUG
 
