@@ -35,9 +35,13 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 
 	worldTransform.matWorldGeneration();
 
-	for (int i = 0; i < _countof(Hand); i++)
+	for (int i = 0; i < 8; i++)
 	{
-		Hand[i].init({ 1.0f,1.0f,1.0f }, {}, { sinf(i*2)*5,cosf(i*2)*5,200}, model);
+
+		std::unique_ptr <bossHand> newHand = std::make_unique<bossHand>();
+		newHand->init({ 1.0f,1.0f,1.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200 }, model);
+
+		hand.push_back(std::move(newHand));
 	}
 	
 	/*Hand[1].init({ 1.0f,1.0f,1.0f }, {}, { -4.0f,-0.5f,200 }, model);
@@ -66,13 +70,13 @@ void bosstest::Update()
 
 	worldTransform.matWorldGeneration();
 
-	for (int i = 0; i < _countof(Hand); i++)
+	for (int i = 0; i < hand.size(); i++)
 	{
 
 		Hand[i].setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8)*5,worldTransform.matWorldGetPos().y + cosf(i * 8)*5,worldTransform.matWorldGetPos().z });
 
 	}
-	for (int i = 0; i < _countof(Hand); i++)
+	for (int i = 0; i < hand.size(); i++)
 	{
 		Hand[i].update(worldTransform);
 	}
@@ -82,7 +86,7 @@ void bosstest::Update()
 void bosstest::Draw(const ViewProjection& viewProjection)
 {
 	
-	for (int i = 0; i < _countof(Hand); i++)
+	for (int i = 0; i < hand.size(); i++)
 	{
 		Hand[i].draw(viewProjection);
 	}
@@ -105,7 +109,7 @@ void bosstest::setPos(Vector3 pos)
 
 void bosstest::setisAttackFlagL(bool flag)
 {
-	for (int i = 0; i < _countof(Hand); i++)
+	for (int i = 0; i < hand.size(); i++)
 	{
 		Hand[i].setisAttackFlag(flag);
 	}
@@ -113,7 +117,7 @@ void bosstest::setisAttackFlagL(bool flag)
 
 void bosstest::playerAttackReturnL()
 {
-	for (int i = 0; i < _countof(Hand); i++)
+	for (int i = 0; i < hand.size(); i++)
 	{
 		Hand[i].playerAttackReturn();
 	}

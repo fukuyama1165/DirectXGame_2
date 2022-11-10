@@ -3,6 +3,8 @@
 #include "WorldTransform.h"
 #include "DebugText.h"
 #include "bossHand.h"
+#include <memory>
+#include <vector>
 
 class bosstest
 {
@@ -49,8 +51,9 @@ private:
 	WorldTransform worldTransform;
 
 	//手の座標(もしかしたら処理が同じかもしれないのでクラス化したほうがいいかも)
-	bossHand Hand[8];
+	/*bossHand hand[8];*/
 
+	std::vector< std::unique_ptr<bossHand>> hand;
 	
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
