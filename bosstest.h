@@ -37,6 +37,10 @@ public:
 
 	void playerAttackReturnL();
 
+	WorldTransform getPos() { return worldTransform; };
+
+	WorldTransform* getHand() { return hand; };
+
 private:
 
 	DebugText* debugText_ = nullptr;
