@@ -9,6 +9,7 @@
 const float PI = 3.141592653589f;
 
 bool CollsionAABB(WorldTransform a, WorldTransform b);
+bool CollsionSphere(Vector3 posA, float rA, Vector3 posB, float rB);
 Vector3 CollsionBackAABB(WorldTransform a, WorldTransform b, Vector3 vec);
 
 GameScene::GameScene() {}
@@ -169,6 +170,28 @@ void GameScene::Update()
 		
 	}
 
+	if (Input::GetInstance()->GetJoystickState(0, joyState))
+	{
+		cameraRotateY += (float)joyState.Gamepad.sThumbRX / SHRT_MAX*0.01f;
+		rotateY += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 0.01f;
+		if ((cameraRotateX < 0.27f&& (float)joyState.Gamepad.sThumbRY / SHRT_MAX>0) || (cameraRotateX > -0.6f && (float)joyState.Gamepad.sThumbRY / SHRT_MAX < 0))
+		{
+			cameraRotateX += (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 0.01f;
+			rotateX -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 0.01f;
+		}
+
+		//if (cameraRotateX < 0.27f)
+		//{
+		//	cameraRotateX = 0.27f;
+		//	//rotateX = -0.27f;
+		//}
+		//if (cameraRotateX > -0.6f)
+		//{
+		//	cameraRotateX = -0.6f;
+		//	//rotateX = 0.6f;
+		//}
+	}
+
 	if (input_->PushKey(DIK_D))
 	{
 		cameraRotateY += 0.01f;
@@ -194,12 +217,14 @@ void GameScene::Update()
 	
 
 	player_->Update(railView);
-	player_->SetWorldPosition(CollsionBackAABB(player_->GetMat(), worldTransform_, player_->PlayerMoveVec()));
+	
 
 	railCamera_->setPos(Vector3((sinf(cameraRotateY)*20+ player_->GetWorldPosition().x) , (sinf(-cameraRotateX) * 20+player_->GetWorldPosition().y+5) , (cosf(cameraRotateY)*20+player_->GetWorldPosition().z)));
 	railCamera_->setRotate({ rotateX,rotateY,0 });
 	boss.Update();
 	
+	AllCol();
+
 	debugText_->SetPos(0, 0);
 	debugText_->Printf("%f", sinf(cameraRotateX) * 20);
 	debugText_->SetPos(0, 20);
@@ -377,7 +402,31 @@ void GameScene::afin(WorldTransform Transform)
 	//行列の転送
 	Transform.TransferMatrix();
 }
+/// <summary>
+/// ////////////////////////////////////////////////////////////////////////////////////////////ここ
+/// </summary>
+void GameScene::AllCol()
+{
+	player_->SetWorldPosition(CollsionBackAABB(player_->GetMat(), worldTransform_, player_->PlayerMoveVec()));
 
+	const std::list<std::unique_ptr<PlayerBullet>>& playerBullets = player_->GetBullets();
+
+	//ボスハンドのリスト化したユニークptr変数
+
+	for (const std::unique_ptr<PlayerBullet>& p_bullet : playerBullets)
+	{
+		//for (ボスハンド)
+		//{
+		//	if(CollsionSphere(p_bullet->GetWorldPosition(),p_bullet->GetScale().x,{ボスハンドの位置},{ボスハンドの半径(scaleのxだったりyだったり)})
+		//	{
+		//		ボスハンドお帰り処理
+		//	}
+		//}
+	}
+
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////
 //夏の残り↓
 void GameScene::CheckAllCollision()
 {
@@ -682,4 +731,22 @@ bool CollsionAABB(WorldTransform a, WorldTransform b)
 	else {
 		return false;
 	}
+}
+
+bool CollsionSphere(Vector3 posA, float rA, Vector3 posB, float rB)
+{
+	Vector3 ABrange = posB - posA;
+
+	float range = ABrange.length();
+
+	if (range < rA + rB)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	
 }
