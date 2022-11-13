@@ -19,7 +19,11 @@ public:
 
 	void punch(WorldTransform worldTransform);
 
+	void press(WorldTransform worldTransform);
+
 	void setisAttackFlag(bool flag);
+
+	void setisPressFlag(bool flag);
 
 	//プレイヤーの攻撃によって跳ね返された時１回だけ行う処理
 	void playerAttackReturn();
@@ -30,6 +34,12 @@ public:
 
 	WorldTransform GetwroldTransform() { return Hand; }
 
+	void setPos(Vector3 pos);
+
+	void setScale(Vector3 scale);
+
+	void setTargetPos(Vector3 target);
+
 private:
 	WorldTransform Hand;
 
@@ -39,7 +49,7 @@ private:
 	bool isAttackReturnFlag = false;
 
 	//手を跳ね返した時のフラグ
-	bool isReturnHand = true;
+	bool isReturnHand = false;
 
 	//タイムカウンター
 	float timeCount = 0;
@@ -51,12 +61,19 @@ private:
 	float maxReturnTime = 500.0f;
 	float maxReturnAttackTime = 200.0f;
 
+	float maxSetPressTime = 20.0f;
+
 	//ウエイト
 	float waitTime = 0;
 
 	//待つ時間
 	float attackWaitTime = 40;
 	float returnWaitTime = 160;
+
+	//今行動しているか
+	bool isAction = false;
+
+	bool isPress = false;
 
 	//プレイヤーの位置
 	Vector3 targetPos = {};
@@ -71,4 +88,6 @@ private:
 	Model* model;
 
 };
+
+const Vector3 lerp(const Vector3& start, const Vector3& end, const float t);
 

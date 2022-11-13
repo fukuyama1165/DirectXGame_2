@@ -103,7 +103,7 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	//railView.Initialize();
 
-	boss.Initialize(model_, { 0,0,200 });
+	boss.Initialize(model_, { 0,10,20 });
 
 }
 
@@ -214,14 +214,27 @@ void GameScene::Update()
 		boss.playerAttackReturnL();
 	}
 
-	
+	if (input_->TriggerKey(DIK_K))
+	{
+		boss.setPos({ boss.GetWorldPosition().x + 1,boss.GetWorldPosition().y ,boss.GetWorldPosition().z });
+	}
+
+	if (input_->TriggerKey(DIK_J))
+	{
+		boss.setPos({ boss.GetWorldPosition().x - 1,boss.GetWorldPosition().y ,boss.GetWorldPosition().z });
+	}
+
+	if (input_->TriggerKey(DIK_L))
+	{
+		boss.setisBossPress(true);
+	}
 
 	player_->Update(railView);
 	
 
 	railCamera_->setPos(Vector3((sinf(cameraRotateY)*20+ player_->GetWorldPosition().x) , (sinf(-cameraRotateX) * 20+player_->GetWorldPosition().y+5) , (cosf(cameraRotateY)*20+player_->GetWorldPosition().z)));
 	railCamera_->setRotate({ rotateX,rotateY,0 });
-	boss.Update();
+	boss.Update(player_->GetWorldPosition());
 	
 	AllCol();
 

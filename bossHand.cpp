@@ -1,7 +1,9 @@
 #include "bossHand.h"
 #include <cassert>
 
-const Vector3 lerp(const Vector3& start, const Vector3& end, const float t);
+//単純に!=
+bool vector3IsDiffer(Vector3 a, Vector3 b);
+
 
 
 void bossHand::init(Vector3 scale, Vector3 rotate, Vector3 translation, Model* model)
@@ -26,7 +28,7 @@ void bossHand::update(WorldTransform worldTransform)
 
 	Hand.matWorldGeneration();
 
-	punch(worldTransform);
+	press(worldTransform);
 
 }
 
@@ -126,8 +128,54 @@ void bossHand::punch(WorldTransform worldTransform)
 
 	}
 
-	debugText_->SetPos(50, 90);
-	debugText_->Printf("leftHandpos:(%f,%f,%f)", Hand.translation_.x, Hand.translation_.y, Hand.translation_.z);
+	/*debugText_->SetPos(50, 90);
+	debugText_->Printf("leftHandpos:(%f,%f,%f)", Hand.translation_.x, Hand.translation_.y, Hand.translation_.z);*/
+
+}
+
+void bossHand::press(WorldTransform worldTransform)
+{
+	if (isPress)
+	{
+
+		if (timeCount < maxSetPressTime)
+		{
+			timeCount++;
+		}
+
+		if (timeCount != maxSetPressTime)
+		{
+
+
+			//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
+			Hand.translation_ = lerp(defaultPos, targetPos, timeCount / maxSetPressTime);
+
+			Hand.matWorldGeneration();
+		}
+	}
+	else
+	{
+		if (timeCount == maxSetPressTime)
+		{
+			timeCount = 0;
+		}
+
+		if (vector3IsDiffer(defaultPos, Hand.matWorldGetPos()))
+		{
+
+			if (timeCount < maxSetPressTime)
+			{
+				timeCount++;
+			}
+
+			//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
+			Hand.translation_ = lerp(targetPos, defaultPos, timeCount / maxSetPressTime);
+
+			Hand.matWorldGeneration();
+
+		}
+
+	}
 
 }
 
@@ -136,6 +184,10 @@ void bossHand::setisAttackFlag(bool flag)
 	isAttackFlag = flag;
 }
 
+void bossHand::setisPressFlag(bool flag)
+{
+	isPress = flag;
+}
 
 void bossHand::playerAttackReturn()
 {
@@ -157,7 +209,38 @@ void bossHand::punchEnd()
 
 }
 
+void bossHand::setPos(Vector3 pos)
+{
+	Hand.translation_ = pos;
+
+	Hand.matWorldGeneration();
+}
+
+void bossHand::setScale(Vector3 scale)
+{
+
+	Hand.scale_ = scale;
+
+	Hand.matWorldGeneration();
+
+}
+
+void bossHand::setTargetPos(Vector3 target)
+{
+	targetPos = target;
+}
+
 const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)
 {
 	return start + t * (end - start);
+}
+
+bool vector3IsDiffer(Vector3 a, Vector3 b)
+{
+	if (a.x != b.x or a.y != b.y or a.z != b.z)
+	{
+		return true;
+	}
+
+	return false;
 }
