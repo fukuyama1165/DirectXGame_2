@@ -226,7 +226,7 @@ void GameScene::Update()
 
 	if (input_->TriggerKey(DIK_L))
 	{
-		boss.setisBossPress(true);
+		boss.setisBossStoneFall(true);
 	}
 
 	player_->Update(railView);

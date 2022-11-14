@@ -39,17 +39,19 @@ public:
 
 	void setisBossPress(bool flag);
 
+	void setisBossStoneFall(bool flag);
+
 	void playerAttackReturnL();
 
 	void bossPress(Vector3 player);
+
+	void bossStoneFall(Vector3 player);
 
 	WorldTransform getPos() { return worldTransform; };
 
 	std::vector<bossHand*> getHand() { return hand; };
 
 	void setPressPos();
-
-	void endPress();
 
 	void setPressHandPos();
 
@@ -84,6 +86,7 @@ private:
 	bool isHandMove = false;
 
 	bool isBossPress = false;
+	bool isBossStoneFall = false;
 
 	bool isPressStart = false;
 	bool isPressFall = false;
@@ -91,6 +94,7 @@ private:
 	bool pressFirstStart = false;
 
 	int pressCount = 0;
+	int bossStoneFallCount = 0;
 
 	float pressPosY = 20;
 
@@ -101,11 +105,13 @@ private:
 	float timeCount = 0;
 	float fallTimeCount = 0;
 	float returnTimeCount = 0;
+	float moveEndTimeCount = 0;
 
 	//動作時間
 	float maxTime = 300.0f;
 	float maxfallTime = 500.0f;
 	float maxReturnTime = 200.0f;
+	float maxMoveEndTime = 200.0f;
 
 	//ウエイト
 	float waitTime = 0;
@@ -113,6 +119,8 @@ private:
 	//待つ時間
 	float fallWaitTime = 20;
 	float returnWaitTime = 700;
+
+	float bossStoneFallWaitTime = 120;
 
 };
 

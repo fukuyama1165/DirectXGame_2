@@ -4,7 +4,8 @@
 //単純に!=
 bool vector3IsDiffer(Vector3 a, Vector3 b);
 
-
+//単純に==
+bool vector3Issame(Vector3 a, Vector3 b);
 
 void bossHand::init(Vector3 scale, Vector3 rotate, Vector3 translation, Model* model)
 {
@@ -28,7 +29,7 @@ void bossHand::update(WorldTransform worldTransform)
 
 	Hand.matWorldGeneration();
 
-	press(worldTransform);
+	stoneFall();
 
 }
 
@@ -46,12 +47,14 @@ void bossHand::punch(WorldTransform worldTransform)
 	{
 		if (isAttackFlag)
 		{
-
+			isAction = true;
+			//カウント
 			if (timeCount < maxTime and waitTime > attackWaitTime)
 			{
 				timeCount++;
 			}
 
+			//予備動作
 			if (waitTime < attackWaitTime and isAttackReturnFlag == false)
 			{
 
@@ -61,6 +64,7 @@ void bossHand::punch(WorldTransform worldTransform)
 
 			}
 
+			//攻撃
 			if (timeCount != maxTime and isAttackReturnFlag == false and waitTime > attackWaitTime)
 			{
 
@@ -76,11 +80,13 @@ void bossHand::punch(WorldTransform worldTransform)
 				waitTime = 0;
 			}
 
+			//カウント
 			if (isAttackReturnFlag and returnTimeCount < maxReturnTime and waitTime > returnWaitTime)
 			{
 				returnTimeCount++;
 			}
 
+			//帰還の予備動作(80は動かない時間)
 			if (waitTime > 80 and waitTime < returnWaitTime and isAttackReturnFlag)
 			{
 
@@ -90,6 +96,7 @@ void bossHand::punch(WorldTransform worldTransform)
 
 			}
 
+			//帰還
 			if (isAttackReturnFlag and returnTimeCount != maxReturnTime and waitTime > returnWaitTime)
 			{
 
@@ -97,27 +104,34 @@ void bossHand::punch(WorldTransform worldTransform)
 				Hand.matWorldGeneration();
 			}
 
+			waitTime++;
+
+			//終了
 			if (returnTimeCount == maxReturnTime)
 			{
 				punchEnd();
 			}
 
-			waitTime++;
+			
 
 		}
 	}
 
+	//攻撃によって返された時
 	if(isReturnHand)
 	{
 
+		//カウント
 		if (returnAttackTimeCount < maxReturnAttackTime)
 		{
 			returnAttackTimeCount++;
 		}
 
+		//本体のもとへ帰る
 		Hand.translation_ = lerp(returnPos, Vector3(worldTransform.translation_.x, worldTransform.translation_.y, worldTransform.translation_.z), returnAttackTimeCount / maxReturnAttackTime);
 		Hand.matWorldGeneration();
 
+		//本体に当たったら元の位置へ
 		if (returnAttackTimeCount == maxReturnAttackTime)
 		{
 			Hand.translation_ = { defaultPos};
@@ -133,11 +147,11 @@ void bossHand::punch(WorldTransform worldTransform)
 
 }
 
-void bossHand::press(WorldTransform worldTransform)
+void bossHand::press()
 {
 	if (isPress)
 	{
-
+		isAction = true;
 		if (timeCount < maxSetPressTime)
 		{
 			timeCount++;
@@ -155,23 +169,188 @@ void bossHand::press(WorldTransform worldTransform)
 	}
 	else
 	{
-		if (timeCount == maxSetPressTime)
-		{
-			timeCount = 0;
-		}
 
-		if (vector3IsDiffer(defaultPos, Hand.matWorldGetPos()))
+		if (vector3IsDiffer(defaultPos, Hand.matWorldGetPos()) and isPressEnd ==false)
 		{
 
-			if (timeCount < maxSetPressTime)
+			if (returnTimeCount < maxResetPressTime)
 			{
-				timeCount++;
+				returnTimeCount++;
 			}
 
 			//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
-			Hand.translation_ = lerp(targetPos, defaultPos, timeCount / maxSetPressTime);
+			Hand.translation_ = lerp(targetPos, defaultPos, returnTimeCount / maxResetPressTime);
 
 			Hand.matWorldGeneration();
+
+			
+
+		}
+
+		if (!vector3IsDiffer(defaultPos, Hand.matWorldGetPos()) and isPressEnd == false)
+		{
+
+			if (returnTimeCount == maxResetPressTime)
+			{
+				returnTimeCount = 0;
+			}
+
+			isPressEnd = true;
+
+			timeCount = 0;
+
+			isAction = false;
+
+		}
+
+
+
+	}
+
+}
+
+void bossHand::stoneFall()
+{
+
+	if (isStoneFall)
+	{
+		isAction = true;
+		//カウント
+		if (timeCount < maxUpFallTime and waitTime > stoneFallWaitTime and isFallTargetMoveFlag == false)
+		{
+			timeCount++;
+		}
+
+		//予備動作
+		if (waitTime < stoneFallWaitTime and isFallTargetMoveFlag == false)
+		{
+
+			Hand.translation_ = { cosf(waitTime) + defaultPos.x, defaultPos.y, defaultPos.z };
+
+			Hand.matWorldGeneration();
+
+		}
+
+		//上に移動
+		if (timeCount < maxUpFallTime and isFallTargetMoveFlag == false and waitTime > stoneFallWaitTime)
+		{
+
+
+			//元の位置かy座標をずらした位置に線形補間
+			Hand.translation_ = lerp(defaultPos, {defaultPos.x,15,defaultPos.z}, timeCount / maxUpFallTime);
+
+			Hand.matWorldGeneration();
+		}
+		//上に移動が終わったら
+		else if (isFallTargetMoveFlag == false and waitTime > stoneFallWaitTime)
+		{
+			isFallTargetMoveFlag = true;
+			waitTime = 0;
+		}
+
+		if (isFallTargetMoveFlag and returnTimeCount == 0 and isGetTargetPos == false)
+		{
+			isGetTargetPos = true;
+			return;
+		}
+		else if (isFallTargetMoveFlag and returnTimeCount != 0)
+		{
+			isGetTargetPos = false;
+		}
+
+
+		//カウント
+		if (isFallTargetMoveFlag and returnTimeCount < maxTargetMoveTime and isFallFallFlag ==false)
+		{
+			//使いまわし名前に意味はない
+			returnTimeCount++;
+		}
+
+		//とっておいたプレイヤーの座標に移動
+		if (isFallTargetMoveFlag and returnTimeCount != maxTargetMoveTime and isFallFallFlag == false)
+		{
+
+			Hand.translation_ = lerp({ defaultPos.x,15,defaultPos.z }, {targetPos.x,15,targetPos.z}, returnTimeCount / maxTargetMoveTime);
+			Hand.matWorldGeneration();
+		}
+
+		//終了
+		if (returnTimeCount == maxTargetMoveTime and isFallFallFlag == false)
+		{
+			isFallFallFlag = true;
+			waitTime = 0;
+		}
+
+		//カウント
+		if (ActionType4TimeCount < maxFallTime and isFallFallFlag and isFallReturnFlag == false)
+		{
+			ActionType4TimeCount++;
+		}
+
+		//落下
+		if (ActionType4TimeCount < maxFallTime and isFallFallFlag and isFallReturnFlag == false)
+		{
+
+
+			//下に移動
+			Hand.translation_ = lerp({ targetPos.x,15,targetPos.z }, targetPos, ActionType4TimeCount / maxFallTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (ActionType4TimeCount == maxFallTime and isFallReturnFlag == false)
+		{
+			isFallReturnFlag = true;
+			waitTime = 0;
+		}
+
+
+		//完全に止めたい時間が300
+		if (waitTime > 150 and returnAttackTimeCount < maxFallReturnTime and waitTime > (stoneFallReturnWaitTime +150) and isFallReturnFlag)
+		{
+			returnAttackTimeCount++;
+		}
+
+		//予備動作
+		if (waitTime > 150 and waitTime < (stoneFallReturnWaitTime + 150) and isFallReturnFlag)
+		{
+
+			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y, targetPos.z };
+
+			Hand.matWorldGeneration();
+
+		}
+
+		//上に移動
+		if (returnAttackTimeCount < maxFallReturnTime and isFallReturnFlag and waitTime > (stoneFallReturnWaitTime + 150))
+		{
+
+
+			//元の位置かy座標をずらした位置に線形補間
+			Hand.translation_ = lerp(targetPos, defaultPos, returnAttackTimeCount / maxFallReturnTime);
+
+			Hand.matWorldGeneration();
+		}
+
+
+		waitTime++;
+
+		if (returnAttackTimeCount == maxFallReturnTime)
+		{
+			
+			isAction = false;
+			isFallTargetMoveFlag = false;
+			isFallFallFlag = false;
+			isFallReturnFlag = false;
+
+			timeCount = 0;
+			returnTimeCount = 0;
+			ActionType4TimeCount = 0;
+			returnAttackTimeCount = 0;
+
+			waitTime = 0;
+
+			isStoneFall = false;
 
 		}
 
@@ -189,6 +368,17 @@ void bossHand::setisPressFlag(bool flag)
 	isPress = flag;
 }
 
+void bossHand::setisPressEndFlag(bool flag)
+{
+	isPressEnd = flag;
+}
+
+void bossHand::setisStoneFallFlag(bool flag)
+{
+	isStoneFall = flag;
+}
+
+
 void bossHand::playerAttackReturn()
 {
 
@@ -199,6 +389,7 @@ void bossHand::playerAttackReturn()
 
 void bossHand::punchEnd()
 {
+	isAction = false;
 	isReturnHand = false;
 	isAttackFlag = false;
 	isAttackReturnFlag = false;
@@ -243,4 +434,16 @@ bool vector3IsDiffer(Vector3 a, Vector3 b)
 	}
 
 	return false;
+}
+
+bool vector3Issame(Vector3 a, Vector3 b)
+{
+
+	if (a.x == b.x and a.y == b.y and a.z == b.z)
+	{
+		return true;
+	}
+
+	return false;
+
 }

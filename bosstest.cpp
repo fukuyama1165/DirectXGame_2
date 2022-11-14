@@ -4,8 +4,7 @@
 
 //const Vector3 lerp(const Vector3& start, const Vector3& end, const float t);
 
-//íPèÉÇ…==
-bool vector3Issame(Vector3 a, Vector3 b);
+
 
 bosstest::bosstest()
 {
@@ -74,6 +73,16 @@ void bosstest::Update(Vector3 player)
 
 	worldTransform.matWorldGeneration();
 
+	for (int i = 0; i < hand.size(); i++)
+	{
+
+		if (hand[i]->getisGetTargetPosFlag())
+		{
+			hand[i]->setTargetPos(player);
+		}
+
+	}
+
 	if (state == Cube)
 	{
 		hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
@@ -96,7 +105,7 @@ void bosstest::Update(Vector3 player)
 			{
 				setPressHandPos();
 			}
-			bossPress(player);
+			bossStoneFall(player);
 
 		}
 
@@ -143,7 +152,7 @@ void bosstest::bossPress(Vector3 player)
 
 			for (int i = 0; i < hand.size(); i++)
 			{
-				hand[i]->setisPressFlag(true);
+				hand[i]->setisPressEndFlag(false);
 			}
 
 			pressFirstStart = true;
@@ -230,64 +239,122 @@ void bosstest::bossPress(Vector3 player)
 		if (isPressReturn)
 		{
 
-			if (waitTime >= returnWaitTime)
+			if (pressCount < 3)
 			{
 
-				returnPos = worldTransform.matWorldGetPos();
-
-			}
-
-			if (returnTimeCount < maxReturnTime and waitTime >= returnWaitTime)
-			{
-				returnTimeCount++;
-			}
-
-			if (returnTimeCount != maxReturnTime and waitTime >= returnWaitTime)
-			{
-
-				worldTransform.translation_ = lerp(returnPos, { returnPos.x, pressPosY, returnPos.z }, returnTimeCount / maxReturnTime);
-
-				worldTransform.matWorldGeneration();
-
-			}
-
-			if (waitTime < returnWaitTime)
-			{
-				waitTime++;
-			}
-
-
-			if (returnTimeCount == maxReturnTime)
-			{
-
-				isPressReturn = false;
-
-				isPressStart = true;
-
-				waitTime = 0;
-				returnTimeCount = 0;
-
-				pressCount++;
-
-			}
-
-			if (pressCount == 3)
-			{
-				isBossPress = false;
-				isPressStart = false;
-
-				pressFirstStart = false;
-
-				pressCount = 0;
-				setPressPos();
-
-				for (int i = 0; i < hand.size(); i++)
+				if (waitTime >= returnWaitTime)
 				{
-					hand[i]->setisPressFlag(false);
+
+					returnPos = worldTransform.matWorldGetPos();
+
+				}
+
+				if (returnTimeCount < maxReturnTime and waitTime >= returnWaitTime)
+				{
+					returnTimeCount++;
+				}
+
+				if (returnTimeCount != maxReturnTime and waitTime >= returnWaitTime)
+				{
+
+					worldTransform.translation_ = lerp(returnPos, { returnPos.x, pressPosY, returnPos.z }, returnTimeCount / maxReturnTime);
+
+					worldTransform.matWorldGeneration();
+
+				}
+
+				if (waitTime < returnWaitTime)
+				{
+					waitTime++;
+				}
+
+
+				if (returnTimeCount == maxReturnTime)
+				{
+
+					isPressReturn = false;
+
+					isPressStart = true;
+
+					waitTime = 0;
+					returnTimeCount = 0;
+
+					pressCount++;
+
+				}
+			}
+
+			else
+			{
+				
+
+				if (moveEndTimeCount == 0)
+				{
+					returnPos = worldTransform.matWorldGetPos();
+				}
+
+				if (moveEndTimeCount < maxMoveEndTime)
+				{
+					moveEndTimeCount++;
+
+					worldTransform.translation_ = lerp(returnPos, { returnPos.x, 5, returnPos.z }, moveEndTimeCount / maxMoveEndTime);
+					
+					worldTransform.matWorldGeneration();
+				}
+
+				if (moveEndTimeCount == maxMoveEndTime)
+				{
+					pressCount = 0;
+					setPressPos();
+					moveEndTimeCount = 0;
+
+					isBossPress = false;
+					isPressStart = false;
+
+					pressFirstStart = false;
+
+					for (int i = 0; i < hand.size(); i++)
+					{
+						hand[i]->setisPressFlag(false);
+					}
 				}
 			}
 		}
 
+	}
+
+}
+
+void bosstest::bossStoneFall(Vector3 player)
+{
+
+	if (isBossStoneFall)
+	{
+		if (waitTime == 0)
+		{
+			if (bossStoneFallCount == hand.size())
+			{
+				isBossStoneFall = false;
+				bossStoneFallCount = 0;
+				return;
+			}
+
+			for (int i = 0; i < hand.size(); i++)
+			{
+				if (hand[i]->getisAction() == false)
+				{
+					hand[i]->setisStoneFallFlag(true);
+					waitTime = bossStoneFallWaitTime;
+					bossStoneFallCount++;
+					break;
+				}
+			}
+		}
+
+		if (waitTime > 0)
+		{
+			waitTime--;
+		}
 	}
 
 }
@@ -326,6 +393,13 @@ void bosstest::setisBossPress(bool flag)
 	isBossPress = flag;
 }
 
+void bosstest::setisBossStoneFall(bool flag)
+{
+
+	isBossStoneFall = flag;
+
+}
+
 void bosstest::setPressPos()
 {
 
@@ -361,18 +435,47 @@ void bosstest::setPressHandPos()
 		hand[7]->setPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
 
 	}
-	else
+	else if(hand[0]->getisPressEndd())
 	{
 
-		hand[0]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[1]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[2]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[3]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[4]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-		hand[5]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-		hand[6]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-		hand[7]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		if (hand[0]->getisAction() == false)
+		{
+			hand[0]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		}
+		if (hand[1]->getisAction() == false)
+		{
+			hand[1]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		}
 
+		if (hand[2]->getisAction() == false)
+		{
+			hand[2]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		}
+		
+		if (hand[3]->getisAction() == false)
+		{
+			hand[3]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		}
+		
+		if (hand[4]->getisAction() == false)
+		{
+			hand[4]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		}
+		
+		if (hand[5]->getisAction() == false)
+		{
+			hand[5]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		}
+		
+		if (hand[6]->getisAction() == false)
+		{
+			hand[6]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		}
+		
+		if (hand[7]->getisAction() == false)
+		{
+			hand[7]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		}
 	}
 }
 
@@ -383,14 +486,4 @@ void bosstest::setPressHandPos()
 
 
 
-bool vector3Issame(Vector3 a, Vector3 b)
-{
 
-	if (a.x == b.x and a.y == b.y and a.z == b.z)
-	{
-		return true;
-	}
-
-	return false;
-
-}
