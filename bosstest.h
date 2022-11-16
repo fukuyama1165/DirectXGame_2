@@ -106,6 +106,9 @@ private:
 	
 	int state = Cube;
 
+	float bossCubeDistance = 3.5f;
+	float bossCubePressDistance = 2.8f;
+
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 

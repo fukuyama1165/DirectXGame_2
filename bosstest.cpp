@@ -31,7 +31,7 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 
 	//引数で受け取った初期座標をセット
 	worldTransform.translation_ = position;
-	worldTransform.scale_ = { 2,2,2 };
+	worldTransform.scale_ = { 3.0f,3.0f,3.0f };
 
 	worldTransform.matWorldGeneration();
 
@@ -39,7 +39,7 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 	{
 
 		bossHand* newHand=new bossHand();
-		newHand->init({ 1.0f,1.0f,1.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200 }, model);
+		newHand->init({ 3.0f,3.0f,3.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200 }, model);
 
 		hand.push_back(newHand);
 	}
@@ -284,7 +284,7 @@ void bosstest::bossPress(Vector3 player)
 				{
 					moveEndTimeCount++;
 
-					worldTransform.translation_ = lerp(returnPos, { returnPos.x, 5, returnPos.z }, moveEndTimeCount / maxMoveEndTime);
+					worldTransform.translation_ = lerp(returnPos, { returnPos.x, 7, returnPos.z }, moveEndTimeCount / maxMoveEndTime);
 					
 					worldTransform.matWorldGeneration();
 				}
@@ -360,7 +360,7 @@ void bosstest::bossBeam()
 
 		if (bossBeamCount == 0 and hand[0]->getisAction() == false)
 		{
-			hand[0]->setPos(worldTransform.matWorldGetPos());
+			hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y-5, worldTransform.matWorldGetPos().z+200});
 			hand[0]->setisBeamFlag(true);
 			bossBeamCount++;
 			waitTime = bossBeamWaitTime;
@@ -437,14 +437,14 @@ void bosstest::setisBossBeam(bool flag)
 void bosstest::setPressPos()
 {
 
-	hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-	hand[1]->setTargetPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-	hand[2]->setTargetPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-	hand[3]->setTargetPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-	hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
-	hand[5]->setTargetPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
-	hand[6]->setTargetPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
-	hand[7]->setTargetPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
+	hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+	hand[1]->setTargetPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+	hand[2]->setTargetPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+	hand[3]->setTargetPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+	hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
+	hand[5]->setTargetPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
+	hand[6]->setTargetPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
+	hand[7]->setTargetPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
 
 	for (int i = 0; i < hand.size(); i++)
 	{
@@ -459,14 +459,14 @@ void bosstest::setPressHandPos()
 	if (pressFirstStart)
 	{
 	
-		hand[0]->setPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-		hand[1]->setPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-		hand[2]->setPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-		hand[3]->setPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z - 2.0f });
-		hand[4]->setPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
-		hand[5]->setPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y + 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
-		hand[6]->setPos({ worldTransform.matWorldGetPos().x + 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
-		hand[7]->setPos({ worldTransform.matWorldGetPos().x - 2.0f,worldTransform.matWorldGetPos().y - 2.0f,worldTransform.matWorldGetPos().z + 2.0f });
+		hand[0]->setPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+		hand[1]->setPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+		hand[2]->setPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+		hand[3]->setPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z - bossCubePressDistance });
+		hand[4]->setPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
+		hand[5]->setPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y + bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
+		hand[6]->setPos({ worldTransform.matWorldGetPos().x + bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
+		hand[7]->setPos({ worldTransform.matWorldGetPos().x - bossCubePressDistance,worldTransform.matWorldGetPos().y - bossCubePressDistance,worldTransform.matWorldGetPos().z + bossCubePressDistance });
 
 	}
 	else if(hand[0]->getisPressEndd())
@@ -474,41 +474,41 @@ void bosstest::setPressHandPos()
 
 		if (hand[0]->getisAction() == false)
 		{
-			hand[0]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+			hand[0]->setPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 		}
 		if (hand[1]->getisAction() == false)
 		{
-			hand[1]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+			hand[1]->setPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 		}
 
 		if (hand[2]->getisAction() == false)
 		{
-			hand[2]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+			hand[2]->setPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 		}
 		
 		if (hand[3]->getisAction() == false)
 		{
-			hand[3]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+			hand[3]->setPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 		}
 		
 		if (hand[4]->getisAction() == false)
 		{
-			hand[4]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+			hand[4]->setPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 		}
 		
 		if (hand[5]->getisAction() == false)
 		{
-			hand[5]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+			hand[5]->setPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 		}
 		
 		if (hand[6]->getisAction() == false)
 		{
-			hand[6]->setPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+			hand[6]->setPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 		}
 		
 		if (hand[7]->getisAction() == false)
 		{
-			hand[7]->setPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+			hand[7]->setPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 		}
 	}
 }
@@ -530,42 +530,42 @@ void  bosstest::setCubeDefaultPos()
 
 	if (hand[0]->getisAction() == false)
 	{
-		hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 	}
 
 	if (hand[1]->getisAction() == false)
 	{
-		hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 	}
 
 	if (hand[2]->getisAction() == false)
 	{
-		hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 	}
 	
 	if (hand[3]->getisAction() == false)
 	{
-		hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+		hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
 	}
 
 	if (hand[4]->getisAction() == false)
 	{
-		hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 	}
 	
 	if (hand[5]->getisAction() == false)
 	{
-		hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 	}
 	
 	if (hand[6]->getisAction() == false)
 	{
-		hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 	}
 
 	if (hand[7]->getisAction() == false)
 	{
-		hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+		hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 	}
 
 	for (int i = 0; i < hand.size(); i++)
@@ -573,7 +573,7 @@ void  bosstest::setCubeDefaultPos()
 
 		if (hand[i]->getisAction() == false)
 		{
-			hand[i]->setScale({ 2,2,2 });
+			hand[i]->setScale({ 3.0f,3.0f,3.0f });
 		}
 
 	}
@@ -585,13 +585,13 @@ void bosstest::setPressEnd()
 {
 
 	
-	hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-	hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-	hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });	
-	hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-	hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });	
-	hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });		
-	hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });		
-	hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+	hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
+	hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
+	hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
+	hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z - bossCubeDistance });
+	hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
+	hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y + bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
+	hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
+	hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - bossCubeDistance,worldTransform.matWorldGetPos().y - bossCubeDistance,worldTransform.matWorldGetPos().z + bossCubeDistance });
 
 }

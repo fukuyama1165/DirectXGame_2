@@ -385,26 +385,19 @@ void bossHand::beam()
 		//カウント
 		if (timeCount < maxBeamTime and waitTime >60)
 		{
-			//使いまわし名前に意味はない
 			timeCount++;
 		}
 
-		//とっておいたプレイヤーの座標に移動
 		if (timeCount != maxBeamTime)
 		{
 
-			Hand.scale_ = lerp(startBeamScale, { 5,5,startBeamScale.z }, timeCount / maxBeamTime);
+			Hand.translation_ = lerp(targetPos, { targetPos.x,targetPos.y,targetPos.z-600 }, timeCount / maxBeamTime);
 			Hand.matWorldGeneration();
 		}
 
 		//終了
-		if (timeCount == maxBeamTime and isBeamEnd == false)
-		{
-			isBeamEnd = true;
-			waitTime = 0;
-		}
 
-		if (isBeamEnd and waitTime >120)
+		if (timeCount == maxBeamTime)
 		{
 			Hand.scale_ = { 1.0f,1.0f,1.0f };
 			Hand.matWorldGeneration();

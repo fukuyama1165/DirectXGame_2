@@ -99,7 +99,7 @@ private:
 	float maxFallReturnTime = 20.0f;
 	float maxUpFallTime = 10.0f;
 
-	float maxBeamTime = 20.0f;
+	float maxBeamTime = 100.0f;
 
 	//ウエイト
 	float waitTime = 0;
@@ -128,7 +128,7 @@ private:
 
 	Vector3 defaultPos = {};
 
-	Vector3 startBeamScale = { 1,1,200 };
+	Vector3 startBeamScale = { 5,5,5 };
 
 	DebugText* debugText_ = nullptr;
 
