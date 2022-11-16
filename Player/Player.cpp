@@ -20,6 +20,12 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	worldTransform_.Initialize();
 
 	target.Initialize();
+	target2.Initialize();
+	target3.Initialize();
+	target4.Initialize();
+	target5.Initialize();
+	
+
 
 	worldTransform_.translation_ = { 0,0,0 };
 
@@ -131,8 +137,38 @@ void Player::Update(ViewProjection viewProjection)
 	mae = worldTransform_.matWorld_.VectorMat(mae, worldTransform_.matWorld_);
 
 	mae.normalize();
+	Vector3 nannka;
+	nannka = { 1,1,1 };
+	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+	nannka.normalize();
+	target.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
 
-	target.translation_ = worldTransform_.translation_ + (mae * 5.0f);
+	nannka = { -1,1,1 };
+	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+	nannka.normalize();
+	target2.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+	nannka = { 1,-1,1 };
+	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+	nannka.normalize();
+	target3.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+	nannka = { -1,-1,1 };
+	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+	nannka.normalize();
+	target4.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+	nannka = { 1,1,-1 };
+	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+	nannka.normalize();
+	target5.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+	target.rotation_.y = worldTransform_.rotation_.y;
+	target2.rotation_.y = worldTransform_.rotation_.y;
+	target3.rotation_.y = worldTransform_.rotation_.y;
+	target4.rotation_.y = worldTransform_.rotation_.y;
+	target5.rotation_.y = worldTransform_.rotation_.y;
+	
 
 	if (!hopper_dash && !cooldown)
 	{
@@ -224,6 +260,11 @@ void Player::Update(ViewProjection viewProjection)
 
 	
 	target.matWorldGeneration();
+	target2.matWorldGeneration();
+	target3.matWorldGeneration();
+	target4.matWorldGeneration();
+	target5.matWorldGeneration();
+	
 
 
 	worldTransform_.matWorldGeneration();
@@ -239,6 +280,11 @@ void Player::Draw(ViewProjection& viewProjection)
 
 	//3Dƒ‚ƒfƒ‹‚ð•`‰æ
 	playerModel_->Draw(worldTransform_, viewProjection);
+	model_->Draw(target, viewProjection);
+	model_->Draw(target2, viewProjection);
+	model_->Draw(target3, viewProjection);
+	model_->Draw(target4, viewProjection);
+	model_->Draw(target5, viewProjection);
 	//model_->Draw(target, viewProjection);
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 
@@ -253,7 +299,7 @@ void Player::Draw(ViewProjection& viewProjection)
 void Player::DrawUI()
 {
 	Reticle->Draw();
-	if (LockOn())
+	if (LockOn(boss->getPos()))
 	{
 		bosstarget->Draw();
 	}
@@ -291,7 +337,7 @@ void Player::Attack(Vector3 flont)
 	
 	const float kBulletSpeed = 5.0f;
 	Vector3 velocity;
-	if (LockOn())
+	if (LockOn(boss->getPos()))
 	{
 
 		velocity = boss->GetWorldPosition() - worldTransform_.translation_;
@@ -362,9 +408,18 @@ WorldTransform Player::GetMat()
 	return worldTransform_;
 }
 
-bool Player::LockOn()
+bool Player::LockOn(WorldTransform obj)
 {
-	if ((width / 2) - 120.0f < bosstarget->GetPosition().x && (width / 2) + 120.0f > bosstarget->GetPosition().x && (height / 2) - 120.0f < bosstarget->GetPosition().y && (height / 2) + 120.0f > bosstarget->GetPosition().y)
+
+	Matrix4 pos = obj.matWorld_;
+
+
+	obj.matWorld_ *= camera->getView().matView;
+	obj.matWorld_ *= camera->getView().matProjection;
+
+	float objZ = obj.matWorld_.m[3][2];
+
+	if ((width / 2) - 120.0f < bosstarget->GetPosition().x && (width / 2) + 120.0f > bosstarget->GetPosition().x && (height / 2) - 120.0f < bosstarget->GetPosition().y && (height / 2) + 120.0f > bosstarget->GetPosition().y&&objZ>0)
 	{
 		return true;
 	}
