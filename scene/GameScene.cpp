@@ -37,7 +37,7 @@ void GameScene::Initialize() {
 	debugText_ = DebugText::GetInstance();
 
 	//ファイル名を指定してテクスチャを読み込む
-	textureHandle_ = TextureManager::Load("mario.jpg");
+	textureHandle_ = TextureManager::Load("mark.png");
 	textureHandle2 = TextureManager::Load("Reticle.png");
 	
 
@@ -306,7 +306,7 @@ void GameScene::Draw() {
 	/// 	//3Dモデル描画
 	
 	
-	skydome_->Draw(railView);
+	//skydome_->Draw(railView);
 	player_->Draw(railView);
 	boss.Draw(railView);
 	model_->Draw(worldTransform_, railView);
@@ -435,7 +435,7 @@ void GameScene::AllCol()
 	{
 		for (int i = 0; i < bosshands.size(); i++)
 		{
-  			if(CollsionSphere(p_bullet->GetWorldPosition(),p_bullet->GetScale().x,bosshands[i]->GetwroldTransform().matWorldGetPos(), bosshands[i]->GetwroldTransform().scale_.x))
+  			if(CollsionSphere(p_bullet->GetWorldPosition(),p_bullet->GetScale().x,bosshands[i]->GetwroldTransform().matWorldGetPos(), bosshands[i]->GetwroldTransform().scale_.x)&&bosshands[i]->getisAttackFlag())
 			{
  				bosshands[i]->playerAttackReturn();
 			}
