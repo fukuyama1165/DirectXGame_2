@@ -37,7 +37,7 @@ public:
 	void setPos(Vector3 pos);
 
 	//handのパンチをするためのフラグを変更
-	void setisAttackFlagL(bool flag);
+	void setisAttackFlagL(bool flag,Vector3 player);
 
 	//プレス攻撃をするためのフラグを変更
 	void setisBossPress(bool flag);

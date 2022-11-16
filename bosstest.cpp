@@ -401,12 +401,14 @@ void bosstest::setPos(Vector3 pos)
 
 }
 
-void bosstest::setisAttackFlagL(bool flag)
+void bosstest::setisAttackFlagL(bool flag,Vector3 player)
 {
 	for (int i = 0; i < hand.size(); i++)
 	{
 		hand[i]->setisAttackFlag(flag);
+		hand[i]->setTargetPos(player);
 	}
+
 }
 
 void bosstest::playerAttackReturnL()

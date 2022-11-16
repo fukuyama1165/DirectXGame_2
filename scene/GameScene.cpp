@@ -209,7 +209,7 @@ void GameScene::Update()
 
 	if (input_->TriggerKey(DIK_I))
 	{
-		boss.setisAttackFlagL(true);
+		boss.setisAttackFlagL(true,player_->GetWorldPosition());
 	}
 
 	if (input_->TriggerKey(DIK_O))
@@ -219,12 +219,12 @@ void GameScene::Update()
 
 	if (input_->TriggerKey(DIK_K))
 	{
-		boss.setPos({ boss.GetWorldPosition().x + 1,boss.GetWorldPosition().y ,boss.GetWorldPosition().z });
+		boss.setisBossPress(true);
 	}
 
 	if (input_->TriggerKey(DIK_J))
 	{
-		boss.setPos({ boss.GetWorldPosition().x - 1,boss.GetWorldPosition().y ,boss.GetWorldPosition().z });
+		boss.setisBossBeam(true);
 	}
 
 	if (input_->TriggerKey(DIK_L))
