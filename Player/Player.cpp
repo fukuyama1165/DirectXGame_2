@@ -49,6 +49,7 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	height = WinApp::GetInstance()->kWindowHeight;
 	width = WinApp::GetInstance()->kWindowWidth;
 
+	
 
 }
 
@@ -63,6 +64,8 @@ void Player::ResourceInitialize(Model* model, Model* playerModel, uint32_t textu
 
 	Reticle.reset(Sprite::Create(Reticletexture, Vector2(width/2, height/ 2), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f)));
 	bosstarget.reset(Sprite::Create(textureHandle,Vector2(0,0), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f)));
+
+	
 }
 
 Player::Player()
@@ -71,6 +74,7 @@ Player::Player()
 
 Player::~Player()
 {
+	
 }
 
 void Player::Update(ViewProjection viewProjection)
@@ -200,7 +204,7 @@ void Player::Update(ViewProjection viewProjection)
 	worldTransform_.translation_.y -= 0.1f;
 	moveVec.y = -1;
 
-
+	
 
 
 	if ((input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))&& hopper_speed <= 0)
@@ -242,6 +246,7 @@ void Player::Draw(ViewProjection& viewProjection)
 	{
 		bullet->Draw(viewProjection);
 	}
+	
 
 }
 
@@ -250,7 +255,7 @@ void Player::DrawUI()
 	Reticle->Draw();
 	if (LockOn())
 	{
-		//bosstarget->Draw();
+		bosstarget->Draw();
 	}
 }
 
@@ -288,7 +293,8 @@ void Player::Attack(Vector3 flont)
 	Vector3 velocity;
 	if (LockOn())
 	{
-		velocity = boss->GetWorldPosition() - camera->GetWorldPosition();
+
+		velocity = boss->GetWorldPosition() - worldTransform_.translation_;
 	}
 	else
 	{
@@ -305,6 +311,7 @@ void Player::Attack(Vector3 flont)
 	newBullet->Initlize(model_, worldTransform_.translation_, velocity);
 
 	bullets_.push_back(std::move(newBullet));
+
 	
 
 }
