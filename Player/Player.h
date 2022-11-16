@@ -70,7 +70,7 @@ public:
 
 	Vector2 poskure() { return bosstarget->GetPosition(); }
 
-	bool LockOn();
+	bool LockOn(WorldTransform obj);
 
 	void SetWorldPosition(Vector3 osimodosi);
 
@@ -93,6 +93,11 @@ private:
 	//ワールド変換データ
 	WorldTransform worldTransform_;
 	WorldTransform target;
+	WorldTransform target2;
+	WorldTransform target3;
+	WorldTransform target4;
+	WorldTransform target5;
+	
 
 	ViewProjection viewProjection_;
 
