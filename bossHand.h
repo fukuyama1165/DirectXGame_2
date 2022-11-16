@@ -31,6 +31,8 @@ public:
 
 	void stoneFall();
 
+	void beam();
+
 	void setisAttackFlag(bool flag);
 
 	void setisPressFlag(bool flag);
@@ -38,6 +40,8 @@ public:
 	void setisPressEndFlag(bool flag);
 
 	void setisStoneFallFlag(bool flag);
+
+	void setisBeamFlag(bool flag);
 	
 
 	//プレイヤーの攻撃によって跳ね返された時１回だけ行う処理
@@ -67,6 +71,8 @@ private:
 	bool isFallFallFlag = false;
 	bool isFallReturnFlag = false;
 
+	bool isBeamFirstStart = false;
+
 	bool isGetTargetPos = false;
 
 	//手を跳ね返した時のフラグ
@@ -91,6 +97,8 @@ private:
 	float maxFallReturnTime = 20.0f;
 	float maxUpFallTime = 10.0f;
 
+	float maxBeamTime = 20.0f;
+
 	//ウエイト
 	float waitTime = 0;
 
@@ -108,6 +116,7 @@ private:
 	bool isPress = false;
 	bool isPressEnd = true;
 	bool isStoneFall = false;
+	bool isBeam = false;
 
 	//プレイヤーの位置
 	Vector3 targetPos = {};
@@ -116,6 +125,8 @@ private:
 	Vector3 returnPos = {};
 
 	Vector3 defaultPos = {};
+
+	Vector3 startBeamScale = { 1,1,200 };
 
 	DebugText* debugText_ = nullptr;
 

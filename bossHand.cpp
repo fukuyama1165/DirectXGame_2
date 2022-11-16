@@ -248,6 +248,7 @@ void bossHand::stoneFall()
 			waitTime = 0;
 		}
 
+		//プレイヤーの座標要求
 		if (isFallTargetMoveFlag and returnTimeCount == 0 and isGetTargetPos == false)
 		{
 			isGetTargetPos = true;
@@ -355,6 +356,58 @@ void bossHand::stoneFall()
 		}
 
 	}
+
+}
+
+void bossHand::beam()
+{
+
+	if (isBeam)
+	{
+
+		isAction = true;
+
+
+		if (isBeamFirstStart == false)
+		{
+
+			Hand.scale_ = startBeamScale;
+
+			Hand.matWorldGeneration();
+			isBeamFirstStart = true;
+
+		}
+
+		//カウント
+		if (timeCount < maxBeamTime and waitTime >60)
+		{
+			//使いまわし名前に意味はない
+			timeCount++;
+		}
+
+		//とっておいたプレイヤーの座標に移動
+		if (timeCount != maxBeamTime)
+		{
+
+			Hand.scale_ = lerp(startBeamScale, { 50,50,startBeamScale.z }, timeCount / maxBeamTime);
+			Hand.matWorldGeneration();
+		}
+
+		//終了
+		if (timeCount == maxBeamTime)
+		{
+			isAction = false;
+			isBeamFirstStart = false;
+			isBeam = false;
+			waitTime = 0;
+		}
+
+		waitTime++;
+
+	}
+
+
+
 
 }
 

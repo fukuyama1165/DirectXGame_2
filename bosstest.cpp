@@ -484,6 +484,11 @@ void bosstest::setPressHandPos()
 //	return start +  t * (end - start);
 //}
 
+void bosstest::OnCollision(int damage)
+{
 
+	bossHP -= damage;
+
+}
 
 

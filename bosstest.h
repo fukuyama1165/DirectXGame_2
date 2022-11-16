@@ -33,27 +33,43 @@ public:
 	//ワールド座標を取得
 	Vector3 GetWorldPosition();
 
+	//ボス本体の座標を変える
 	void setPos(Vector3 pos);
 
+	//handのパンチをするためのフラグを変更
 	void setisAttackFlagL(bool flag);
 
+	//プレス攻撃をするためのフラグを変更
 	void setisBossPress(bool flag);
 
+	//石落としをするためのフラグを変更
 	void setisBossStoneFall(bool flag);
 
+	//その場でパンチの攻撃を跳ね返したことにする
 	void playerAttackReturnL();
 
+	//プレス攻撃
 	void bossPress(Vector3 player);
 
+	//石落とし
 	void bossStoneFall(Vector3 player);
 
+	//pos???????????? 全部持ってくる
 	WorldTransform getPos() { return worldTransform; };
 
+	//handを持ってくる
 	std::vector<bossHand*> getHand() { return hand; };
 
+	//プレス攻撃をするときの目標座標移動用関数
 	void setPressPos();
 
+	//本体と一緒にhandが動くための関数
 	void setPressHandPos();
+
+	int getHP() { return bossHP; };
+
+	//与えるダメージを入れる(ダメージが確定したら専用で関数を作ること)
+	void OnCollision(int damage);
 
 private:
 
@@ -61,6 +77,8 @@ private:
 
 	//ワールドトランスフォーム
 	WorldTransform worldTransform;
+
+	int bossHP = 100;
 
 	//手の座標(もしかしたら処理が同じかもしれないのでクラス化したほうがいいかも)
 	/*bossHand hand[8];*/
