@@ -38,6 +38,7 @@ void GameScene::Initialize() {
 
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mario.jpg");
+	textureHandle2 = TextureManager::Load("Reticle.png");
 	
 
 	//3Dモデルの生成
@@ -79,9 +80,6 @@ void GameScene::Initialize() {
 
 	railView = railCamera_->getView();
 
-	player_p->Initialize(model_, playerModel_, textureHandle_, railCamera_.get());
-
-	player_.reset(player_p);
 
 	//デバックカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
@@ -105,6 +103,11 @@ void GameScene::Initialize() {
 
 	boss.Initialize(model_, { 0,10,20 });
 
+	player_p->Initialize(railCamera_.get(),&boss);
+	player_p->ResourceInitialize(model_, playerModel_, textureHandle_, textureHandle2);
+
+
+	player_.reset(player_p);
 }
 
 void GameScene::Update() 
@@ -239,9 +242,9 @@ void GameScene::Update()
 	AllCol();
 
 	debugText_->SetPos(0, 0);
-	debugText_->Printf("%f", sinf(cameraRotateX) * 20);
+	debugText_->Printf("%f", player_->poskure().x);
 	debugText_->SetPos(0, 20);
-	debugText_->Printf("%f", player_->GetWorldPosition().y);
+	debugText_->Printf("%f", player_->poskure().y);
 
 #ifdef _DEBUG
 
@@ -326,6 +329,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+	player_->DrawUI();
 
 	// デバッグテキストの描画
 	debugText_->DrawAll(commandList);

@@ -36,8 +36,7 @@ class Matrix4 {
 
 	Vector3 PosMat(Matrix4 mat, Vector3 vector);
 	
+	Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos);
 
 };
 
-
-Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos);

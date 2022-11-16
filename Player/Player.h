@@ -9,6 +9,7 @@
 #include <memory>
 #include <list>
 #include"RailCamera.h"
+#include"bosstest.h"
 
 /// <summary>
 /// 自キャラ
@@ -23,7 +24,8 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(Model* model, Model* playerModel, uint32_t textureHandle,RailCamera* camera);
+	void Initialize(RailCamera* camera,bosstest* boss);
+	void ResourceInitialize(Model* model, Model* playerModel, uint32_t textureHandle, uint32_t Reticletexture);
 
 	/// <summary>
 	/// 更新
@@ -36,6 +38,10 @@ public:
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション(参照渡し)</param>
 	void Draw(ViewProjection& viewProjection);
+
+	void DrawUI();
+	
+	Vector2 kasu(WorldTransform obj);
 
 	/// <summary>
 	/// UI描画
@@ -62,6 +68,10 @@ public:
 
 	WorldTransform GetMat();
 
+	Vector2 poskure() { return bosstarget->GetPosition(); }
+
+	bool LockOn();
+
 	void SetWorldPosition(Vector3 osimodosi);
 
 	//衝突を検出したら呼び出されるコールバック関数
@@ -76,6 +86,10 @@ private:
 
 	RailCamera* camera = nullptr;
 
+	bosstest* boss = nullptr;
+
+	
+
 	//ワールド変換データ
 	WorldTransform worldTransform_;
 	WorldTransform target;
@@ -88,6 +102,7 @@ private:
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
+	uint32_t ReticleTexture = 0u;
 
 	Input* input_ = nullptr;
 
@@ -96,6 +111,8 @@ private:
 	//弾
 	std::list<std::unique_ptr<PlayerBullet>> bullets_;
 
+	std::unique_ptr<Sprite> Reticle;
+	std::unique_ptr<Sprite> bosstarget;
 
 	int bulletCT = 0;
 
@@ -111,6 +128,10 @@ private:
 
 	int yuyotime;
 
+	int hopper_count;
+
+	const int hopper_limit = 4;
+
 	float hopper_speed;
 
 	bool cooldown;
@@ -119,6 +140,15 @@ private:
 
 	bool B_bottan;
 	bool old_B_bottan;
+
+	const int firelate = 15;
+
+	int latetime;
+
+	int width;
+	int height;
+
+
 
 };
 

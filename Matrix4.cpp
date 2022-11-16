@@ -82,7 +82,7 @@ Matrix4* Matrix4::CalcLookAtMatrix(Matrix4* mat, Vector3* pos, Vector3* look, Ve
 	return mat;
 }
 
-Vector3 VectorMatDivW(Matrix4 mat, Vector3 pos)
+Vector3 Matrix4::VectorMatDivW(Matrix4 mat, Vector3 pos)
 {
 	float w = pos.x * mat.m[0][3] + pos.y * mat.m[1][3] + pos.z * mat.m[2][3] + mat.m[3][3];
 

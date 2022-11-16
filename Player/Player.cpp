@@ -1,16 +1,15 @@
 #include "Player.h"
 #include <cassert>
 
-void Player::Initialize(Model* model, Model* playerModel, uint32_t textureHandle,RailCamera* camera)
+void Player::Initialize(RailCamera* camera, bosstest* boss)
 {
 	//NULLポインタチェック
-	assert(model);
-	assert(playerModel);
+	
+	assert(boss);
 
-	model_ = model;
-	playerModel_ = playerModel;
-	textureHandle_ = textureHandle;
+	
 	this->camera=camera;
+	this->boss = boss;
 
 
 	//シングルトンインスタンスを取得する
@@ -38,12 +37,32 @@ void Player::Initialize(Model* model, Model* playerModel, uint32_t textureHandle
 
 	hopper_speed = 0;
 
+	hopper_count = 0;
+
 	cooldown = false;
 
 	B_bottan = false;
 	old_B_bottan = false;
 
+	latetime = 0;
 
+	height = WinApp::GetInstance()->kWindowHeight;
+	width = WinApp::GetInstance()->kWindowWidth;
+
+
+}
+
+void Player::ResourceInitialize(Model* model, Model* playerModel, uint32_t textureHandle, uint32_t Reticletexture)
+{
+	assert(model);
+	assert(playerModel);
+
+	model_ = model;
+	playerModel_ = playerModel;
+	textureHandle_ = textureHandle;
+
+	Reticle.reset(Sprite::Create(Reticletexture, Vector2(width/2, height/ 2), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f)));
+	bosstarget.reset(Sprite::Create(textureHandle,Vector2(0,0), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f)));
 }
 
 Player::Player()
@@ -58,21 +77,13 @@ void Player::Update(ViewProjection viewProjection)
 {
 	XINPUT_STATE joystate;
 
-	Vector3 move = { 0,0,0 };
-
-	Vector3 up = { 0,1.0f,0 };
-
 	moveVec = { 0,0,0 };
-
-	Vector3 rota = { 0,0,0 };
 
 	Vector3 Flont = camera->getForwardVec();
 
 	Flont.y = 0;
 
-	//Flont = worldTransform_.matWorld_.VectorMat(Flont, worldTransform_.matWorld_);
 	Flont.normalize();
-
 
 	bullets_.remove_if([](std::unique_ptr<PlayerBullet>& bullet)
 		{
@@ -84,6 +95,7 @@ void Player::Update(ViewProjection viewProjection)
 		moveVec.x += (float)joystate.Gamepad.sThumbLX / SHRT_MAX;
 		moveVec.z += (float)joystate.Gamepad.sThumbLY / SHRT_MAX;
 	}
+
 
 	if (input_->PushKey(DIK_UP))
 	{
@@ -136,9 +148,11 @@ void Player::Update(ViewProjection viewProjection)
 	}
 	
 
-	if ((input_->TriggerKey(DIK_Z)||(B_bottan&&!old_B_bottan))&& hopper_speed <= 0&&!cooldown)
+	if ((input_->TriggerKey(DIK_Z)||(B_bottan&&!old_B_bottan))&& hopper_speed <= 0&&!cooldown&&hopper_count<hopper_limit)
 	{
 		hopper_dash = true;
+
+		hopper_count++;
 
 		cooltime += 30;
 
@@ -177,6 +191,7 @@ void Player::Update(ViewProjection viewProjection)
 		{
 			hopper_dash = false;
 			cooldown = false;
+			hopper_count = 0;
 		}
 
 	}
@@ -188,9 +203,14 @@ void Player::Update(ViewProjection viewProjection)
 
 
 
-	if (input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))
+	if ((input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))&& hopper_speed <= 0)
 	{
-		Attack(camera->getForwardVec());
+		if (latetime <= 0)
+		{
+			Attack(camera->getForwardVec());
+			latetime = firelate;
+		}
+		latetime--;
 	}
 
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
@@ -203,6 +223,10 @@ void Player::Update(ViewProjection viewProjection)
 
 
 	worldTransform_.matWorldGeneration();
+
+	bosstarget->SetPosition(kasu(boss->getPos()));
+
+	
 		
 }
 
@@ -211,7 +235,7 @@ void Player::Draw(ViewProjection& viewProjection)
 
 	//3Dモデルを描画
 	playerModel_->Draw(worldTransform_, viewProjection);
-	model_->Draw(target, viewProjection);
+	//model_->Draw(target, viewProjection);
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 
 	for(std::unique_ptr<PlayerBullet>& bullet:bullets_)
@@ -221,6 +245,38 @@ void Player::Draw(ViewProjection& viewProjection)
 
 }
 
+void Player::DrawUI()
+{
+	Reticle->Draw();
+	if (LockOn())
+	{
+		//bosstarget->Draw();
+	}
+}
+
+Vector2 Player::kasu(WorldTransform obj)
+{
+	Vector3 positionReticle = obj.matWorldGetPos();
+
+	Matrix4 matViewport = {
+	    1280 / 2,0,0,0,
+	    0,-720 / 2,0,0,
+	    0,0,1,0,
+	    1280 / 2 + 0,720 / 2 + 0,0,1
+	};
+
+	//ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4 matViewProjectionViewport = camera->getView().matView;
+	matViewProjectionViewport *= camera->getView().matProjection;
+	matViewProjectionViewport *= matViewport;
+
+	//ワールド→スクリーン座標変換(ここで3Dから2Dになる)
+	positionReticle = matViewport.VectorMatDivW(matViewProjectionViewport, positionReticle);
+	
+	//スプライトのレティクルに座標設定
+	return Vector2(positionReticle.x, positionReticle.y);
+}
+
 
 
 
@@ -228,15 +284,23 @@ void Player::Draw(ViewProjection& viewProjection)
 void Player::Attack(Vector3 flont)
 {
 	
-	const float kBulletSpeed = 10.0f;
+	const float kBulletSpeed = 5.0f;
+	Vector3 velocity;
+	if (LockOn())
+	{
+		velocity = boss->GetWorldPosition() - camera->GetWorldPosition();
+	}
+	else
+	{
+		velocity = flont;
 
-	Vector3 velocity=flont;
-
+	}
 	//velocity = worldTransform_.matWorld_.VectorMat(velocity,worldTransform_.matWorld_);
 	velocity.normalize();
 
 	velocity *= kBulletSpeed;
 
+	
 	std::unique_ptr <PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
 	newBullet->Initlize(model_, worldTransform_.translation_, velocity);
 
@@ -289,6 +353,19 @@ Vector3 Player::GetWorldPosition()
 WorldTransform Player::GetMat()
 {
 	return worldTransform_;
+}
+
+bool Player::LockOn()
+{
+	if ((width / 2) - 120.0f < bosstarget->GetPosition().x && (width / 2) + 120.0f > bosstarget->GetPosition().x && (height / 2) - 120.0f < bosstarget->GetPosition().y && (height / 2) + 120.0f > bosstarget->GetPosition().y)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+
+	}
 }
 
 void Player::SetWorldPosition(Vector3 osimodosi)
