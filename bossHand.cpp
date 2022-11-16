@@ -298,7 +298,7 @@ void bossHand::stoneFall()
 
 
 			//‰º‚ÉˆÚ“®
-			Hand.translation_ = lerp({ targetPos.x,15,targetPos.z }, {targetPos.x,targetPos.y+0.5f,targetPos.z}, ActionType4TimeCount / maxFallTime);
+			Hand.translation_ = lerp({ targetPos.x,15,targetPos.z }, {targetPos.x,targetPos.y+1.1f,targetPos.z}, ActionType4TimeCount / maxFallTime);
 
 			Hand.matWorldGeneration();
 		}
@@ -320,7 +320,7 @@ void bossHand::stoneFall()
 		if (waitTime > 150 and waitTime < (stoneFallReturnWaitTime + 150) and isFallReturnFlag)
 		{
 
-			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y+1.1f, targetPos.z };
+			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y+1.8f, targetPos.z };
 
 			Hand.matWorldGeneration();
 
