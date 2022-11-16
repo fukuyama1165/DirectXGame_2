@@ -360,7 +360,7 @@ void bosstest::bossBeam()
 
 		if (bossBeamCount == 0 and hand[0]->getisAction() == false)
 		{
-			hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y-5, worldTransform.matWorldGetPos().z+200});
+			hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z+200});
 			hand[0]->setisBeamFlag(true);
 			bossBeamCount++;
 			waitTime = bossBeamWaitTime;
@@ -369,9 +369,9 @@ void bosstest::bossBeam()
 
 		if (bossBeamCount == 1 and hand[0]->getisAction() == false and waitTime == 0)
 		{
-			hand[0]->setPos(worldTransform.matWorldGetPos());
+			hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z + 200 });
 			hand[0]->setisBeamFlag(true);
-			hand[1]->setPos({ worldTransform.matWorldGetPos().x+10,worldTransform.matWorldGetPos().y,worldTransform.matWorldGetPos().z});
+			hand[1]->setTargetPos({ worldTransform.matWorldGetPos().x + 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
 			hand[1]->setisBeamFlag(true);
 			bossBeamCount++;
 			return;
