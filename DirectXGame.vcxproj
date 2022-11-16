@@ -99,6 +99,7 @@
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="bossHand.cpp" />
     <ClCompile Include="bosstest.cpp" />
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="Enemy\BaseEnemyState.cpp" />
@@ -142,6 +143,7 @@
     <ClInclude Include="base\WinApp.h" />
     <ClInclude Include="bossHand.h" />
     <ClInclude Include="bosstest.h" />
+    <ClInclude Include="easing.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="Enemy\BaseEnemyState.h" />
