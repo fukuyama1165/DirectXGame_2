@@ -73,6 +73,8 @@ private:
 
 	bool isBeamFirstStart = false;
 
+	bool isBeamEnd = false;
+
 	bool isGetTargetPos = false;
 
 	//è‚ğ’µ‚Ë•Ô‚µ‚½‚Ìƒtƒ‰ƒO
@@ -85,9 +87,9 @@ private:
 	float ActionType4TimeCount = 0;
 
 	//“®ìŠÔ
-	float maxTime = 500.0f;
-	float maxReturnTime = 500.0f;
-	float maxReturnAttackTime = 200.0f;
+	float maxTime = 50.0f;
+	float maxReturnTime = 20.0f;
+	float maxReturnAttackTime = 10.0f;
 
 	float maxSetPressTime = 20.0f;
 	float maxResetPressTime = 50.0f;

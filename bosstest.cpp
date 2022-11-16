@@ -31,7 +31,7 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 
 	//引数で受け取った初期座標をセット
 	worldTransform.translation_ = position;
-	worldTransform.scale_ = { 3,3,3 };
+	worldTransform.scale_ = { 2,2,2 };
 
 	worldTransform.matWorldGeneration();
 
@@ -69,7 +69,7 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 void bosstest::Update(Vector3 player)
 {
 
-	
+
 
 	worldTransform.matWorldGeneration();
 
@@ -80,33 +80,21 @@ void bosstest::Update(Vector3 player)
 		{
 			hand[i]->setTargetPos(player);
 		}
-
 	}
 
-	if (state == Cube)
-	{
-		hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
-		hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-		hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-		hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-		hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
-	}
-
-	for (int i = 0; i < hand.size(); i++)
-	{
 
 		if (state == Cube)
 		{
-			hand[i]->setScale({ 2,2,2 });
+			
+			setCubeDefaultPos();
+
 			if (isHandMove == false)
 			{
 				setPressHandPos();
 			}
+			bossPress(player);
 			bossStoneFall(player);
-
+			bossBeam();
 		}
 
 		if (state == pillar)
@@ -116,11 +104,10 @@ void bosstest::Update(Vector3 player)
 
 		if (state == ophanim)
 		{
-			hand[i]->setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8) * 5,worldTransform.matWorldGetPos().y + cosf(i * 8) * 5,worldTransform.matWorldGetPos().z });
+			//hand[i]->setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8) * 5,worldTransform.matWorldGetPos().y + cosf(i * 8) * 5,worldTransform.matWorldGetPos().z });
 		}
 		
 
-	}
 	for (int i = 0; i < hand.size(); i++)
 	{
 		hand[i]->update(worldTransform);
@@ -213,7 +200,7 @@ void bosstest::bossPress(Vector3 player)
 			if (fallTimeCount != maxfallTime and waitTime >= fallWaitTime)
 			{
 
-				worldTransform.translation_ = lerp({ targetPos.x, pressPosY, targetPos.z }, { targetPos.x, 0, targetPos.z }, fallTimeCount / maxfallTime);
+				worldTransform.translation_ = lerp({ targetPos.x, pressPosY, targetPos.z }, { targetPos.x, 1.1f, targetPos.z }, fallTimeCount / maxfallTime);
 
 				worldTransform.matWorldGeneration();
 
@@ -284,7 +271,7 @@ void bosstest::bossPress(Vector3 player)
 				}
 			}
 
-			else
+			else 
 			{
 				
 
@@ -312,6 +299,8 @@ void bosstest::bossPress(Vector3 player)
 					isPressStart = false;
 
 					pressFirstStart = false;
+
+					setPressEnd();
 
 					for (int i = 0; i < hand.size(); i++)
 					{
@@ -359,6 +348,46 @@ void bosstest::bossStoneFall(Vector3 player)
 
 }
 
+void bosstest::bossBeam()
+{
+
+	if (isBossBeam)
+	{
+		if (waitTime > 0 and hand[0]->getisAction() == false)
+		{
+			waitTime--;
+		}
+
+		if (bossBeamCount == 0 and hand[0]->getisAction() == false)
+		{
+			hand[0]->setPos(worldTransform.matWorldGetPos());
+			hand[0]->setisBeamFlag(true);
+			bossBeamCount++;
+			waitTime = bossBeamWaitTime;
+			return;
+		}
+
+		if (bossBeamCount == 1 and hand[0]->getisAction() == false and waitTime == 0)
+		{
+			hand[0]->setPos(worldTransform.matWorldGetPos());
+			hand[0]->setisBeamFlag(true);
+			hand[1]->setPos({ worldTransform.matWorldGetPos().x+10,worldTransform.matWorldGetPos().y,worldTransform.matWorldGetPos().z});
+			hand[1]->setisBeamFlag(true);
+			bossBeamCount++;
+			return;
+		}
+
+		if (bossBeamCount == 2)
+		{
+			bossBeamCount = 0;
+			isBossBeam = false;
+			return;
+		}
+
+	}
+
+}
+
 Vector3 bosstest::GetWorldPosition()
 {
 	return worldTransform.matWorldGetPos();
@@ -398,6 +427,11 @@ void bosstest::setisBossStoneFall(bool flag)
 
 	isBossStoneFall = flag;
 
+}
+
+void bosstest::setisBossBeam(bool flag)
+{
+	isBossBeam = flag;
 }
 
 void bosstest::setPressPos()
@@ -491,4 +525,73 @@ void bosstest::OnCollision(int damage)
 
 }
 
+void  bosstest::setCubeDefaultPos()
+{
 
+	if (hand[0]->getisAction() == false)
+	{
+		hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	}
+
+	if (hand[1]->getisAction() == false)
+	{
+		hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	}
+
+	if (hand[2]->getisAction() == false)
+	{
+		hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	}
+	
+	if (hand[3]->getisAction() == false)
+	{
+		hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	}
+
+	if (hand[4]->getisAction() == false)
+	{
+		hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+	}
+	
+	if (hand[5]->getisAction() == false)
+	{
+		hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+	}
+	
+	if (hand[6]->getisAction() == false)
+	{
+		hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+	}
+
+	if (hand[7]->getisAction() == false)
+	{
+		hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+	}
+
+	for (int i = 0; i < hand.size(); i++)
+	{
+
+		if (hand[i]->getisAction() == false)
+		{
+			hand[i]->setScale({ 2,2,2 });
+		}
+
+	}
+
+}
+
+
+void bosstest::setPressEnd()
+{
+
+	
+	hand[0]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	hand[1]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	hand[2]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });	
+	hand[3]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z - 2.5f });
+	hand[4]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });	
+	hand[5]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y + 2.5f,worldTransform.matWorldGetPos().z + 2.5f });		
+	hand[6]->setdefaultPos({ worldTransform.matWorldGetPos().x + 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });		
+	hand[7]->setdefaultPos({ worldTransform.matWorldGetPos().x - 2.5f,worldTransform.matWorldGetPos().y - 2.5f,worldTransform.matWorldGetPos().z + 2.5f });
+
+}

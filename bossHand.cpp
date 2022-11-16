@@ -29,7 +29,10 @@ void bossHand::update(WorldTransform worldTransform)
 
 	Hand.matWorldGeneration();
 
+	punch(worldTransform);
+	press();
 	stoneFall();
+	beam();
 
 }
 
@@ -152,6 +155,7 @@ void bossHand::press()
 	if (isPress)
 	{
 		isAction = true;
+		isPressEnd = false;
 		if (timeCount < maxSetPressTime)
 		{
 			timeCount++;
@@ -294,7 +298,7 @@ void bossHand::stoneFall()
 
 
 			//‰º‚ÉˆÚ“®
-			Hand.translation_ = lerp({ targetPos.x,15,targetPos.z }, targetPos, ActionType4TimeCount / maxFallTime);
+			Hand.translation_ = lerp({ targetPos.x,15,targetPos.z }, {targetPos.x,targetPos.y+0.5f,targetPos.z}, ActionType4TimeCount / maxFallTime);
 
 			Hand.matWorldGeneration();
 		}
@@ -316,7 +320,7 @@ void bossHand::stoneFall()
 		if (waitTime > 150 and waitTime < (stoneFallReturnWaitTime + 150) and isFallReturnFlag)
 		{
 
-			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y, targetPos.z };
+			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y+1.1f, targetPos.z };
 
 			Hand.matWorldGeneration();
 
@@ -389,16 +393,28 @@ void bossHand::beam()
 		if (timeCount != maxBeamTime)
 		{
 
-			Hand.scale_ = lerp(startBeamScale, { 50,50,startBeamScale.z }, timeCount / maxBeamTime);
+			Hand.scale_ = lerp(startBeamScale, { 5,5,startBeamScale.z }, timeCount / maxBeamTime);
 			Hand.matWorldGeneration();
 		}
 
 		//I—¹
-		if (timeCount == maxBeamTime)
+		if (timeCount == maxBeamTime and isBeamEnd == false)
 		{
+			isBeamEnd = true;
+			waitTime = 0;
+		}
+
+		if (isBeamEnd and waitTime >120)
+		{
+			Hand.scale_ = { 1.0f,1.0f,1.0f };
+			Hand.matWorldGeneration();
+
 			isAction = false;
 			isBeamFirstStart = false;
+			isBeamEnd = false;
 			isBeam = false;
+
+			timeCount = 0;
 			waitTime = 0;
 		}
 
@@ -429,6 +445,11 @@ void bossHand::setisPressEndFlag(bool flag)
 void bossHand::setisStoneFallFlag(bool flag)
 {
 	isStoneFall = flag;
+}
+
+void  bossHand::setisBeamFlag(bool flag)
+{
+	isBeam = flag;
 }
 
 

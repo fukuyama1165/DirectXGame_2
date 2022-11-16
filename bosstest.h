@@ -45,6 +45,8 @@ public:
 	//石落としをするためのフラグを変更
 	void setisBossStoneFall(bool flag);
 
+	void setisBossBeam(bool flag);
+
 	//その場でパンチの攻撃を跳ね返したことにする
 	void playerAttackReturnL();
 
@@ -53,6 +55,8 @@ public:
 
 	//石落とし
 	void bossStoneFall(Vector3 player);
+
+	void bossBeam();
 
 	//pos???????????? 全部持ってくる
 	WorldTransform getPos() { return worldTransform; };
@@ -65,6 +69,13 @@ public:
 
 	//本体と一緒にhandが動くための関数
 	void setPressHandPos();
+
+	void setCubeDefaultPos();
+
+
+	void setPressEnd();
+
+
 
 	int getHP() { return bossHP; };
 
@@ -105,6 +116,7 @@ private:
 
 	bool isBossPress = false;
 	bool isBossStoneFall = false;
+	bool isBossBeam = false;
 
 	bool isPressStart = false;
 	bool isPressFall = false;
@@ -113,6 +125,7 @@ private:
 
 	int pressCount = 0;
 	int bossStoneFallCount = 0;
+	int bossBeamCount = 0;
 
 	float pressPosY = 20;
 
@@ -126,19 +139,21 @@ private:
 	float moveEndTimeCount = 0;
 
 	//動作時間
-	float maxTime = 300.0f;
-	float maxfallTime = 500.0f;
-	float maxReturnTime = 200.0f;
-	float maxMoveEndTime = 200.0f;
+	float maxTime = 10.0f;
+	float maxfallTime = 10.0f;
+	float maxReturnTime = 20.0f;
+	float maxMoveEndTime = 5.0f;
 
 	//ウエイト
 	float waitTime = 0;
 
 	//待つ時間
-	float fallWaitTime = 20;
-	float returnWaitTime = 700;
+	float fallWaitTime = 2;
+	float returnWaitTime = 20;
 
-	float bossStoneFallWaitTime = 120;
+	float bossStoneFallWaitTime = 20;
+
+	float bossBeamWaitTime = 40;
 
 };
 
