@@ -57,6 +57,8 @@ public:
 
 	void setScale(Vector3 scale);
 
+	void setRotate(Vector3 rotate);
+
 	void setTargetPos(Vector3 target);
 
 private:
@@ -91,14 +93,17 @@ private:
 	float maxReturnTime = 20.0f;
 	float maxReturnAttackTime = 10.0f;
 
+	//プレス
 	float maxSetPressTime = 20.0f;
 	float maxResetPressTime = 50.0f;
 
-	float maxTargetMoveTime = 40.0f;
-	float maxFallTime = 20.0f;
-	float maxFallReturnTime = 20.0f;
+	//石落とし
+	float maxTargetMoveTime = 35.0f;
+	float maxFallTime = 10.0f;
+	float maxFallReturnTime = 10.0f;
 	float maxUpFallTime = 10.0f;
 
+	//ビーム
 	float maxBeamTime = 100.0f;
 
 	//ウエイト
@@ -109,12 +114,13 @@ private:
 	float returnWaitTime = 160;
 
 	float stoneFallWaitTime = 40;
-	float stoneFallReturnWaitTime = 20;
+	float stoneFallReturnWaitTime = 10;
 
 	//今行動しているか
 	bool isAction = false;
 	bool isStoneFallAction = false;
 
+	//
 	bool isPress = false;
 	bool isPressEnd = true;
 	bool isStoneFall = false;

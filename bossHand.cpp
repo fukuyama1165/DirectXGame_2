@@ -483,6 +483,15 @@ void bossHand::setScale(Vector3 scale)
 
 }
 
+void bossHand::setRotate(Vector3 rotate)
+{
+	
+	Hand.rotation_ = rotate;
+
+	Hand.matWorldGeneration();
+
+}
+
 void bossHand::setTargetPos(Vector3 target)
 {
 	targetPos = target;

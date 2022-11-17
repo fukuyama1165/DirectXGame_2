@@ -36,6 +36,8 @@ public:
 	//ボス本体の座標を変える
 	void setPos(Vector3 pos);
 
+	void setRotate(Vector3 rotate);
+
 	//handのパンチをするためのフラグを変更
 	void setisAttackFlagL(bool flag,Vector3 player);
 
@@ -106,8 +108,8 @@ private:
 	
 	int state = Cube;
 
-	float bossCubeDistance = 3.5f;
-	float bossCubePressDistance = 2.8f;
+	float setbossCubeDistance = 6.0f;
+	float setbossCubePressDistance = 4.8f;
 
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
@@ -125,6 +127,8 @@ private:
 	bool isPressFall = false;
 	bool isPressReturn = false;
 	bool pressFirstStart = false;
+	bool beamFirstStart = false;
+	bool beamEndStart = false;
 
 	int pressCount = 0;
 	int bossStoneFallCount = 0;
@@ -134,6 +138,7 @@ private:
 
 	Vector3 returnPos = {};
 	Vector3 targetPos = {};
+	Vector3 beamStartPos = {};
 
 	//タイムカウンター
 	float timeCount = 0;
@@ -141,11 +146,17 @@ private:
 	float returnTimeCount = 0;
 	float moveEndTimeCount = 0;
 
+	float beamFirstMoveCount = 0;
+	float beamEndMoveCount = 0;
+
 	//動作時間
 	float maxTime = 10.0f;
 	float maxfallTime = 10.0f;
 	float maxReturnTime = 20.0f;
 	float maxMoveEndTime = 5.0f;
+
+	float maxFirstBeamMoveTime = 20.0f;
+	float maxEndBeamMoveTime = 20.0f;
 
 	//ウエイト
 	float waitTime = 0;
