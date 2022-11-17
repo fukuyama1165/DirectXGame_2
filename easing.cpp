@@ -3,6 +3,27 @@
 
 const float PI = 3.141592f;
 
+Vector3 easeOutSineVec3(Vector3 startpos, Vector3 endpos, float time)
+{
+	Vector3 gomikasusine;
+
+	gomikasusine.x = startpos.x + (sin((time * PI) / 2)) * (endpos.x - startpos.x);
+	gomikasusine.y = startpos.y + (sin((time * PI) / 2)) * (endpos.y - startpos.y);
+	gomikasusine.z = startpos.z + (sin((time * PI) / 2)) * (endpos.z - startpos.z);
+
+	return gomikasusine;
+}
+
+Vector3 easeOutQuintVec3(Vector3 start, Vector3 end, double time)
+{
+	Vector3 gomikasusine;
+	gomikasusine.x = start.x + (1 - pow(1 - time, 5)) * (end.x - start.x);
+	gomikasusine.y = start.y + (1 - pow(1 - time, 5)) * (end.y - start.y);
+	gomikasusine.z = start.z + (1 - pow(1 - time, 5)) * (end.z - start.z);
+
+	return gomikasusine;
+}
+
 //a‚©‚çb‚Ü‚Å‚ÌŠÔ(0`1)‚ÌˆÊ’u‚ğ’m‚é‚±‚Æ‚ª‚Å‚«‚éŠÖ”
 double lerp(double a, double b, double t)
 {

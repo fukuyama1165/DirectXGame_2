@@ -92,11 +92,17 @@ private:
 
 	//ワールド変換データ
 	WorldTransform worldTransform_;
-	WorldTransform target;
+
+	WorldTransform kyozou;
+
+	static const int gunbitnum = 4;
+
+	WorldTransform target[gunbitnum];
+
+	/*WorldTransform target;
 	WorldTransform target2;
 	WorldTransform target3;
-	WorldTransform target4;
-	WorldTransform target5;
+	WorldTransform target4;*/
 	
 
 	ViewProjection viewProjection_;
@@ -131,12 +137,6 @@ private:
 
 	int cooltime;
 
-	int yuyotime;
-
-	int hopper_count;
-
-	const int hopper_limit = 4;
-
 	float hopper_speed;
 
 	bool cooldown;
@@ -153,7 +153,21 @@ private:
 	int width;
 	int height;
 
+	float timer;
 
+	float bitmovetimer;
+
+	float NormalTimer;
+
+	const float BitNormalAttakTime = 20;
+
+	bool lockmove;
+
+	float hoppertimer;
+
+	const float hoppertime = 20;
+
+	float hozonY, hozonX;
 
 };
 
