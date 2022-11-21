@@ -71,8 +71,10 @@ public:
 
 	//–{‘Ì‚Æˆê‚Éhand‚ª“®‚­‚½‚ß‚ÌŠÖ”
 	void setPressHandPos();
+	void setPillarHandPos();
 
 	void setCubeDefaultPos();
+	void setPillarDefaultPos();
 
 
 	void setPressEnd();
@@ -106,7 +108,7 @@ private:
 		ophanim
 	};
 	
-	int state = Cube;
+	int state = pillar;
 
 	float setbossCubeDistance = 6.0f;
 	float setbossCubePressDistance = 4.8f;
@@ -168,6 +170,22 @@ private:
 	float bossStoneFallWaitTime = 20;
 
 	float bossBeamWaitTime = 40;
+
+	float bosspillarMoveTime = 0;
+	float maxBosspillarMoveTime = 10;
+	int bosspillarDefaultPosCount = 0;
+
+	Vector3 pillarDefaultPosRotate[8] =
+	{
+		{ 0,0,1 },
+		{ 1,0,1 },
+		{ 1,0,0 },
+		{ 1,0,-1 },
+		{ 0,0,-1 },
+		{ -1,0,-1 },
+		{ -1,0,0 },
+		{ -1,0,1 },
+	};
 
 };
 

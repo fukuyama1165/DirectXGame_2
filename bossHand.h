@@ -104,7 +104,8 @@ private:
 	float maxUpFallTime = 10.0f;
 
 	//ビーム
-	float maxBeamTime = 100.0f;
+	float maxBeamTime = 30.0f;
+	float maxFirstBeamTime = 20.0f;
 
 	//ウエイト
 	float waitTime = 0;

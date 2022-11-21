@@ -377,18 +377,30 @@ void bossHand::beam()
 
 			Hand.scale_ = startBeamScale;
 
+			//現在位置取得
+			returnPos = Hand.matWorldGetPos();
+
 			Hand.matWorldGeneration();
 			isBeamFirstStart = true;
 
 		}
+		else if(returnTimeCount < maxFirstBeamTime)
+		{
+
+			returnTimeCount++;
+			Hand.translation_ = lerp(returnPos, targetPos, returnTimeCount / maxFirstBeamTime);
+			Hand.matWorldGeneration();
+
+		}
+
 
 		//カウント
-		if (timeCount < maxBeamTime and waitTime >60)
+		if (timeCount < maxBeamTime and waitTime > 15)
 		{
 			timeCount++;
 		}
 
-		if (timeCount != maxBeamTime)
+		if (timeCount != maxBeamTime and waitTime > 15)
 		{
 
 			Hand.translation_ = lerp(targetPos, { targetPos.x,targetPos.y,targetPos.z-600 }, timeCount / maxBeamTime);
@@ -409,9 +421,13 @@ void bossHand::beam()
 
 			timeCount = 0;
 			waitTime = 0;
+			returnTimeCount = 0;
 		}
 
-		waitTime++;
+		if (returnTimeCount == maxFirstBeamTime)
+		{
+			waitTime++;
+		}
 
 	}
 

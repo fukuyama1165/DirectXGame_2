@@ -108,7 +108,8 @@ void bosstest::Update(Vector3 player)
 
 		if (state == pillar)
 		{
-
+			setPillarDefaultPos();
+			setPillarHandPos();
 		}
 
 		if (state == ophanim)
@@ -368,60 +369,88 @@ void bosstest::bossBeam()
 			waitTime--;
 		}
 
-		if (beamFirstStart == false and beamFirstMoveCount ==0)
-		{
-			
-			beamStartPos = worldTransform.matWorldGetPos();
-			beamFirstStart = true;
+		
 
-		}
-		else if(beamFirstMoveCount < maxFirstBeamMoveTime)
+		if (bossBeamCount == 0 and hand[4]->getisAction() == false and waitTime == 0)
 		{
-			
-			beamFirstMoveCount++;
-				
-			worldTransform.translation_ = lerp(beamStartPos, { beamStartPos.x,beamStartPos.y,200 }, beamFirstMoveCount / maxFirstBeamMoveTime);
-
-			worldTransform.matWorldGeneration();
-	
-		}
-
-		if (bossBeamCount == 0 and hand[0]->getisAction() == false and beamFirstMoveCount == maxFirstBeamMoveTime)
-		{
-			hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z+200});
-			hand[0]->setisBeamFlag(true);
+			hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z+200});
+			hand[4]->setisBeamFlag(true);
 			bossBeamCount++;
 			waitTime = bossBeamWaitTime;
 			return;
 		}
 
-		if (bossBeamCount == 1 and hand[0]->getisAction() == false and waitTime == 0)
+		if (bossBeamCount == 1 and hand[4]->getisAction() == false and waitTime == 0)
 		{
-			hand[0]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z + 200 });
-			hand[0]->setisBeamFlag(true);
-			hand[1]->setTargetPos({ worldTransform.matWorldGetPos().x + 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
-			hand[1]->setisBeamFlag(true);
+			hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z + 200 });
+			hand[4]->setisBeamFlag(true);
+
+			hand[5]->setTargetPos({ worldTransform.matWorldGetPos().x - 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[5]->setisBeamFlag(true);
 			bossBeamCount++;
+			waitTime = bossBeamWaitTime;
 			return;
 		}
 
-		if (bossBeamCount == 2 and hand[0]->getisAction() == false and waitTime == 0)
+		if (bossBeamCount == 2 and hand[4]->getisAction() == false and waitTime == 0)
+		{
+			hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z + 200 });
+			hand[4]->setisBeamFlag(true);
+
+			hand[5]->setTargetPos({ worldTransform.matWorldGetPos().x + 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[5]->setisBeamFlag(true);
+
+			hand[6]->setTargetPos({ worldTransform.matWorldGetPos().x + 40, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[6]->setisBeamFlag(true);
+			bossBeamCount++;
+			waitTime = bossBeamWaitTime;
+			return;
+		}
+
+		if (bossBeamCount == 3 and hand[4]->getisAction() == false and waitTime == 0)
+		{
+			hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z + 200 });
+			hand[4]->setisBeamFlag(true);
+
+			hand[5]->setTargetPos({ worldTransform.matWorldGetPos().x + 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[5]->setisBeamFlag(true);
+
+			hand[6]->setTargetPos({ worldTransform.matWorldGetPos().x + 40, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[6]->setisBeamFlag(true);
+
+			hand[7]->setTargetPos({ worldTransform.matWorldGetPos().x - 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[7]->setisBeamFlag(true);
+			bossBeamCount++;
+			waitTime = bossBeamWaitTime;
+			return;
+		}
+
+		if (bossBeamCount == 4 and hand[4]->getisAction() == false and waitTime == 0)
+		{
+			hand[4]->setTargetPos({ worldTransform.matWorldGetPos().x, worldTransform.matWorldGetPos().y - 5, worldTransform.matWorldGetPos().z + 200 });
+			hand[4]->setisBeamFlag(true);
+
+			hand[5]->setTargetPos({ worldTransform.matWorldGetPos().x + 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[5]->setisBeamFlag(true);
+
+			hand[6]->setTargetPos({ worldTransform.matWorldGetPos().x + 40, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[6]->setisBeamFlag(true);
+
+			hand[7]->setTargetPos({ worldTransform.matWorldGetPos().x - 20, worldTransform.matWorldGetPos().y - 5,worldTransform.matWorldGetPos().z + 200 });
+			hand[7]->setisBeamFlag(true);
+			bossBeamCount++;
+			waitTime = bossBeamWaitTime;
+			return;
+		}
+
+		if (bossBeamCount == 5 and hand[4]->getisAction() == false )
 		{
 
-			if (beamEndMoveCount < maxEndBeamMoveTime)
-			{
-				beamEndMoveCount++;
-
-				worldTransform.translation_ = lerp({ beamStartPos.x,beamStartPos.y,200 }, beamStartPos, beamEndMoveCount / maxEndBeamMoveTime);
-
-				worldTransform.matWorldGeneration();
-			}
-			else
-			{
+			
 				bossBeamCount = 0;
-				beamFirstStart = false;
+				
+				
 				isBossBeam = false;
-			}
 			
 		}
 
@@ -485,47 +514,47 @@ void bosstest::setisBossBeam(bool flag)
 
 void bosstest::setPressPos()
 {
-	Vector3 nannka;
+	Vector3 bossSft;
 
-	nannka = { 1,1,-1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[0]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { 1,1,-1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[0]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { -1,1,-1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[1]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { -1,1,-1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[1]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { 1,-1,-1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[2]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { 1,-1,-1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[2]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { -1,-1,-1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[3]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { -1,-1,-1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[3]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { 1,1,1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[4]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { 1,1,1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[4]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { -1,1,1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[5]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { -1,1,1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[5]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { 1,-1,1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[6]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { 1,-1,1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[6]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-	nannka = { -1,-1,1 };
-	nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-	nannka.normalize();
-	hand[7]->setTargetPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+	bossSft = { -1,-1,1 };
+	bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+	bossSft.normalize();
+	hand[7]->setTargetPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
 	for (int i = 0; i < hand.size(); i++)
 	{
@@ -539,117 +568,169 @@ void bosstest::setPressHandPos()
 
 	if (pressFirstStart)
 	{
-		Vector3 nannka;
-		nannka = { 1,1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[0]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		Vector3 bossSft;
+		bossSft = { 1,1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[0]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { -1,1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[1]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { -1,1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[1]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { 1,-1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[2]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { 1,-1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[2]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { -1,-1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[3]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { -1,-1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[3]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { 1,1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[4]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { 1,1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[4]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { -1,1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[5]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { -1,1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[5]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { 1,-1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[6]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { 1,-1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[6]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
-		nannka = { -1,-1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[7]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubePressDistance));
+		bossSft = { -1,-1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[7]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubePressDistance));
 
 	}
 	else if(hand[0]->getisPressEndd())
 	{
 
-		Vector3 nannka;
+		Vector3 bossSft;
 		
 		if (hand[0]->getisAction() == false)
 		{
-			nannka = { 1,1,-1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[0]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { 1,1,-1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[0]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 		if (hand[1]->getisAction() == false)
 		{
-			nannka = { -1,1,-1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[1]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { -1,1,-1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[1]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 
 		if (hand[2]->getisAction() == false)
 		{
 
-			nannka = { 1,-1,-1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[2]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { 1,-1,-1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[2]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 		
 		if (hand[3]->getisAction() == false)
 		{
-			nannka = { -1,-1,-1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[3]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { -1,-1,-1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[3]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 		
 		if (hand[4]->getisAction() == false)
 		{
-			nannka = { 1,1,1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[4]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { 1,1,1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[4]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 		
 		if (hand[5]->getisAction() == false)
 		{
-			nannka = { -1,1,1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[5]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { -1,1,1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[5]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 		
 		if (hand[6]->getisAction() == false)
 		{
-			nannka = { 1,-1,1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[6]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { 1,-1,1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[6]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 		
 		if (hand[7]->getisAction() == false)
 		{
-			nannka = { -1,-1,1 };
-			nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-			nannka.normalize();
-			hand[7]->setPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+			bossSft = { -1,-1,1 };
+			bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+			bossSft.normalize();
+			hand[7]->setPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 		}
 	}
+}
+
+void bosstest::setPillarHandPos()
+{
+		Vector3 bossSft;
+		Vector3 bossSftMove;
+
+		//カウント
+		if (bosspillarMoveTime< maxBosspillarMoveTime)
+		{
+			
+			bosspillarMoveTime++;
+		}
+
+		//とっておいたプレイヤーの座標に移動
+		if (bosspillarMoveTime < maxBosspillarMoveTime)
+		{
+			for (int i = 0; i < hand.size(); i++)
+			{
+
+				if (hand[i]->getisAction() == false)
+				{
+					
+					bossSft = pillarDefaultPosRotate[(bosspillarDefaultPosCount + i) % 8];
+					bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+					bossSft.normalize();
+
+					bossSftMove = pillarDefaultPosRotate[(bosspillarDefaultPosCount + i + 1) % 8];
+					bossSftMove = worldTransform.matWorld_.VectorMat(bossSftMove, worldTransform.matWorld_);
+					bossSftMove.normalize();
+					hand[i]->setPos(lerp(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance), worldTransform.matWorldGetPos() + (bossSftMove * setbossCubeDistance), bosspillarMoveTime / maxBosspillarMoveTime));
+					
+				}
+
+			}
+		}
+
+		//終了
+		if (bosspillarMoveTime == maxBosspillarMoveTime)
+		{
+			if (bosspillarDefaultPosCount < _countof(pillarDefaultPosRotate)-1)
+			{
+				bosspillarDefaultPosCount++;
+			}
+			else
+			{
+				bosspillarDefaultPosCount = 0;
+			}
+			bosspillarMoveTime = 0;
+		}
+
+
 }
 
 //const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)
@@ -664,73 +745,74 @@ void bosstest::OnCollision(int damage)
 
 }
 
-void  bosstest::setCubeDefaultPos()
+
+void bosstest::setCubeDefaultPos()
 {
 
-	Vector3 nannka;
+	Vector3 bossSft;
 
 	if (hand[0]->getisAction() == false)
 	{
-		nannka = { 1,1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[0]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[0]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 	if (hand[1]->getisAction() == false)
 	{
-		nannka = { -1,1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[1]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[1]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	if (hand[2]->getisAction() == false)
 	{
 
-		nannka = { 1,-1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[2]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,-1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[2]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	if (hand[3]->getisAction() == false)
 	{
-		nannka = { -1,-1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[3]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,-1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[3]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	if (hand[4]->getisAction() == false)
 	{
-		nannka = { 1,1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[4]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[4]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	if (hand[5]->getisAction() == false)
 	{
-		nannka = { -1,1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[5]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[5]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	if (hand[6]->getisAction() == false)
 	{
-		nannka = { 1,-1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[6]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,-1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[6]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	if (hand[7]->getisAction() == false)
 	{
-		nannka = { -1,-1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[7]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,-1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[7]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	}
 
 	for (int i = 0; i < hand.size(); i++)
@@ -745,51 +827,89 @@ void  bosstest::setCubeDefaultPos()
 
 }
 
+void bosstest::setPillarDefaultPos()
+{
+
+	Vector3 bossSft;
+	Vector3 bossSftMove;
+	//とっておいたプレイヤーの座標に移動
+	if (bosspillarMoveTime < maxBosspillarMoveTime)
+	{
+		for (int i = 0; i < hand.size(); i++)
+		{
+			if (hand[i]->getisAction() == false)
+			{
+				bossSft = pillarDefaultPosRotate[(bosspillarDefaultPosCount + i) % 8];
+				bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+				bossSft.normalize();
+
+				bossSftMove = pillarDefaultPosRotate[(bosspillarDefaultPosCount + i + 1) % 8];
+				bossSftMove = worldTransform.matWorld_.VectorMat(bossSftMove, worldTransform.matWorld_);
+				bossSftMove.normalize();
+				hand[i]->setdefaultPos(lerp(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance), worldTransform.matWorldGetPos() + (bossSftMove * setbossCubeDistance), bosspillarMoveTime / maxBosspillarMoveTime));
+			}
+		}
+	}
+
+	
+
+	for (int i = 0; i < hand.size(); i++)
+	{
+
+		if (hand[i]->getisAction() == false)
+		{
+			hand[i]->setScale({ 1.0f,10.0f,1.0f });
+		}
+
+	}
+
+}
+
 
 void bosstest::setPressEnd()
 {
 
 	
-	Vector3 nannka;
+	Vector3 bossSft;
 
-		nannka = { 1,1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[0]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[0]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	
-		nannka = { -1,1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[1]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[1]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	
-		nannka = { 1,-1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[2]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,-1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[2]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 
-		nannka = { -1,-1,-1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[3]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,-1,-1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[3]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	
-		nannka = { 1,1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[4]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[4]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	
-		nannka = { -1,1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[5]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[5]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	
-		nannka = { 1,-1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[6]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { 1,-1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[6]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 	
-		nannka = { -1,-1,1 };
-		nannka = worldTransform.matWorld_.VectorMat(nannka, worldTransform.matWorld_);
-		nannka.normalize();
-		hand[7]->setdefaultPos(worldTransform.matWorldGetPos() + (nannka * setbossCubeDistance));
+		bossSft = { -1,-1,1 };
+		bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+		bossSft.normalize();
+		hand[7]->setdefaultPos(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance));
 
 }
