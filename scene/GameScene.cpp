@@ -18,7 +18,10 @@ GameScene::~GameScene() {
 
 	delete model_;
 	delete playerModel_;
+	delete bitModel_;
 	delete playerbulletModel_;
+	delete bossModel_;
+	delete bosshandModel_;
 	delete enemybulletModel_;
 	delete enemyModel_;
 	delete debugCamera_;
