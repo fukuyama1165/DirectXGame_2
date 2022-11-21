@@ -41,7 +41,9 @@ public:
 
 	void DrawUI();
 	
-	Vector2 kasu(WorldTransform obj);
+	Vector2 kasu(Vector3 obj);
+
+	bool screenLock(WorldTransform pos);
 
 	/// <summary>
 	/// UI描画
@@ -70,9 +72,12 @@ public:
 
 	Vector2 poskure() { return bosstarget->GetPosition(); }
 
-	bool LockOn(WorldTransform obj);
+	bool LockOn(bosstest* boss);
 
 	void SetWorldPosition(Vector3 osimodosi);
+
+	Vector3 Hikaku(Vector3 boss, Vector3 hand1, Vector3 hand2);
+	Vector3 Hikaku2(Vector3 hand1, Vector3 hand2);
 
 	//衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
@@ -98,12 +103,6 @@ private:
 	static const int gunbitnum = 4;
 
 	WorldTransform target[gunbitnum];
-
-	/*WorldTransform target;
-	WorldTransform target2;
-	WorldTransform target3;
-	WorldTransform target4;*/
-	
 
 	ViewProjection viewProjection_;
 
@@ -168,6 +167,8 @@ private:
 	const float hoppertime = 20;
 
 	float hozonY, hozonX;
+
+	Vector3 hozon;
 
 };
 

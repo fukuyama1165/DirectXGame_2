@@ -64,6 +64,8 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 
 	hoppertimer = 0;
 
+	hozon = { 0,0,0 };
+
 }
 
 void Player::ResourceInitialize(Model* model, Model* playerModel, uint32_t textureHandle, uint32_t Reticletexture)
@@ -162,7 +164,7 @@ void Player::Update(ViewProjection viewProjection)
 	float kariy = -PtoB.y;
 	PtoB.normalize();
 	
-	if (LockOn(boss->getPos()))
+	if (LockOn(boss))
 	{
 		lockmove = true;
 	}
@@ -184,7 +186,7 @@ void Player::Update(ViewProjection viewProjection)
 
 	}
 
-	if (LockOn(boss->getPos()))
+	if (LockOn(boss))
 	{
 		float gomi = atan2(PtoB.x, PtoB.z);
 
@@ -320,7 +322,7 @@ void Player::Update(ViewProjection viewProjection)
 
 	if ((input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))&& hoppertimer >= 0)
 	{
-		if (!LockOn(boss->getPos()))
+		if (!LockOn(boss))
 		{
 			Vector3 kari2 = KyozouFlont;
 			kari2.y = 0;
@@ -400,7 +402,7 @@ void Player::Update(ViewProjection viewProjection)
 
 	worldTransform_.matWorldGeneration();
 
-	bosstarget->SetPosition(kasu(boss->getPos()));
+	//bosstarget->SetPosition(kasu(boss->getPos().translation_));
 
 	
 		
@@ -431,15 +433,15 @@ void Player::Draw(ViewProjection& viewProjection)
 void Player::DrawUI()
 {
 	Reticle->Draw();
-	if (LockOn(boss->getPos()))
+	if (LockOn(boss))
 	{
 		bosstarget->Draw();
 	}
 }
 
-Vector2 Player::kasu(WorldTransform obj)
+Vector2 Player::kasu(Vector3 obj)
 {
-	Vector3 positionReticle = obj.matWorldGetPos();
+	Vector3 positionReticle = obj;
 
 	Matrix4 matViewport = {
 	    1280 / 2,0,0,0,
@@ -458,6 +460,28 @@ Vector2 Player::kasu(WorldTransform obj)
 	
 	//スプライトのレティクルに座標設定
 	return Vector2(positionReticle.x, positionReticle.y);
+}
+
+bool Player::screenLock(WorldTransform pos)
+{
+	Matrix4 Pos = pos.matWorld_;
+	Pos *= camera->getView().matView;
+	Pos *= camera->getView().matProjection;
+
+	float objZ = Pos.m[3][2];
+
+	Vector2 scr_pos = kasu(pos.translation_);
+
+	if ((width / 2) - 120.0f < scr_pos.x && (width / 2) + 120.0f > scr_pos.x && (height / 2) - 120.0f < scr_pos.y && (height / 2) + 120.0f > scr_pos.y && objZ > 0)
+	{
+		return true;
+	}
+
+	else
+	{
+		return false;
+	}
+	
 }
 
 
@@ -532,31 +556,82 @@ WorldTransform Player::GetMat()
 	return worldTransform_;
 }
 
-bool Player::LockOn(WorldTransform obj)
+bool Player::LockOn(bosstest* obj)
 {
-
-	Matrix4 pos = obj.matWorld_;
-
-
-	obj.matWorld_ *= camera->getView().matView;
-	obj.matWorld_ *= camera->getView().matProjection;
-
-	float objZ = obj.matWorld_.m[3][2];
-
-	if ((width / 2) - 120.0f < bosstarget->GetPosition().x && (width / 2) + 120.0f > bosstarget->GetPosition().x && (height / 2) - 120.0f < bosstarget->GetPosition().y && (height / 2) + 120.0f > bosstarget->GetPosition().y&&objZ>0)
+	const std::vector<bossHand*>& bosshands = boss->getHand();
+	for (int i = 0; i < bosshands.size(); i++)
 	{
-		return true;
-	}
-	else
-	{
-		return false;
+		if (screenLock(obj->getPos())&&screenLock(bosshands[i]->GetwroldTransform()))
+		{
+			if (bosshands[i]->getisAttackFlag())
+			{
+				Vector3 hozon2 = Hikaku(obj->GetWorldPosition(), bosshands[i]->GetwroldTransform().translation_, hozon);
+				bosstarget->SetPosition(kasu(hozon2));
+				hozon = hozon2;
+			}
+			else
+			{
+				bosstarget->SetPosition(kasu(obj->GetWorldPosition()));
+			}
 
+			return true;
+		}
+		else if(screenLock(obj->getPos()))
+		{
+
+			bosstarget->SetPosition(kasu(obj->GetWorldPosition()));
+
+			return true;
+		}
+		else if (screenLock(bosshands[i]->GetwroldTransform()))
+		{
+			if (bosshands[i]->getisAttackFlag())
+			{
+				Vector3 hozon2 = Hikaku2(bosshands[i]->GetwroldTransform().translation_, hozon);
+				bosstarget->SetPosition(kasu(hozon2));
+				hozon = hozon2;
+			}
+			return true;
+		}
+		else
+		{
+			hozon = { 0,0,0 };
+			return false;
+
+		}
 	}
+
+	
 }
 
 void Player::SetWorldPosition(Vector3 osimodosi)
 {
 	worldTransform_.translation_ = osimodosi;
+}
+
+Vector3 Player::Hikaku(Vector3 boss, Vector3 hand1, Vector3 hand2)
+{
+	Vector3 kariA, kariB, kariC;
+	kariA = boss - worldTransform_.translation_;
+	kariB = hand1 - worldTransform_.translation_;
+	kariC = hand2 - worldTransform_.translation_;
+
+	if (kariA.length() < kariB.length() && kariA.length() < kariC.length()) return boss;
+	else if (kariB.length() < kariA.length() && kariB.length() < kariC.length()) return hand1;
+	else if (kariC.length() < kariA.length() && kariC.length() < kariB.length()) return hand2;
+	
+}
+
+Vector3 Player::Hikaku2(Vector3 hand1, Vector3 hand2)
+{
+	Vector3 kariB, kariC;
+	kariB = hand1 - worldTransform_.translation_;
+	kariC = hand2 - worldTransform_.translation_;
+
+	
+	if (kariB.length() <= kariC.length()) return hand1;
+	else if (kariC.length() < kariB.length()) return hand2;
+
 }
 
 void Player::OnCollision()
