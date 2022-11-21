@@ -1,4 +1,5 @@
 #include "Player.h"
+#include"easing.h"
 #include <cassert>
 
 void Player::Initialize(RailCamera* camera, bosstest* boss)
@@ -19,13 +20,14 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	//ÉèÅ[ÉãÉhïœä∑ÇÃèâä˙âª
 	worldTransform_.Initialize();
 
-	target.Initialize();
-	target2.Initialize();
-	target3.Initialize();
-	target4.Initialize();
-	target5.Initialize();
-	
+	for (size_t i = 0; i < gunbitnum; i++)
+	{
+		target[i].Initialize();
+		target[i].scale_ = {0.5f,0.5f,2.0f};
+	}
 
+	
+	kyozou.Initialize();
 
 	worldTransform_.translation_ = { 0,0,0 };
 
@@ -39,11 +41,16 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 
 	cooltime = 0;
 
-	yuyotime = 0;
+	timer=0;
 
-	hopper_speed = 0;
+	NormalTimer = 0;
 
-	hopper_count = 0;
+	bitmovetimer=60;
+
+	lockmove = false;
+
+
+	hopper_speed = 5.0f;
 
 	cooldown = false;
 
@@ -55,7 +62,7 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	height = WinApp::GetInstance()->kWindowHeight;
 	width = WinApp::GetInstance()->kWindowWidth;
 
-	
+	hoppertimer = 0;
 
 }
 
@@ -87,10 +94,12 @@ void Player::Update(ViewProjection viewProjection)
 {
 	XINPUT_STATE joystate;
 
+	
+
 	moveVec = { 0,0,0 };
 
 	Vector3 Flont = camera->getForwardVec();
-
+	Vector3 KyozouFlont = Flont;
 	Flont.y = 0;
 
 	Flont.normalize();
@@ -137,44 +146,118 @@ void Player::Update(ViewProjection viewProjection)
 	mae = worldTransform_.matWorld_.VectorMat(mae, worldTransform_.matWorld_);
 
 	mae.normalize();
-	Vector3 nannka;
-	nannka = { 1,1,1 };
-	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-	nannka.normalize();
-	target.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-	nannka = { -1,1,1 };
-	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-	nannka.normalize();
-	target2.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-	nannka = { 1,-1,1 };
-	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-	nannka.normalize();
-	target3.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-	nannka = { -1,-1,1 };
-	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-	nannka.normalize();
-	target4.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-	nannka = { 1,1,-1 };
-	nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-	nannka.normalize();
-	target5.translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-	target.rotation_.y = worldTransform_.rotation_.y;
-	target2.rotation_.y = worldTransform_.rotation_.y;
-	target3.rotation_.y = worldTransform_.rotation_.y;
-	target4.rotation_.y = worldTransform_.rotation_.y;
-	target5.rotation_.y = worldTransform_.rotation_.y;
-	
 
 	if (!hopper_dash && !cooldown)
 	{
-		if(moveVec.x!=0|| moveVec.z != 0)
-		worldTransform_.translation_ += mae * move_speed;
+		if (moveVec.x != 0 || moveVec.z != 0)
+		{
+		
+			worldTransform_.translation_ += mae * move_speed;
+		}
 	}
+	Vector3 nannka;
+	Vector3 PtoB = boss->GetWorldPosition() - worldTransform_.translation_;
+	Vector3 kari = PtoB;
+	kari.y = 0;
+	float kariy = -PtoB.y;
+	PtoB.normalize();
+	
+	if (LockOn(boss->getPos()))
+	{
+		lockmove = true;
+	}
+	else
+	{
+		lockmove = false;
+		timer = 0;
+	}
+	
+	if (lockmove)
+	{
+		timer++;
+
+		if (timer >= bitmovetimer)
+		{
+			timer = bitmovetimer;
+		}
+
+
+	}
+
+	if (LockOn(boss->getPos()))
+	{
+		float gomi = atan2(PtoB.x, PtoB.z);
+
+		for (size_t i = 0; i < gunbitnum; i++)
+		{
+			target[i].rotation_.y = easeOutSine(target[i].rotation_.y, gomi, timer / bitmovetimer);
+		}
+		kyozou.rotation_.y = gomi;
+		gomi = atan2(kariy, kari.length());
+		for (size_t i = 0; i < gunbitnum; i++)
+		{
+			target[i].rotation_.x = easeOutSine(target[i].rotation_.x, gomi, timer / bitmovetimer);
+		}
+		kyozou.rotation_.x = gomi;
+
+		
+
+		nannka = { 0.5f,1,0 };
+		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+		nannka.normalize();
+		target[0].translation_ = easeOutSineVec3(target[0].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
+
+		nannka = { -0.5f,1,0 };
+		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+		nannka.normalize();
+		target[1].translation_ = easeOutSineVec3(target[1].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
+
+		nannka = { 1,0,0 };
+		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+		nannka.normalize();
+		target[2].translation_ = easeOutSineVec3(target[2].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
+		nannka = { -1,0,0 };
+		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+		nannka.normalize();
+		target[3].translation_ = easeOutSineVec3(target[3].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
+
+	}
+	else
+	{
+
+		nannka = { 0.5f,1,0 };
+		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+		nannka.normalize();
+		target[0].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+		nannka = { -0.5f,1,0 };
+		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+		nannka.normalize();
+		target[1].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+		nannka = { 1,0,0 };
+		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+		nannka.normalize();
+		target[2].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+		nannka = { -1,0,0 };
+		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
+		nannka.normalize();
+		target[3].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
+
+		
+
+		for (size_t i = 0; i < gunbitnum; i++)
+		{
+			
+			target[i].rotation_.y = worldTransform_.rotation_.y;
+			target[i].rotation_.x = worldTransform_.rotation_.x;
+		}
+	}
+
+	
+
+	
 
 	old_B_bottan = B_bottan;
 
@@ -188,50 +271,42 @@ void Player::Update(ViewProjection viewProjection)
 	}
 	
 
-	if ((input_->TriggerKey(DIK_Z)||(B_bottan&&!old_B_bottan))&& hopper_speed <= 0&&!cooldown&&hopper_count<hopper_limit)
+	if ((input_->TriggerKey(DIK_Z)||(B_bottan&&!old_B_bottan))&&!cooldown)
 	{
 		hopper_dash = true;
 
-		hopper_count++;
+		cooltime = 60;
 
-		cooltime += 30;
-
-		yuyotime = 120;
-
-		hopper_speed = 10.0f;
+		hoppertimer = 0;
 
 		dash_vec = mae;
 
 		dash_vec.normalize();
 
 	}
-	if (cooltime > 150)
-	{
-		cooltime = 150;
-	}
-
 	if (hopper_dash)
 	{
-		if (hopper_speed >= 0)
+		if (!cooldown)
 		{
-			worldTransform_.translation_ += dash_vec * hopper_speed;
-			hopper_speed -= 1.0f;
-		}
+			worldTransform_.translation_ = easeOutSineVec3(worldTransform_.translation_, worldTransform_.translation_ + dash_vec * hopper_speed, hoppertimer / hoppertime);
 
-		if (hopper_speed < 0)
-		{
-			yuyotime--;
 		}
-		if (yuyotime <= 0)
+		hoppertimer++;
+		
+		
+		
+
+		if (hoppertimer>=hoppertime)
 		{
+			hoppertimer = hoppertime;
 			cooltime--;
 			cooldown = true;
+			
 		}
 		if (cooltime <= 0)
 		{
 			hopper_dash = false;
 			cooldown = false;
-			hopper_count = 0;
 		}
 
 	}
@@ -243,29 +318,85 @@ void Player::Update(ViewProjection viewProjection)
 	
 
 
-	if ((input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))&& hopper_speed <= 0)
+	if ((input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))&& hoppertimer >= 0)
 	{
+		if (!LockOn(boss->getPos()))
+		{
+			Vector3 kari2 = KyozouFlont;
+			kari2.y = 0;
+			float kariy2 = -KyozouFlont.y;
+
+			float gomi = atan2(Flont.x, Flont.z);
+			for (size_t i = 0; i < gunbitnum; i++)
+			{
+				target[i].rotation_.y = easeOutSine(target[i].rotation_.y, gomi, NormalTimer / BitNormalAttakTime);
+			}
+			kyozou.rotation_.y = gomi;
+			gomi = atan2(kariy2,kari2.length());
+			for (size_t i = 0; i < gunbitnum; i++)
+			{
+				target[i].rotation_.x = easeOutSine(target[i].rotation_.x, gomi, NormalTimer / BitNormalAttakTime);
+			}
+			kyozou.rotation_.x = gomi;
+
+			nannka = { 0.5f,1,0 };
+			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+			nannka.normalize();
+			target[0].translation_ = easeOutSineVec3(target[0].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
+
+			nannka = { -0.5f,1,0 };
+			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+			nannka.normalize();
+			target[1].translation_ = easeOutSineVec3(target[1].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
+
+			nannka = { 1,0,0 };
+			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+			nannka.normalize();
+			target[2].translation_ = easeOutSineVec3(target[2].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
+
+			nannka = { -1,0,0 };
+			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
+			nannka.normalize();
+			target[3].translation_ = easeOutSineVec3(target[3].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
+
+			NormalTimer++;
+
+			if (NormalTimer >= BitNormalAttakTime)
+			{
+				NormalTimer = BitNormalAttakTime;
+			}
+		}
+		else
+		{
+			NormalTimer = 0;
+		}
+
+		
 		if (latetime <= 0)
 		{
 			Attack(camera->getForwardVec());
 			latetime = firelate;
 		}
 		latetime--;
+		
 	}
+	else
+	{
+		NormalTimer = 0;
+	}
+	
 
 	for (std::unique_ptr<PlayerBullet>& bullet : bullets_)
 	{
 		bullet->Update();
 	}
 
+	for (size_t i = 0; i < gunbitnum; i++)
+	{
+		target[i].matWorldGeneration();
+	}
 	
-	target.matWorldGeneration();
-	target2.matWorldGeneration();
-	target3.matWorldGeneration();
-	target4.matWorldGeneration();
-	target5.matWorldGeneration();
-	
-
+	kyozou.matWorldGeneration();
 
 	worldTransform_.matWorldGeneration();
 
@@ -280,11 +411,12 @@ void Player::Draw(ViewProjection& viewProjection)
 
 	//3DÉÇÉfÉãÇï`âÊ
 	playerModel_->Draw(worldTransform_, viewProjection);
-	model_->Draw(target, viewProjection);
-	model_->Draw(target2, viewProjection);
-	model_->Draw(target3, viewProjection);
-	model_->Draw(target4, viewProjection);
-	model_->Draw(target5, viewProjection);
+
+	for (size_t i = 0; i < gunbitnum; i++)
+	{
+		model_->Draw(target[i], viewProjection);
+	}
+	
 	//model_->Draw(target, viewProjection);
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 
@@ -336,29 +468,21 @@ void Player::Attack(Vector3 flont)
 {
 	
 	const float kBulletSpeed = 5.0f;
-	Vector3 velocity;
-	if (LockOn(boss->getPos()))
+	for (size_t i = 0; i < gunbitnum; i++)
 	{
+		Vector3 velocity(0,0,1);
+		
+		velocity = target[i].matWorld_.VectorMat(velocity, target[i].matWorld_);
+		velocity.normalize();
 
-		velocity = boss->GetWorldPosition() - worldTransform_.translation_;
+		velocity *= kBulletSpeed;
+
+		std::unique_ptr <PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
+		newBullet->Initlize(model_,target[i].translation_, velocity);
+
+		bullets_.push_back(std::move(newBullet));
+
 	}
-	else
-	{
-		velocity = flont;
-
-	}
-	//velocity = worldTransform_.matWorld_.VectorMat(velocity,worldTransform_.matWorld_);
-	velocity.normalize();
-
-	velocity *= kBulletSpeed;
-
-	
-	std::unique_ptr <PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-	newBullet->Initlize(model_, worldTransform_.translation_, velocity);
-
-	bullets_.push_back(std::move(newBullet));
-
-	
 
 }
 

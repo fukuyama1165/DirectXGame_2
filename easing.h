@@ -1,4 +1,10 @@
 #pragma once
+#include"Vector3.h"
+
+Vector3 easeOutSineVec3(Vector3 startpos, Vector3 endpos,float time);
+
+Vector3 easeOutQuintVec3(Vector3 start, Vector3 end, double time);
+
 
 double lerp(double a,double b,double t);
 
