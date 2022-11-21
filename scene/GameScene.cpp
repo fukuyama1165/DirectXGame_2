@@ -39,12 +39,16 @@ void GameScene::Initialize() {
 	//ファイル名を指定してテクスチャを読み込む
 	textureHandle_ = TextureManager::Load("mark.png");
 	textureHandle2 = TextureManager::Load("Reticle.png");
+	textureHandle3 = TextureManager::Load("block1.png");
 	
 
 	//3Dモデルの生成
 
 	model_ = Model::Create();
+	bitModel_ = Model::CreateFromOBJ("bit", true);
 	playerModel_ = Model::CreateFromOBJ("player",true);
+	bossModel_ = Model::CreateFromOBJ("core",true);
+	bosshandModel_ = Model::CreateFromOBJ("muso",true);
 	enemyModel_ = Model::CreateFromOBJ("enemy",true);
 	playerbulletModel_ = Model::CreateFromOBJ("playerbullet",true);
 	enemybulletModel_ = Model::CreateFromOBJ("enemybullet",true);
@@ -101,10 +105,10 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	//railView.Initialize();
 
-	boss.Initialize(model_, { 0,10,20 });
+	boss.Initialize(bossModel_, bosshandModel_, { 0,10,20 });
 
 	player_p->Initialize(railCamera_.get(),&boss);
-	player_p->ResourceInitialize(model_, playerModel_, textureHandle_, textureHandle2);
+	player_p->ResourceInitialize(bitModel_, playerModel_, textureHandle_, textureHandle2);
 
 
 	player_.reset(player_p);
@@ -241,10 +245,10 @@ void GameScene::Update()
 	
 	AllCol();
 
-	debugText_->SetPos(0, 0);
-	debugText_->Printf("%f", player_->poskure().x);
-	debugText_->SetPos(0, 20);
-	debugText_->Printf("%f", player_->poskure().y);
+	//debugText_->SetPos(0, 0);
+	//debugText_->Printf("%f", player_->poskure().x);
+	//debugText_->SetPos(0, 20);
+	//debugText_->Printf("%f", player_->poskure().y);
 
 #ifdef _DEBUG
 
@@ -309,7 +313,7 @@ void GameScene::Draw() {
 	//skydome_->Draw(railView);
 	player_->Draw(railView);
 	boss.Draw(railView);
-	model_->Draw(worldTransform_, railView);
+	model_->Draw(worldTransform_, railView, textureHandle3);
 
 	//model_->Draw(worldTransform_, viewProjection_);
 	//effectM.draw(viewProjection_);

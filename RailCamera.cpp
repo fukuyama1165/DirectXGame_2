@@ -53,8 +53,8 @@ void RailCamera::Update()
 	viewProjection_.UpdateMatrix();
 	viewProjection_.TransferMatrix();
 
-	debugText_->SetPos(50, 110);
-	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);
+	/*debugText_->SetPos(50, 110);
+	debugText_->Printf("eye:(%f,%f,%f)", viewProjection_.eye.x, viewProjection_.eye.y, viewProjection_.eye.z);*/
 }
 
 Vector3 RailCamera::VectorMat(Vector3 vector, Matrix4 mat)

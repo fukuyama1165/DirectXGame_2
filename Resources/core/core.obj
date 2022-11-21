@@ -1,6 +1,6 @@
 # Blender v3.1.2 OBJ File: 'core.blend'
 # www.blender.org
-mtllib Player.mtl
+mtllib core.mtl
 o Cube
 v 0.000000 1.494581 0.000000
 v 0.001084 -0.005420 -1.118034

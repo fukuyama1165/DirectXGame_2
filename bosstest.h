@@ -17,7 +17,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="position">初期座標</param>
-	void Initialize(Model* model, const Vector3& position);
+	void Initialize(Model* model, Model* homdmodel,const Vector3& position);
 
 	/// <summary>
 	/// 更新
@@ -72,9 +72,11 @@ public:
 	//本体と一緒にhandが動くための関数
 	void setPressHandPos();
 	void setPillarHandPos();
+	void setOphanimHandPos();
 
 	void setCubeDefaultPos();
 	void setPillarDefaultPos();
+	void setOphanimDefaultPos();
 
 
 	void setPressEnd();
@@ -185,6 +187,22 @@ private:
 		{ -1,0,-1 },
 		{ -1,0,0 },
 		{ -1,0,1 },
+	};
+
+	float bossOphanimMoveTime = 0;
+	float maxBossOphanimMoveTime = 10;
+	int bossOphanimDefaultPosCount = 0;
+
+	Vector3 ophanimDefaultPosRotate[8] =
+	{
+		{ 0,1,0 },
+		{ -1,1,0 },
+		{ -1,0,0 },
+		{ -1,-1,0 },
+		{ 0,-1,0 },
+		{ 1,-1,0 },
+		{ 1,0,0 },
+		{ 1,1,0 },
 	};
 
 };

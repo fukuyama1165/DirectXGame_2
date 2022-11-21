@@ -18,10 +18,11 @@ bosstest::~bosstest()
 	}
 }
 
-void bosstest::Initialize(Model* model, const Vector3& position)
+void bosstest::Initialize(Model* model, Model* homdmodel, const Vector3& position)
 {
 
 	assert(model);
+	assert(homdmodel);
 	model_ = model;
 
 	debugText_ = DebugText::GetInstance();
@@ -39,7 +40,7 @@ void bosstest::Initialize(Model* model, const Vector3& position)
 	{
 
 		bossHand* newHand=new bossHand();
-		newHand->init({ 3.0f,3.0f,3.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200.0f }, model);
+		newHand->init({ 3.0f,3.0f,3.0f }, {}, { sinf(i * 2) * 5,cosf(i * 2) * 5,200.0f }, homdmodel);
 
 		hand.push_back(newHand);
 	}
@@ -114,7 +115,8 @@ void bosstest::Update(Vector3 player)
 
 		if (state == ophanim)
 		{
-			//hand[i]->setdefaultPos({ worldTransform.matWorldGetPos().x + sinf(i * 8) * 5,worldTransform.matWorldGetPos().y + cosf(i * 8) * 5,worldTransform.matWorldGetPos().z });
+			setOphanimDefaultPos();
+			setOphanimHandPos();
 		}
 		
 
@@ -132,8 +134,8 @@ void bosstest::Draw(const ViewProjection& viewProjection)
 	for (int i = 0; i < hand.size(); i++)
 	{
 		hand[i]->draw(viewProjection);
-		debugText_->SetPos(0, i * 20 + 50);
-		debugText_->Printf("%d", hand[i]->getisReturnHand());
+		/*debugText_->SetPos(0, i * 20 + 50);
+		debugText_->Printf("%d", hand[i]->getisReturnHand());*/
 	}
 	model_->Draw(worldTransform, viewProjection);
 	
@@ -733,10 +735,57 @@ void bosstest::setPillarHandPos()
 
 }
 
-//const Vector3 lerp(const Vector3& start, const Vector3& end, const float t)
-//{
-//	return start +  t * (end - start);
-//}
+void bosstest::setOphanimHandPos()
+{
+	Vector3 bossSft;
+	Vector3 bossSftMove;
+
+	//カウント
+	if (bossOphanimMoveTime < maxBossOphanimMoveTime)
+	{
+
+		bossOphanimMoveTime++;
+	}
+
+	//とっておいたプレイヤーの座標に移動
+	if (bossOphanimMoveTime < maxBossOphanimMoveTime)
+	{
+		for (int i = 0; i < hand.size(); i++)
+		{
+
+			if (hand[i]->getisAction() == false)
+			{
+
+				bossSft = ophanimDefaultPosRotate[(bossOphanimDefaultPosCount + i) % 8];
+				bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+				bossSft.normalize();
+
+				bossSftMove = ophanimDefaultPosRotate[(bossOphanimDefaultPosCount + i + 1) % 8];
+				bossSftMove = worldTransform.matWorld_.VectorMat(bossSftMove, worldTransform.matWorld_);
+				bossSftMove.normalize();
+				hand[i]->setPos(lerp(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance), worldTransform.matWorldGetPos() + (bossSftMove * setbossCubeDistance), bossOphanimMoveTime / maxBossOphanimMoveTime));
+
+			}
+
+		}
+	}
+
+	//終了
+	if (bossOphanimMoveTime == maxBossOphanimMoveTime)
+	{
+		if (bossOphanimDefaultPosCount < _countof(ophanimDefaultPosRotate) - 1)
+		{
+			bossOphanimDefaultPosCount++;
+		}
+		else
+		{
+			bossOphanimDefaultPosCount = 0;
+		}
+		bossOphanimMoveTime = 0;
+	}
+
+
+}
 
 void bosstest::OnCollision(int damage)
 {
@@ -859,6 +908,44 @@ void bosstest::setPillarDefaultPos()
 		if (hand[i]->getisAction() == false)
 		{
 			hand[i]->setScale({ 1.0f,10.0f,1.0f });
+		}
+
+	}
+
+}
+
+void bosstest::setOphanimDefaultPos()
+{
+
+	Vector3 bossSft;
+	Vector3 bossSftMove;
+	//とっておいたプレイヤーの座標に移動
+	if (bosspillarMoveTime < maxBosspillarMoveTime)
+	{
+		for (int i = 0; i < hand.size(); i++)
+		{
+			if (hand[i]->getisAction() == false)
+			{
+				bossSft = ophanimDefaultPosRotate[(bosspillarDefaultPosCount + i) % 8];
+				bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+				bossSft.normalize();
+
+				bossSftMove = ophanimDefaultPosRotate[(bosspillarDefaultPosCount + i + 1) % 8];
+				bossSftMove = worldTransform.matWorld_.VectorMat(bossSftMove, worldTransform.matWorld_);
+				bossSftMove.normalize();
+				hand[i]->setdefaultPos(lerp(worldTransform.matWorldGetPos() + (bossSft * setbossCubeDistance), worldTransform.matWorldGetPos() + (bossSftMove * setbossCubeDistance), bosspillarMoveTime / maxBosspillarMoveTime));
+			}
+		}
+	}
+
+
+
+	for (int i = 0; i < hand.size(); i++)
+	{
+
+		if (hand[i]->getisAction() == false)
+		{
+			hand[i]->setScale({ 2.0f,2.0f,2.0f });
 		}
 
 	}

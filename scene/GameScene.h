@@ -108,10 +108,14 @@ private: // メンバ変数
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 	uint32_t textureHandle2 = 0;
+	uint32_t textureHandle3 = 0;
 
 	//3Dモデル
 	Model* model_ = nullptr;
+	Model* bitModel_ = nullptr;
 	Model* playerModel_ = nullptr;
+	Model* bossModel_ = nullptr;
+	Model* bosshandModel_ = nullptr;
 	Model* enemyModel_ = nullptr;
 	Model* playerbulletModel_ = nullptr;
 	Model* enemybulletModel_ = nullptr;
