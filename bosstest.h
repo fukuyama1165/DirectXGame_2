@@ -53,6 +53,8 @@ public:
 
 	void setisBossPillarRoll(bool flag);
 
+	void setisBossPushUp(bool flag);
+
 	//‚»‚Ìê‚Åƒpƒ“ƒ`‚ÌUŒ‚‚ğ’µ‚Ë•Ô‚µ‚½‚±‚Æ‚É‚·‚é
 	void playerAttackReturnL();
 
@@ -66,6 +68,8 @@ public:
 	void bossBeam();
 
 	void bossPillarRoll();
+
+	void bossPushUp(Vector3 player);
 
 	//pos???????????? ‘S•”‚Á‚Ä‚­‚é
 	WorldTransform getPos() { return worldTransform; };
@@ -137,6 +141,7 @@ private:
 	bool isBossPillarFall = false;
 	bool isBossPillarRoll = false;
 	bool isBossBeam = false;
+	bool isBossPushUp = false;
 
 	bool isPressStart = false;
 	bool isPressFall = false;
@@ -144,6 +149,7 @@ private:
 	bool pressFirstStart = false;
 	bool pillarRollFirstStart = false;
 	bool isPillarRollEnd = false;
+	bool pillarPushUpFirstStart = false;
 	bool beamFirstStart = false;
 	bool beamEndStart = false;
 

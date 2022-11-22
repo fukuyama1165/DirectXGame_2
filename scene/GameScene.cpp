@@ -236,7 +236,7 @@ void GameScene::Update()
 
 	if (input_->TriggerKey(DIK_L))
 	{
-		boss.setisBossPillarRoll(true);
+		boss.setisBossPushUp(true);
 	}
 
 	player_->Update(railView);

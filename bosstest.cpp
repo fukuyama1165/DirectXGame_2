@@ -113,6 +113,7 @@ void bosstest::Update(Vector3 player)
 			setPillarHandPos();
 			bossPillarFall(player);
 			bossPillarRoll();
+			bossPushUp(player);
 		}
 
  		if (state == ophanim)
@@ -585,6 +586,44 @@ void bosstest::bossPillarRoll()
 
 }
 
+void bosstest::bossPushUp(Vector3 player)
+{
+
+	if (isBossPushUp)
+	{
+
+		if (pillarPushUpFirstStart == false)
+		{
+			Vector3 front = nainavec3(player, worldTransform.matWorldGetPos());
+
+			front.normalize();
+
+			for (int i = 0; i < hand.size(); i++)
+			{
+
+				Vector3 hoge = { worldTransform.matWorldGetPos().x + (front.x*(10 * (i + 1))),1,worldTransform.matWorldGetPos().z + (front.z * (10 * (i + 1))) };
+
+				hand[i]->setTargetPos(hoge);
+				hand[i]->setisPillarPushUpFlag(true);
+
+			}
+
+			pillarPushUpFirstStart = true;
+
+		}
+
+		if (hand[0]->getisAction() == false)
+		{
+
+			pillarPushUpFirstStart = false;
+			isBossPushUp = false;
+
+		}
+
+	}
+
+}
+
 Vector3 bosstest::GetWorldPosition()
 {
 	return worldTransform.matWorldGetPos();
@@ -644,6 +683,11 @@ void bosstest::setisBossPillarFall(bool flag)
 void bosstest::setisBossPillarRoll(bool flag)
 {
 	isBossPillarRoll = flag;
+}
+
+void bosstest::setisBossPushUp(bool flag)
+{
+	isBossPushUp = flag;
 }
 
 void bosstest::setisBossBeam(bool flag)

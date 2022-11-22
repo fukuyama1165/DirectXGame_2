@@ -35,6 +35,7 @@ void bossHand::update(WorldTransform worldTransform)
 	beam();
 	pillarFall();
 	pillarRoll();
+	pillarPushUp();
 
 }
 
@@ -540,7 +541,6 @@ void bossHand::pillarFall()
 
 }
 
-
 void bossHand::beam()
 {
 
@@ -652,6 +652,190 @@ void bossHand::pillarRoll()
 	}
 }
 
+void bossHand::pillarPushUp()
+{
+
+	if (isPillarPushUp)
+	{
+		isAction = true;
+		//カウント
+		if (timeCount < maxPushUpFallTime and waitTime > PushUpWaitTime and isPushUpTargetMoveFlag == false)
+		{
+			timeCount++;
+		}
+
+		//予備動作
+		if (waitTime < maxPushUpFallTime and isPushUpTargetMoveFlag == false)
+		{
+
+			Hand.translation_ = { cosf(waitTime) + defaultPos.x, defaultPos.y, defaultPos.z };
+
+			Hand.matWorldGeneration();
+
+		}
+
+		//下に移動
+		if (timeCount < maxUpFallTime and isPushUpTargetMoveFlag == false and waitTime > PushUpWaitTime)
+		{
+
+
+			//元の位置かy座標をずらした位置に線形補間
+			Hand.translation_ = lerp(defaultPos, { defaultPos.x,-12,defaultPos.z }, timeCount / maxPushUpFallTime);
+
+			Hand.matWorldGeneration();
+		}
+		//下に移動が終わったら
+		else if (isPushUpTargetMoveFlag == false and waitTime > PushUpWaitTime)
+		{
+			isPushUpTargetMoveFlag = true;
+			waitTime = 0;
+		}
+
+		//カウント
+		if (isPushUpTargetMoveFlag and returnTimeCount < maxPushUpTargetMoveTime and isPushUpUpFlag == false)
+		{
+			//使いまわし名前に意味はない
+			returnTimeCount++;
+		}
+
+		//とっておいたプレイヤーの座標に移動
+		if (isPushUpTargetMoveFlag and returnTimeCount < maxPushUpTargetMoveTime and isPushUpUpFlag == false)
+		{
+
+			Hand.translation_ = lerp({ defaultPos.x,-12,defaultPos.z }, { targetPos.x,-12,targetPos.z }, returnTimeCount / maxPushUpTargetMoveTime);
+			Hand.matWorldGeneration();
+		}
+
+		//終了
+		if (returnTimeCount == maxPushUpTargetMoveTime and isPushUpUpFlag == false)
+		{
+			isPushUpUpFlag = true;
+		}
+
+		//カウント
+		if (ActionType4TimeCount < maxPushUpUpTime and isPushUpUpFlag and isPushUpFallFlag == false)
+		{
+			ActionType4TimeCount++;
+		}
+
+		//落下
+		if (ActionType4TimeCount < maxPushUpUpTime and isPushUpUpFlag and isPushUpFallFlag == false)
+		{
+
+
+			//下に移動
+			Hand.translation_ = lerp({ targetPos.x,-12,targetPos.z }, { targetPos.x,targetPos.y + 6.1f,targetPos.z }, ActionType4TimeCount / maxPushUpUpTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (ActionType4TimeCount == maxPushUpUpTime and isPushUpFallFlag == false)
+		{
+			isPushUpFallFlag = true;
+		}
+
+
+		//完全に止めたい時間が150
+		if (waitTime > 150 and ActionType5TimeCount < maxPushUpUpReturnTime and waitTime >(PushUpReturnWaitTime + 150) and isPushUpFallFlag and isPushUpReturnFlag == false)
+		{
+			ActionType5TimeCount++;
+		}
+
+		//予備動作
+		if (waitTime > 150 and waitTime < (PushUpReturnWaitTime + 150) and isPushUpFallFlag and isPushUpReturnFlag == false)
+		{
+
+			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y + 5.1f, targetPos.z };
+
+			Hand.matWorldGeneration();
+
+		}
+
+		//上に移動
+		if (ActionType5TimeCount < maxPushUpUpReturnTime and isPushUpFallFlag and waitTime >(PushUpReturnWaitTime + 150) and isPushUpReturnFlag == false)
+		{
+
+
+			//元の位置かy座標をずらした位置に線形補間
+			Hand.translation_ = lerp({ targetPos.x,targetPos.y + 11.1f,targetPos.z }, { targetPos.x,-12,targetPos.z }, ActionType5TimeCount / maxPushUpUpReturnTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (ActionType5TimeCount == maxPushUpUpReturnTime and isPushUpReturnFlag == false)
+		{
+			isPushUpReturnFlag = true;
+			waitTime = 0;
+		}
+
+		//カウント
+		if (returnAttackTimeCount < maxPushUpReturnTime and isPushUpReturnFlag and isPushUpReturnUpFlag == false)
+		{
+			returnAttackTimeCount++;
+		}
+
+		//戻る
+		if (returnAttackTimeCount < maxPushUpReturnTime and isPushUpReturnFlag and isPushUpReturnUpFlag == false)
+		{
+
+
+			//下に移動
+			Hand.translation_ = lerp({ targetPos.x,-20,targetPos.z }, { defaultPos.x,-20,defaultPos.z }, returnAttackTimeCount / maxPushUpReturnTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (returnAttackTimeCount == maxPushUpReturnTime and isPushUpReturnUpFlag == false)
+		{
+			isPushUpReturnUpFlag = true;
+		}
+
+		//カウント
+		if (ActionType6TimeCount < maxPushUpDefaultUpTime and isPushUpReturnUpFlag)
+		{
+			ActionType6TimeCount++;
+		}
+
+		//戻る
+		if (ActionType6TimeCount < maxPushUpDefaultUpTime and isPushUpReturnUpFlag)
+		{
+
+
+			//下に移動
+			Hand.translation_ = lerp({ defaultPos.x,-20,defaultPos.z }, defaultPos, ActionType6TimeCount / maxPushUpDefaultUpTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		waitTime++;
+
+		if (ActionType6TimeCount == maxPushUpDefaultUpTime)
+		{
+
+			isAction = false;
+			isPushUpTargetMoveFlag = false;
+			isPushUpUpFlag = false;
+			isPushUpFallFlag = false;
+			isPushUpReturnFlag = false;
+			isPushUpReturnUpFlag = false;
+
+			timeCount = 0;
+			returnTimeCount = 0;
+			ActionType4TimeCount = 0;
+			ActionType5TimeCount = 0;
+			ActionType6TimeCount = 0;
+			returnAttackTimeCount = 0;
+
+			waitTime = 0;
+
+			isPillarPushUp = false;
+
+		}
+
+	}
+
+}
+
 void bossHand::setisActionFlag(bool flag) 
 {
 	isAction = flag;
@@ -691,6 +875,11 @@ void  bossHand::setisBeamFlag(bool flag)
 void bossHand::setisPillarRollFlag(bool flag)
 {
 	isPillarRoll = flag;
+}
+
+void bossHand::setisPillarPushUpFlag(bool flag)
+{
+	isPillarPushUp = flag;
 }
 
 void bossHand::playerAttackReturn()

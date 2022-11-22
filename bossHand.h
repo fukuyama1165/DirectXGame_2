@@ -37,6 +37,8 @@ public:
 
 	void pillarRoll();
 
+	void pillarPushUp();
+
 	//これでフラグをtrueにし続けると挙動がおかしくなるので注意(使ったら戻すこと)
 	void setisActionFlag(bool flag);
 
@@ -53,6 +55,8 @@ public:
 	void setisBeamFlag(bool flag);
 	
 	void setisPillarRollFlag(bool flag);
+
+	void setisPillarPushUpFlag(bool flag);
 
 	//プレイヤーの攻撃によって跳ね返された時１回だけ行う処理
 	void playerAttackReturn();
@@ -92,6 +96,12 @@ private:
 	bool isPillarRollFirstStart = false;
 	
 
+	bool isPushUpTargetMoveFlag = false;
+	bool isPushUpUpFlag = false;
+	bool isPushUpFallFlag = false;
+	bool isPushUpReturnFlag = false;
+	bool isPushUpReturnUpFlag = false;
+
 	bool isGetTargetPos = false;
 
 	//手を跳ね返した時のフラグ
@@ -103,6 +113,7 @@ private:
 	float returnAttackTimeCount = 0;
 	float ActionType4TimeCount = 0;
 	float ActionType5TimeCount = 0;
+	float ActionType6TimeCount = 0;
 
 	//動作時間
 	float maxTime = 50.0f;
@@ -129,6 +140,14 @@ private:
 	//回転
 	float maxPillarRollTime = 30.0f;
 
+	//突き上げ
+	float maxPushUpFallTime = 10.0f;
+	float maxPushUpTargetMoveTime = 35.0f;
+	float maxPushUpUpTime = 10.0f;
+	float maxPushUpUpReturnTime = 20.0f;
+	float maxPushUpReturnTime = 10.0f;
+	float maxPushUpDefaultUpTime = 20.0f;
+
 	//ウエイト
 	float waitTime = 0;
 
@@ -138,6 +157,9 @@ private:
 
 	float stoneFallWaitTime = 40;
 	float stoneFallReturnWaitTime = 10;
+
+	float PushUpWaitTime = 40;
+	float PushUpReturnWaitTime = 10;
 
 	//今行動しているか
 	bool isAction = false;
@@ -150,6 +172,7 @@ private:
 	bool isPillarFall = false;
 	bool isPillarRoll = false;
 	bool isBeam = false;
+	bool isPillarPushUp = false;
 
 	//プレイヤーの位置
 	Vector3 targetPos = {};
