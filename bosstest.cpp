@@ -102,9 +102,12 @@ void bosstest::Update(Vector3 player)
 			{
 				setPressHandPos();
 			}
+
+			bossPunch(player);
 			bossPress(player);
 			bossStoneFall(player);
 			bossBeam();
+
 		}
 
 		if (state == pillar)
@@ -142,6 +145,41 @@ void bosstest::Draw(const ViewProjection& viewProjection)
 	}
 	model_->Draw(worldTransform, viewProjection);
 	
+}
+
+void bosstest::bossPunch(Vector3 player)
+{
+
+	if (isbossPunch)
+	{
+		if (punchWaitTime == 0)
+		{
+			if (punchCount == hand.size()/2)
+			{
+				isbossPunch = false;
+				punchCount = 0;
+				return;
+			}
+
+			for (int i = 4; i < hand.size(); i++)
+			{
+				if (hand[i]->getisAction() == false)
+				{
+					hand[i]->setisAttackFlag(true);
+					hand[i]->setTargetPos({player.x,player.y+2.0f ,player.z });
+					punchWaitTime = bossPunchWaitTime;
+					punchCount++;
+					break;
+				}
+			}
+		}
+
+		if (punchWaitTime > 0)
+		{
+			punchWaitTime--;
+		}
+	}
+
 }
 
 void bosstest::bossPress(Vector3 player)
@@ -555,7 +593,7 @@ void bosstest::bossPillarRoll()
 				bosspillarDefaultPosCount = 0;
 			}
 			bosspillarRollTime = 0;
-			setBossPillarRollDistance++;
+			setBossPillarRollDistance+=2;
 		}
 
 		if (bosspillarRollEndTime == maxBosspillarRollEndTime and isPillarRollEnd == false)
@@ -659,6 +697,11 @@ void bosstest::playerAttackReturnL()
 	{
 		hand[i]->playerAttackReturn();
 	}
+}
+
+void bosstest::setisbossPunch(bool flag)
+{
+	isbossPunch = flag;
 }
 
 void bosstest::setisBossPress(bool flag)

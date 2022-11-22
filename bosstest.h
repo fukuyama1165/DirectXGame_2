@@ -40,6 +40,7 @@ public:
 
 	//handのパンチをするためのフラグを変更
 	void setisAttackFlagL(bool flag,Vector3 player);
+	void setisbossPunch(bool flag);
 
 	//プレス攻撃をするためのフラグを変更
 	void setisBossPress(bool flag);
@@ -57,6 +58,8 @@ public:
 
 	//その場でパンチの攻撃を跳ね返したことにする
 	void playerAttackReturnL();
+
+	void bossPunch(Vector3 player);
 
 	//プレス攻撃
 	void bossPress(Vector3 player);
@@ -121,7 +124,7 @@ private:
 		ophanim
 	};
 	
-	int state = pillar;
+	int state = Cube;
 
 	float setbossCubeDistance = 6.0f;
 	float setbossCubePressDistance = 4.8f;
@@ -136,6 +139,7 @@ private:
 
 	bool isHandMove = false;
 
+	bool isbossPunch = false;
 	bool isBossPress = false;
 	bool isBossStoneFall = false;
 	bool isBossPillarFall = false;
@@ -153,6 +157,7 @@ private:
 	bool beamFirstStart = false;
 	bool beamEndStart = false;
 
+	int punchCount = 0;
 	int pressCount = 0;
 	int bossStoneFallCount = 0;
 	int bossPillarFallCount = 0;
@@ -182,17 +187,20 @@ private:
 	float maxFirstBeamMoveTime = 20.0f;
 	float maxEndBeamMoveTime = 20.0f;
 
-	float maxBosspillarMoveTime = 10;
+	float maxBosspillarMoveTime = 30;
 
-	float maxBosspillarRollTime = 10;
-	float maxBosspillarRollEndTime = 600;
+	float maxBosspillarRollTime = 30;
+	float maxBosspillarRollEndTime = 900;
 
 	//ウエイト
 	float waitTime = 0;
+	float punchWaitTime = 0;
 
 	//待つ時間
 	float fallWaitTime = 2;
 	float returnWaitTime = 20;
+
+	float bossPunchWaitTime = 20;
 
 	float bossStoneFallWaitTime = 20;
 
