@@ -9,7 +9,7 @@ PlayerBullet::~PlayerBullet()
 {
 }
 
-void PlayerBullet::Initlize(Model* model, const Vector3& position, const Vector3& velocity)
+void PlayerBullet::Initlize(Model* model, const Vector3& position, const Vector3& rota, const Vector3& velocity)
 {
 	//ヌルポチェック
 	assert(model);
@@ -20,6 +20,10 @@ void PlayerBullet::Initlize(Model* model, const Vector3& position, const Vector3
 
 	//引数で受け取った初期座標をセット
 	worldTransform_.translation_ = position;
+
+	worldTransform_.rotation_ = rota;
+
+	worldTransform_.rotation_.z = 0;
 
 	worldTransform_.scale_ = { 0.5f,0.5f,0.5f };
 

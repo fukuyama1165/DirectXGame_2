@@ -26,6 +26,10 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 		target[i].scale_ = {0.5f,0.5f,2.0f};
 	}
 
+	nannka[0] = { 0.5f,1,0 };
+	nannka[1] = { -0.5f,1,0 };
+	nannka[2] = { 1,0,0 };
+	nannka[3] = { -1,0,0 };
 	
 	kyozou.Initialize();
 
@@ -65,6 +69,8 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	hoppertimer = 0;
 
 	hozon = { 0,0,0 };
+
+
 
 }
 
@@ -157,12 +163,8 @@ void Player::Update(ViewProjection viewProjection)
 			worldTransform_.translation_ += mae * move_speed;
 		}
 	}
-	Vector3 nannka;
-	Vector3 PtoB = boss->GetWorldPosition() - worldTransform_.translation_;
-	Vector3 kari = PtoB;
-	kari.y = 0;
-	float kariy = -PtoB.y;
-	PtoB.normalize();
+	
+	
 	
 	if (LockOn(boss))
 	{
@@ -188,6 +190,11 @@ void Player::Update(ViewProjection viewProjection)
 
 	if (LockOn(boss))
 	{
+		Vector3 PtoB = BitVec - worldTransform_.translation_;
+		Vector3 kari = PtoB;
+		kari.y = 0;
+		float kariy = -PtoB.y;
+		PtoB.normalize();
 		float gomi = atan2(PtoB.x, PtoB.z);
 
 		for (size_t i = 0; i < gunbitnum; i++)
@@ -202,52 +209,25 @@ void Player::Update(ViewProjection viewProjection)
 		}
 		kyozou.rotation_.x = gomi;
 
+		for (size_t i = 0; i < gunbitnum; i++)
+		{
+			Vector3 bitpos = nannka[i];
+			bitpos = kyozou.matWorld_.VectorMat(bitpos, kyozou.matWorld_);
+			bitpos.normalize();
+			target[i].translation_ = easeOutSineVec3(target[i].translation_, worldTransform_.translation_ + (bitpos * 2.0f), timer / bitmovetimer);
+		}
+
 		
-
-		nannka = { 0.5f,1,0 };
-		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-		nannka.normalize();
-		target[0].translation_ = easeOutSineVec3(target[0].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
-
-		nannka = { -0.5f,1,0 };
-		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-		nannka.normalize();
-		target[1].translation_ = easeOutSineVec3(target[1].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
-
-		nannka = { 1,0,0 };
-		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-		nannka.normalize();
-		target[2].translation_ = easeOutSineVec3(target[2].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
-		nannka = { -1,0,0 };
-		nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-		nannka.normalize();
-		target[3].translation_ = easeOutSineVec3(target[3].translation_, worldTransform_.translation_ + (nannka * 2.0f), timer / bitmovetimer);
-
 	}
 	else
 	{
-
-		nannka = { 0.5f,1,0 };
-		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-		nannka.normalize();
-		target[0].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-		nannka = { -0.5f,1,0 };
-		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-		nannka.normalize();
-		target[1].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-		nannka = { 1,0,0 };
-		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-		nannka.normalize();
-		target[2].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-		nannka = { -1,0,0 };
-		nannka = worldTransform_.matWorld_.VectorMat(nannka, worldTransform_.matWorld_);
-		nannka.normalize();
-		target[3].translation_ = worldTransform_.translation_ + (nannka * 2.0f);
-
-		
+		for (size_t i = 0; i < gunbitnum; i++)
+		{
+			Vector3 bitpos = nannka[i];
+			bitpos = worldTransform_.matWorld_.VectorMat(bitpos, worldTransform_.matWorld_);
+			bitpos.normalize();
+			target[i].translation_ = worldTransform_.translation_ + (bitpos * 2.0f);
+		}
 
 		for (size_t i = 0; i < gunbitnum; i++)
 		{
@@ -341,26 +321,15 @@ void Player::Update(ViewProjection viewProjection)
 			}
 			kyozou.rotation_.x = gomi;
 
-			nannka = { 0.5f,1,0 };
-			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-			nannka.normalize();
-			target[0].translation_ = easeOutSineVec3(target[0].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
+			for (size_t i = 0; i < gunbitnum; i++)
+			{
+				Vector3 bitpos = nannka[i];
+				bitpos = kyozou.matWorld_.VectorMat(bitpos, kyozou.matWorld_);
+				bitpos.normalize();
+				target[i].translation_ = easeOutSineVec3(target[i].translation_, worldTransform_.translation_ + (bitpos * 2.0f), NormalTimer / BitNormalAttakTime);
+			}
 
-			nannka = { -0.5f,1,0 };
-			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-			nannka.normalize();
-			target[1].translation_ = easeOutSineVec3(target[1].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
-
-			nannka = { 1,0,0 };
-			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-			nannka.normalize();
-			target[2].translation_ = easeOutSineVec3(target[2].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
-
-			nannka = { -1,0,0 };
-			nannka = kyozou.matWorld_.VectorMat(nannka, kyozou.matWorld_);
-			nannka.normalize();
-			target[3].translation_ = easeOutSineVec3(target[3].translation_, worldTransform_.translation_ + (nannka * 2.0f), NormalTimer / BitNormalAttakTime);
-
+			
 			NormalTimer++;
 
 			if (NormalTimer >= BitNormalAttakTime)
@@ -395,6 +364,14 @@ void Player::Update(ViewProjection viewProjection)
 
 	for (size_t i = 0; i < gunbitnum; i++)
 	{
+		if (i == 0 || i == 2)
+		{
+			target[i].rotation_.z += 0.05f;
+		}
+		else
+		{
+			target[i].rotation_.z -= 0.05f;
+		}
 		target[i].matWorldGeneration();
 	}
 	
@@ -502,7 +479,7 @@ void Player::Attack(Vector3 flont)
 		velocity *= kBulletSpeed;
 
 		std::unique_ptr <PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initlize(model_,target[i].translation_, velocity);
+		newBullet->Initlize(model_,target[i].translation_, target[i].rotation_, velocity);
 
 		bullets_.push_back(std::move(newBullet));
 
@@ -567,12 +544,15 @@ bool Player::LockOn(bosstest* obj)
 			{
 				Vector3 hozon2 = Hikaku(obj->GetWorldPosition(), bosshands[i]->GetwroldTransform().translation_, hozon);
 				bosstarget->SetPosition(kasu(hozon2));
+				BitVec = hozon2;
 				hozon = hozon2;
 			}
 			else
 			{
 				bosstarget->SetPosition(kasu(obj->GetWorldPosition()));
+				BitVec = obj->GetWorldPosition();
 			}
+
 
 			return true;
 		}
@@ -580,7 +560,7 @@ bool Player::LockOn(bosstest* obj)
 		{
 
 			bosstarget->SetPosition(kasu(obj->GetWorldPosition()));
-
+			BitVec = obj->GetWorldPosition();
 			return true;
 		}
 		else if (screenLock(bosshands[i]->GetwroldTransform()))
@@ -590,6 +570,7 @@ bool Player::LockOn(bosstest* obj)
 				Vector3 hozon2 = Hikaku2(bosshands[i]->GetwroldTransform().translation_, hozon);
 				bosstarget->SetPosition(kasu(hozon2));
 				hozon = hozon2;
+				BitVec = hozon2;
 			}
 			return true;
 		}

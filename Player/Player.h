@@ -101,6 +101,7 @@ private:
 	WorldTransform kyozou;
 
 	static const int gunbitnum = 4;
+	Vector3 nannka[gunbitnum];
 
 	WorldTransform target[gunbitnum];
 
@@ -169,6 +170,8 @@ private:
 	float hozonY, hozonX;
 
 	Vector3 hozon;
+
+	Vector3 BitVec;
 
 };
 
