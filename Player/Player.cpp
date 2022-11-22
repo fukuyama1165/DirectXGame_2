@@ -488,10 +488,12 @@ void Player::Attack(Vector3 flont)
 		velocity = target[i].matWorld_.VectorMat(velocity, target[i].matWorld_);
 		velocity.normalize();
 
+		Vector3 BulletStart = target[i].translation_-velocity*3.0f;
 		velocity *= kBulletSpeed;
 
+
 		std::unique_ptr <PlayerBullet> newBullet = std::make_unique<PlayerBullet>();
-		newBullet->Initlize(model_,target[i].translation_, target[i].rotation_, velocity);
+		newBullet->Initlize(model_,BulletStart, target[i].rotation_, velocity);
 
 		bullets_.push_back(std::move(newBullet));
 
