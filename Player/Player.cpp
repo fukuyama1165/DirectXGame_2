@@ -20,10 +20,12 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	//ÉèÅ[ÉãÉhïœä∑ÇÃèâä˙âª
 	worldTransform_.Initialize();
 
+	arrow.Initialize();
+
 	for (size_t i = 0; i < gunbitnum; i++)
 	{
 		target[i].Initialize();
-		target[i].scale_ = {0.5f,0.5f,2.0f};
+		target[i].scale_ = {1.0f,1.0f,1.5f};
 	}
 
 	nannka[0] = { 0.5f,1,0 };
@@ -33,7 +35,7 @@ void Player::Initialize(RailCamera* camera, bosstest* boss)
 	
 	kyozou.Initialize();
 
-	worldTransform_.translation_ = { 0,0,0 };
+	worldTransform_.translation_ = { 10.0f,0,0 };
 
 	moveVec = { 0,0,0 };
 
@@ -164,9 +166,9 @@ void Player::Update(ViewProjection viewProjection)
 		}
 	}
 	
+	EnemyArrow();
 	
-	
-	if (LockOn(boss))
+	if (LockOn())
 	{
 		lockmove = true;
 	}
@@ -188,25 +190,32 @@ void Player::Update(ViewProjection viewProjection)
 
 	}
 
-	if (LockOn(boss))
+	if (LockOn())
 	{
-		Vector3 PtoB = BitVec - worldTransform_.translation_;
-		Vector3 kari = PtoB;
-		kari.y = 0;
-		float kariy = -PtoB.y;
-		PtoB.normalize();
-		float gomi = atan2(PtoB.x, PtoB.z);
+		
 
 		for (size_t i = 0; i < gunbitnum; i++)
 		{
+			Vector3 PtoB = BitVec - target[i].translation_;
+			Vector3 kari = PtoB;
+			kari.y = 0;
+			float kariy = -PtoB.y;
+			PtoB.normalize();
+			float gomi = atan2(PtoB.x, PtoB.z);
 			target[i].rotation_.y = easeOutSine(target[i].rotation_.y, gomi, timer / bitmovetimer);
-		}
-		kyozou.rotation_.y = gomi;
-		gomi = atan2(kariy, kari.length());
-		for (size_t i = 0; i < gunbitnum; i++)
-		{
+			gomi = atan2(kariy, kari.length());
+			kyozou.rotation_.y = gomi;
 			target[i].rotation_.x = easeOutSine(target[i].rotation_.x, gomi, timer / bitmovetimer);
+			kyozou.rotation_.x = gomi;
 		}
+		Vector3 KtoB = BitVec - worldTransform_.translation_;
+		Vector3 Kkari = KtoB;
+		Kkari.y = 0;
+		float Kkariy = -KtoB.y;
+		KtoB.normalize();
+		float gomi = atan2(KtoB.x, KtoB.z);
+		kyozou.rotation_.y = gomi;
+		gomi = atan2(Kkariy, Kkari.length());
 		kyozou.rotation_.x = gomi;
 
 		for (size_t i = 0; i < gunbitnum; i++)
@@ -302,7 +311,7 @@ void Player::Update(ViewProjection viewProjection)
 
 	if ((input_->PushKey(DIK_SPACE)||(joystate.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER))&& hoppertimer >= 0)
 	{
-		if (!LockOn(boss))
+		if (!LockOn())
 		{
 			Vector3 kari2 = KyozouFlont;
 			kari2.y = 0;
@@ -404,13 +413,16 @@ void Player::Draw(ViewProjection& viewProjection)
 		bullet->Draw(viewProjection);
 	}
 	
-
+	if (!screenLock(boss->getPos()))
+	{
+		model_->Draw(arrow, viewProjection);
+	}
 }
 
 void Player::DrawUI()
 {
 	Reticle->Draw();
-	if (LockOn(boss))
+	if (LockOn())
 	{
 		bosstarget->Draw();
 	}
@@ -533,45 +545,48 @@ WorldTransform Player::GetMat()
 	return worldTransform_;
 }
 
-bool Player::LockOn(bosstest* obj)
+bool Player::LockOn()
 {
 	const std::vector<bossHand*>& bosshands = boss->getHand();
 	for (int i = 0; i < bosshands.size(); i++)
 	{
-		if (screenLock(obj->getPos())&&screenLock(bosshands[i]->GetwroldTransform()))
+		if (screenLock(boss->getPos())&&screenLock(bosshands[i]->GetwroldTransform()))
 		{
 			if (bosshands[i]->getisAttackFlag())
 			{
-				Vector3 hozon2 = Hikaku(obj->GetWorldPosition(), bosshands[i]->GetwroldTransform().translation_, hozon);
+				Vector3 hozon2 = Hikaku(boss->GetWorldPosition(), bosshands[i]->GetwroldTransform().translation_, hozon);
 				bosstarget->SetPosition(kasu(hozon2));
 				BitVec = hozon2;
-				hozon = hozon2;
+				hozon = hozon2; debugText_->SetPos(0, 0);
+				
 			}
 			else
 			{
-				bosstarget->SetPosition(kasu(obj->GetWorldPosition()));
-				BitVec = obj->GetWorldPosition();
+				bosstarget->SetPosition(kasu(boss->GetWorldPosition()));
+				BitVec = boss->GetWorldPosition();
 			}
 
 
 			return true;
 		}
-		else if(screenLock(obj->getPos()))
+		else if(screenLock(boss->getPos()))
 		{
 
-			bosstarget->SetPosition(kasu(obj->GetWorldPosition()));
-			BitVec = obj->GetWorldPosition();
+			bosstarget->SetPosition(kasu(boss->GetWorldPosition()));
+			BitVec = boss->GetWorldPosition();
+			debugText_->SetPos(0, 20);
+			debugText_->Printf("aaaaaaaaaaaa");
 			return true;
 		}
-		else if (screenLock(bosshands[i]->GetwroldTransform()))
+		else if (screenLock(bosshands[i]->GetwroldTransform())&& bosshands[i]->getisAttackFlag())
 		{
-			if (bosshands[i]->getisAttackFlag())
-			{
-				Vector3 hozon2 = Hikaku2(bosshands[i]->GetwroldTransform().translation_, hozon);
-				bosstarget->SetPosition(kasu(hozon2));
-				hozon = hozon2;
-				BitVec = hozon2;
-			}
+			
+			Vector3 hozon2 = Hikaku2(bosshands[i]->GetwroldTransform().translation_, hozon);
+			bosstarget->SetPosition(kasu(hozon2));
+			hozon = hozon2;
+			BitVec = hozon2;
+			
+			
 			return true;
 		}
 		else
@@ -613,6 +628,24 @@ Vector3 Player::Hikaku2(Vector3 hand1, Vector3 hand2)
 	if (kariB.length() <= kariC.length()) return hand1;
 	else if (kariC.length() < kariB.length()) return hand2;
 
+}
+
+void Player::EnemyArrow()
+{
+	Vector3 PtoB = boss->GetWorldPosition() - worldTransform_.translation_;
+	Vector3 kari = PtoB;
+	float kariy = -PtoB.y;
+	PtoB.normalize();
+
+	arrow.translation_ = worldTransform_.translation_+( PtoB * 4.0f);
+	kari.y = 0;
+	float gomi = atan2(PtoB.x, PtoB.z);
+	arrow.rotation_.y =gomi;
+	gomi = atan2(kariy, kari.length());
+	arrow.rotation_.x = gomi;
+
+
+	arrow.matWorldGeneration();
 }
 
 void Player::OnCollision()

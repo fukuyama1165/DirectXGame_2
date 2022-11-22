@@ -72,12 +72,14 @@ public:
 
 	Vector2 poskure() { return bosstarget->GetPosition(); }
 
-	bool LockOn(bosstest* boss);
+	bool LockOn();
 
 	void SetWorldPosition(Vector3 osimodosi);
 
 	Vector3 Hikaku(Vector3 boss, Vector3 hand1, Vector3 hand2);
 	Vector3 Hikaku2(Vector3 hand1, Vector3 hand2);
+
+	void EnemyArrow();
 
 	//衝突を検出したら呼び出されるコールバック関数
 	void OnCollision();
@@ -99,6 +101,8 @@ private:
 	WorldTransform worldTransform_;
 
 	WorldTransform kyozou;
+
+	WorldTransform arrow;
 
 	static const int gunbitnum = 4;
 	Vector3 nannka[gunbitnum];
