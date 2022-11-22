@@ -46,8 +46,12 @@ public:
 
 	//石落としをするためのフラグを変更
 	void setisBossStoneFall(bool flag);
+	void setisBossPillarFall(bool flag);
+	
 
 	void setisBossBeam(bool flag);
+
+	void setisBossPillarRoll(bool flag);
 
 	//その場でパンチの攻撃を跳ね返したことにする
 	void playerAttackReturnL();
@@ -57,8 +61,11 @@ public:
 
 	//石落とし
 	void bossStoneFall(Vector3 player);
+	void bossPillarFall(Vector3 player);
 
 	void bossBeam();
+
+	void bossPillarRoll();
 
 	//pos???????????? 全部持ってくる
 	WorldTransform getPos() { return worldTransform; };
@@ -115,6 +122,8 @@ private:
 	float setbossCubeDistance = 6.0f;
 	float setbossCubePressDistance = 4.8f;
 
+	float setBossPillarRollDistance = setbossCubeDistance;
+
 	//テクスチャハンドル
 	uint32_t textureHandle_ = 0;
 
@@ -125,17 +134,22 @@ private:
 
 	bool isBossPress = false;
 	bool isBossStoneFall = false;
+	bool isBossPillarFall = false;
+	bool isBossPillarRoll = false;
 	bool isBossBeam = false;
 
 	bool isPressStart = false;
 	bool isPressFall = false;
 	bool isPressReturn = false;
 	bool pressFirstStart = false;
+	bool pillarRollFirstStart = false;
+	bool isPillarRollEnd = false;
 	bool beamFirstStart = false;
 	bool beamEndStart = false;
 
 	int pressCount = 0;
 	int bossStoneFallCount = 0;
+	int bossPillarFallCount = 0;
 	int bossBeamCount = 0;
 
 	float pressPosY = 20;
@@ -162,6 +176,11 @@ private:
 	float maxFirstBeamMoveTime = 20.0f;
 	float maxEndBeamMoveTime = 20.0f;
 
+	float maxBosspillarMoveTime = 10;
+
+	float maxBosspillarRollTime = 10;
+	float maxBosspillarRollEndTime = 600;
+
 	//ウエイト
 	float waitTime = 0;
 
@@ -171,10 +190,15 @@ private:
 
 	float bossStoneFallWaitTime = 20;
 
+	float bossPillarFallWaitTime = 20;
+
 	float bossBeamWaitTime = 40;
 
 	float bosspillarMoveTime = 0;
-	float maxBosspillarMoveTime = 10;
+
+	float bosspillarRollTime = 0;
+	float bosspillarRollEndTime = 0;
+	
 	int bosspillarDefaultPosCount = 0;
 
 	Vector3 pillarDefaultPosRotate[8] =

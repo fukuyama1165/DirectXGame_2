@@ -30,8 +30,15 @@ public:
 	void press();
 
 	void stoneFall();
+	void pillarFall();
 
 	void beam();
+
+
+	void pillarRoll();
+
+	//これでフラグをtrueにし続けると挙動がおかしくなるので注意(使ったら戻すこと)
+	void setisActionFlag(bool flag);
 
 	void setisAttackFlag(bool flag);
 
@@ -41,8 +48,11 @@ public:
 
 	void setisStoneFallFlag(bool flag);
 
+	void setisPillarFallFlag(bool flag);
+
 	void setisBeamFlag(bool flag);
 	
+	void setisPillarRollFlag(bool flag);
 
 	//プレイヤーの攻撃によって跳ね返された時１回だけ行う処理
 	void playerAttackReturn();
@@ -73,9 +83,14 @@ private:
 	bool isFallFallFlag = false;
 	bool isFallReturnFlag = false;
 
+	bool isPillarFallReturnFlag = false;
+
 	bool isBeamFirstStart = false;
 
 	bool isBeamEnd = false;
+
+	bool isPillarRollFirstStart = false;
+	
 
 	bool isGetTargetPos = false;
 
@@ -87,6 +102,7 @@ private:
 	float returnTimeCount = 0;
 	float returnAttackTimeCount = 0;
 	float ActionType4TimeCount = 0;
+	float ActionType5TimeCount = 0;
 
 	//動作時間
 	float maxTime = 50.0f;
@@ -103,9 +119,15 @@ private:
 	float maxFallReturnTime = 10.0f;
 	float maxUpFallTime = 10.0f;
 
+	//第二段階用石落とし
+	float maxUpPillarFallTime = 20.0f;
+
 	//ビーム
 	float maxBeamTime = 30.0f;
 	float maxFirstBeamTime = 20.0f;
+
+	//回転
+	float maxPillarRollTime = 30.0f;
 
 	//ウエイト
 	float waitTime = 0;
@@ -125,6 +147,8 @@ private:
 	bool isPress = false;
 	bool isPressEnd = true;
 	bool isStoneFall = false;
+	bool isPillarFall = false;
+	bool isPillarRoll = false;
 	bool isBeam = false;
 
 	//プレイヤーの位置

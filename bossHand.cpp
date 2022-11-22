@@ -33,6 +33,8 @@ void bossHand::update(WorldTransform worldTransform)
 	press();
 	stoneFall();
 	beam();
+	pillarFall();
+	pillarRoll();
 
 }
 
@@ -363,6 +365,182 @@ void bossHand::stoneFall()
 
 }
 
+void bossHand::pillarFall()
+{
+
+	if (isPillarFall)
+	{
+		isAction = true;
+		//カウント
+		if (timeCount < maxUpFallTime and waitTime > stoneFallWaitTime and isFallTargetMoveFlag == false)
+		{
+			timeCount++;
+		}
+
+		//予備動作
+		if (waitTime < stoneFallWaitTime and isFallTargetMoveFlag == false)
+		{
+
+			Hand.translation_ = { cosf(waitTime) + defaultPos.x, defaultPos.y, defaultPos.z };
+
+			Hand.matWorldGeneration();
+
+		}
+
+		//上に移動
+		if (timeCount < maxUpFallTime and isFallTargetMoveFlag == false and waitTime > stoneFallWaitTime)
+		{
+
+
+			//元の位置かy座標をずらした位置に線形補間
+			Hand.translation_ = lerp(defaultPos, { defaultPos.x,30,defaultPos.z }, timeCount / maxUpFallTime);
+
+			Hand.matWorldGeneration();
+		}
+		//上に移動が終わったら
+		else if (isFallTargetMoveFlag == false and waitTime > stoneFallWaitTime)
+		{
+			isFallTargetMoveFlag = true;
+			waitTime = 0;
+		}
+
+		//プレイヤーの座標要求
+		if (isFallTargetMoveFlag and returnTimeCount == 0 and isGetTargetPos == false)
+		{
+			isGetTargetPos = true;
+			return;
+		}
+		else if (isFallTargetMoveFlag and returnTimeCount != 0)
+		{
+			isGetTargetPos = false;
+		}
+
+
+		//カウント
+		if (isFallTargetMoveFlag and returnTimeCount < maxTargetMoveTime and isFallFallFlag == false)
+		{
+			//使いまわし名前に意味はない
+			returnTimeCount++;
+		}
+
+		//とっておいたプレイヤーの座標に移動
+		if (isFallTargetMoveFlag and returnTimeCount != maxTargetMoveTime and isFallFallFlag == false)
+		{
+
+			Hand.translation_ = lerp({ defaultPos.x,30,defaultPos.z }, { targetPos.x,30,targetPos.z }, returnTimeCount / maxTargetMoveTime);
+			Hand.matWorldGeneration();
+		}
+
+		//終了
+		if (returnTimeCount == maxTargetMoveTime and isFallFallFlag == false)
+		{
+			isFallFallFlag = true;
+			waitTime = 0;
+		}
+
+		//カウント
+		if (ActionType4TimeCount < maxFallTime and isFallFallFlag and isPillarFallReturnFlag == false)
+		{
+			ActionType4TimeCount++;
+		}
+
+		//落下
+		if (ActionType4TimeCount < maxFallTime and isFallFallFlag and isPillarFallReturnFlag == false)
+		{
+
+
+			//下に移動
+			Hand.translation_ = lerp({ targetPos.x,30,targetPos.z }, { targetPos.x,targetPos.y + 6.1f,targetPos.z }, ActionType4TimeCount / maxFallTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (ActionType4TimeCount == maxFallTime and isPillarFallReturnFlag == false)
+		{
+			isPillarFallReturnFlag = true;
+			waitTime = 0;
+		}
+
+
+		//完全に止めたい時間が150
+		if (waitTime > 150 and ActionType5TimeCount < maxUpPillarFallTime and waitTime >(stoneFallReturnWaitTime + 150) and isPillarFallReturnFlag and isFallReturnFlag==false)
+		{
+			ActionType5TimeCount++;
+		}
+
+		//予備動作
+		if (waitTime > 150 and waitTime < (stoneFallReturnWaitTime + 150) and isPillarFallReturnFlag and isFallReturnFlag == false)
+		{
+
+			Hand.translation_ = { cosf(waitTime) + targetPos.x, targetPos.y + 6.8f, targetPos.z };
+
+			Hand.matWorldGeneration();
+
+		}
+
+		//上に移動
+		if (ActionType5TimeCount < maxUpPillarFallTime and isPillarFallReturnFlag and waitTime >(stoneFallReturnWaitTime + 150) and isFallReturnFlag == false)
+		{
+
+
+			//元の位置かy座標をずらした位置に線形補間
+			Hand.translation_ = lerp({ targetPos.x,targetPos.y + 11.1f,targetPos.z }, { targetPos.x,15,targetPos.z }, ActionType5TimeCount / maxUpPillarFallTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (ActionType5TimeCount == maxUpPillarFallTime and isFallReturnFlag == false)
+		{
+			isFallReturnFlag = true;
+			waitTime = 0;
+		}
+
+		//カウント
+		if (returnAttackTimeCount < maxFallReturnTime and isFallReturnFlag)
+		{
+			returnAttackTimeCount++;
+		}
+
+		//戻る
+		if (returnAttackTimeCount < maxFallReturnTime and isFallReturnFlag)
+		{
+
+
+			//下に移動
+			Hand.translation_ = lerp({ targetPos.x,30,targetPos.z }, defaultPos, returnAttackTimeCount / maxFallReturnTime);
+
+			Hand.matWorldGeneration();
+		}
+
+
+		waitTime++;
+
+		if (returnAttackTimeCount == maxFallReturnTime)
+		{
+
+			isAction = false;
+			isFallTargetMoveFlag = false;
+			isFallFallFlag = false;
+			isFallReturnFlag = false;
+			isPillarFallReturnFlag = false;
+
+			timeCount = 0;
+			returnTimeCount = 0;
+			ActionType4TimeCount = 0;
+			ActionType5TimeCount = 0;
+			returnAttackTimeCount = 0;
+
+			waitTime = 0;
+
+			isPillarFall = false;
+
+		}
+
+	}
+
+}
+
+
 void bossHand::beam()
 {
 
@@ -436,6 +614,49 @@ void bossHand::beam()
 
 }
 
+void bossHand::pillarRoll()
+{
+	if (isPillarRoll)
+	{
+
+		if (isPillarRollFirstStart == false)
+		{
+			returnPos = Hand.matWorldGetPos();
+			isPillarRollFirstStart = true;
+		}
+
+		if (timeCount < maxPillarRollTime)
+		{
+			timeCount++;
+		}
+
+		if (timeCount < maxPillarRollTime)
+		{
+
+
+			//元の位置からプレイヤーの位置(現在は0,0,0最終的に狙いを決定してからそこの位置へ)に線形補間
+			Hand.translation_ = lerp(returnPos, defaultPos, timeCount / maxPillarRollTime);
+
+			Hand.matWorldGeneration();
+		}
+
+		if (timeCount == maxPillarRollTime)
+		{
+
+			isPillarRollFirstStart = false;
+			timeCount = 0;
+			isAction = false;
+			isPillarRoll = false;
+		}
+
+	}
+}
+
+void bossHand::setisActionFlag(bool flag) 
+{
+	isAction = flag;
+}
+
 void bossHand::setisAttackFlag(bool flag)
 {
 	isAttackFlag = flag;
@@ -456,11 +677,21 @@ void bossHand::setisStoneFallFlag(bool flag)
 	isStoneFall = flag;
 }
 
+void bossHand::setisPillarFallFlag(bool flag)
+{
+	isPillarFall = flag;
+}
+
 void  bossHand::setisBeamFlag(bool flag)
 {
 	isBeam = flag;
 }
 
+
+void bossHand::setisPillarRollFlag(bool flag)
+{
+	isPillarRoll = flag;
+}
 
 void bossHand::playerAttackReturn()
 {

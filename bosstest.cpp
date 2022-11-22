@@ -111,9 +111,11 @@ void bosstest::Update(Vector3 player)
 		{
 			setPillarDefaultPos();
 			setPillarHandPos();
+			bossPillarFall(player);
+			bossPillarRoll();
 		}
 
-		if (state == ophanim)
+ 		if (state == ophanim)
 		{
 			setOphanimDefaultPos();
 			setOphanimHandPos();
@@ -361,6 +363,40 @@ void bosstest::bossStoneFall(Vector3 player)
 
 }
 
+void bosstest::bossPillarFall(Vector3 player)
+{
+
+	if (isBossPillarFall)
+	{
+		if (waitTime == 0)
+		{
+			if (bossPillarFallCount == hand.size())
+			{
+				isBossPillarFall = false;
+				bossPillarFallCount = 0;
+				return;
+			}
+
+			for (int i = 0; i < hand.size(); i++)
+			{
+				if (hand[i]->getisAction() == false)
+				{
+					hand[i]->setisPillarFallFlag(true);
+					waitTime = bossPillarFallWaitTime;
+					bossPillarFallCount++;
+					break;
+				}
+			}
+		}
+
+		if (waitTime > 0)
+		{
+			waitTime--;
+		}
+	}
+
+}
+
 void bosstest::bossBeam()
 {
 
@@ -460,6 +496,95 @@ void bosstest::bossBeam()
 
 }
 
+void bosstest::bossPillarRoll()
+{
+
+	if (isBossPillarRoll)
+	{
+
+		if (pillarRollFirstStart == false)
+		{
+			for (int i = 0; i < hand.size(); i++)
+			{
+				hand[i]->setisActionFlag(true);
+			}
+			pillarRollFirstStart = true;
+		}
+
+		Vector3 bossSft;
+		Vector3 bossSftMove;
+
+		//カウント
+		if (bosspillarRollTime < maxBosspillarRollTime and isPillarRollEnd == false)
+		{
+
+			bosspillarRollTime++;
+			bosspillarRollEndTime++;
+		}
+
+		//とっておいたプレイヤーの座標に移動
+		if (bosspillarRollTime < maxBosspillarRollTime and isPillarRollEnd == false)
+		{
+			for (int i = 0; i < hand.size(); i++)
+			{
+
+
+					bossSft = pillarDefaultPosRotate[(bosspillarDefaultPosCount + i) % 8];
+					bossSft = worldTransform.matWorld_.VectorMat(bossSft, worldTransform.matWorld_);
+					bossSft.normalize();
+
+					bossSftMove = pillarDefaultPosRotate[(bosspillarDefaultPosCount + i + 1) % 8];
+					bossSftMove = worldTransform.matWorld_.VectorMat(bossSftMove, worldTransform.matWorld_);
+					bossSftMove.normalize();
+					hand[i]->setPos(lerp(worldTransform.matWorldGetPos() + (bossSft * setBossPillarRollDistance), worldTransform.matWorldGetPos() + (bossSftMove * setBossPillarRollDistance), bosspillarRollTime / maxBosspillarRollTime));
+
+
+			}
+		}
+
+		//終了
+		if (bosspillarRollTime == maxBosspillarRollTime and isPillarRollEnd == false)
+		{
+			if (bosspillarDefaultPosCount < _countof(pillarDefaultPosRotate) - 1)
+			{
+				bosspillarDefaultPosCount++;
+			}
+			else
+			{
+				bosspillarDefaultPosCount = 0;
+			}
+			bosspillarRollTime = 0;
+			setBossPillarRollDistance++;
+		}
+
+		if (bosspillarRollEndTime == maxBosspillarRollEndTime and isPillarRollEnd == false)
+		{
+
+			for (int i = 0; i < hand.size(); i++)
+			{
+				hand[i]->setisPillarRollFlag(true);
+			}
+
+			isPillarRollEnd = true;
+		}
+
+		if (hand[0]->getisAction() == false)
+		{
+
+			pillarRollFirstStart = false;
+			isPillarRollEnd = false;
+			isBossPillarRoll = false;
+
+			bosspillarRollTime = 0;
+			bosspillarRollEndTime = 0;
+			bosspillarDefaultPosCount = 0;
+			setBossPillarRollDistance = setbossCubeDistance;
+		}
+
+	}
+
+}
+
 Vector3 bosstest::GetWorldPosition()
 {
 	return worldTransform.matWorldGetPos();
@@ -507,6 +632,18 @@ void bosstest::setisBossStoneFall(bool flag)
 
 	isBossStoneFall = flag;
 
+}
+
+void bosstest::setisBossPillarFall(bool flag)
+{
+
+	isBossPillarFall = flag;
+
+}
+
+void bosstest::setisBossPillarRoll(bool flag)
+{
+	isBossPillarRoll = flag;
 }
 
 void bosstest::setisBossBeam(bool flag)
